@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.Teleop;
 
-
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -19,11 +18,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 import java.util.Arrays;
-@TeleOp(name="drivercontrol", group="Monkeys")
+@TeleOp(name="drivercontrolblue", group="Monkeys")
 //@Disabled  This way it will run on the robot
-public class Drive_Control_Red extends OpMode {
-
-    // Timer for tracking the runtime of the robot's operation.
+public class Drive_Control_Blue extends OpMode {
+    // Declare OpMode members.
     private final ElapsedTime runtime = new ElapsedTime();  //timer
 
     /*
@@ -37,37 +35,42 @@ public class Drive_Control_Red extends OpMode {
     //private DigitalChannel intakeSensor;
 
     //Motors
-    private DcMotorEx wheelFL; // Front left wheel
-    private DcMotorEx wheelFR; // Front right wheel
-    private DcMotorEx wheelBL; // Back left wheel
-    private DcMotorEx wheelBR; // Back right wheel
-    private DcMotorEx viper; //Vertical lift mechanism
-    private DcMotorEx Rocket; // Motor for rotate the Vertical lift
+    private Rev2mDistanceSensor sideLeftDistanceSensor;
+    private Rev2mDistanceSensor sideRightDistanceSensor;
+    private DcMotorEx wheelFL;
+    private DcMotorEx wheelFR;
+    private DcMotorEx wheelBL;
+    private DcMotorEx wheelBR;
+    private DcMotorEx viper;
+    private DcMotorEx Rocket;
 
     //Servos
-    private Servo Claw2; // Second CLaw
-    private Servo Claw; // Primary Claw
+    private Servo Claw2;
+    //private DcMotorEx Insertnamehere
+    //private DcMotorEx Insertnamehere
+    private Servo Claw;
 
     //Sensors
-    private ColorSensor colorSensor; // Color sensor for detecting objects/colors
-
+    private ColorSensor colorSensor;
 
     private double speedMod;
     private final boolean rumbleLevel = true;
     private double rotation = 0;
     final double TRIGGER_THRESHOLD = 0.75;
+    private boolean isGrabbing = false;
     private double previousRunTime;
     private double inputDelayInSeconds = .5;
     private int[] armLevelPosition = {0, 1000, 2000,};
     private int armLevel;
-    //private int blueValue = colorSensor.blue();
-   // private int redValue = colorSensor.red();
-   // private int greenValue = colorSensor.green();
-  //  private static final int YELLOW_RED_THRESHOLD = 200;  // Minimum red value for yellow
-   // private static final int YELLOW_GREEN_THRESHOLD = 200; // Minimum green value for yellow
-   // private static final int YELLOW_BLUE_THRESHOLD = 100; // Maximum blue value for yellow
-   // private static final int TARGET_RED_THRESHOLD = 100;  // Minimum red value for scoring color
-  //  private static final int TARGET_BLUE_THRESHOLD = 100; // Minimum blue value for scoring color
+    // int redValue = colorSensor.red();
+    // int blueValue = colorSensor.blue();
+    // int greenValue = colorSensor.green();
+    //  private static final int TARGET_RED_THRESHOLD = 100;  // Minimum red value for scoring color
+    //   private static final int TARGET_BLUE_THRESHOLD = 100; // Minimum blue value for scoring color
+    //  private static final int YELLOW_RED_THRESHOLD = 200;  // Minimum red value for yellow
+    //   private static final int YELLOW_GREEN_THRESHOLD = 200; // Minimum green value for yellow
+    //  private static final int YELLOW_BLUE_THRESHOLD = 100; // Maximum blue value for yellow
+
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -81,7 +84,7 @@ public class Drive_Control_Red extends OpMode {
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
 
-        //Motors, mounts variables to hardware ports.
+        //Motors
         wheelFL = hardwareMap.get(DcMotorEx.class, "wheelFL");
         wheelFR = hardwareMap.get(DcMotorEx.class, "wheelFR");
         wheelBL = hardwareMap.get(DcMotorEx.class, "wheelBL");
@@ -110,7 +113,8 @@ public class Drive_Control_Red extends OpMode {
         viper.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         viper.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         viper.setTargetPositionTolerance(50);
-        viper.setDirection(DcMotorSimple.Direction.REVERSE);
+        viper.setTargetPosition(50);
+        viper.setDirection(DcMotorSimple.Direction.FORWARD);
 
         wheelFL.setDirection(DcMotorSimple.Direction.REVERSE);//REVERSE
         wheelFR.setDirection(DcMotorSimple.Direction.FORWARD);//FORWARD
@@ -118,11 +122,10 @@ public class Drive_Control_Red extends OpMode {
         wheelBR.setDirection(DcMotorSimple.Direction.REVERSE);//REVERSE
 
         //Sensors
-        //colorSensor = hardwareMap.get(ColorSensor.class, "colorSensor");
+        // colorSensor = hardwareMap.get(ColorSensor.class, "colorSensor");
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialization Complete");
-
 
     }
 
@@ -132,7 +135,8 @@ public class Drive_Control_Red extends OpMode {
      */
     @Override
     public void init_loop() {
-        // Add any code here that needs to loop during the initialization phase
+
+
     }
 
     /*
@@ -140,31 +144,32 @@ public class Drive_Control_Red extends OpMode {
      */
     @Override
     public void start() {
-        // Reset runtime when play is pressed
+
         runtime.reset();
         previousRunTime = getRuntime();
+
     }
 
+    //----------------------------------------------------------------------------------------------------------------------------------------------------
     /*
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
      */
     @Override
     public void loop() {
-        // These methods will continuously run in the teleop loop
+//this will run the methods repeadtly
         precisionControl();
         drivingControl();
         Verticallift();
-       // DectectYellow();
+        //SampleRedshodot();
+        RocketBoom();
         ClawGrip();
         Clawroation();
-        RocketBoom();
-        //  SampleShoot();
-        Speices();
 
-        // Display telemetry data for debugging and tracking
+//________________________________________________________________________________________________________________________________________________________________________________________________________________-
         telemetry.addData("Left Trigger Position", gamepad1.left_trigger);
-        telemetry.addData("Status", "Run Time: " + runtime.toString());
-        //Arm Data
+
+
+        //Arm Slide Data
         telemetry.addData("velocity", viper.getVelocity());
         telemetry.addData("slidePosition", viper.getCurrentPosition());
         telemetry.addData("is at target", !viper.isBusy());
@@ -173,60 +178,57 @@ public class Drive_Control_Red extends OpMode {
         telemetry.addData("Velocity", viper.getVelocity());
         telemetry.addData("is at target", !viper.isBusy());
         telemetry.addData("Tolerance: ", viper.getTargetPositionTolerance());
-      //  telemetry.addData("Red", redValue);
-     //   telemetry.addData("Green", greenValue);
-     //   telemetry.addData("Blue", blueValue);
+
+        // Show the elapsed game time and power for each wheel.
+        telemetry.addData("Status", "Run Time: " + runtime.toString());
+        telemetry.addData("Motors", "wheelFL (%.2f), front right (%.2f), back left (%.2f),  right (%.2f)", wheelFL, wheelFR, wheelBL, wheelBR);
+
+//        telemetry.addData("range", String.format("%.3f cm", sideDistanceSensor.getDistance(DistanceUnit.CM)));
+//        telemetry.addData("range edited", sideDistanceSensor.getDistance(DistanceUnit.CM));
+        // Color Sensor Data
+        // telemetry.addData("Red", redValue);
+        //  telemetry.addData("Green", greenValue);
+        //  telemetry.addData("Blue", blueValue);
+
         telemetry.update();
     }
 
-    // Get the amount of red detected by the color sensor
-    public int getAmountRed() {
-        return colorSensor.red();
-    }
 
-    // Get the amount of blue detected by the color sensor
-    public int getAmountBlue() {
-        return colorSensor.blue();
-    }
-
-    // Detect yellow based on color thresholds
-    //public void DectectYellow() {
-   //     if (redValue > YELLOW_RED_THRESHOLD && greenValue > YELLOW_GREEN_THRESHOLD && blueValue < YELLOW_BLUE_THRESHOLD) {
-   //         telemetry.addData("Status", "Yellow Detected");
-   //     } else {
-    //        telemetry.addData("Status", "No Yellow Detected");
-//}
-    //    telemetry.update();
-  //  }
-
-    // Adjust speed for precision control based on trigger inputs
+    //_______________________________________________________________________________________________________________________________________________________
     public void precisionControl() {
         if (gamepad1.left_trigger > 0) {
             speedMod = .25;
-            gamepad1.rumble(1, 1, 200);  // Rumble feedback for precision mode
+            gamepad1.rumble(1, 1, 200);
+//            gamepad2.rumble(1, 1, 200);
         } else if (gamepad1.right_trigger > 0) {
+
             speedMod = 0.5;
-            gamepad1.rumble(1, 1, 200);  // Rumble feedback for medium speed mode
+//            gamepad1.rumble(1, 1, 200);
+            gamepad1.rumble(1, 1, 200);
+
         } else {
             speedMod = 1;
-            gamepad1.stopRumble();  // Stop rumble if neither trigger is pressed
+            gamepad1.stopRumble();
+//            gamepad2.stopRumble();
+            //youtube
         }
     }
 
-    // Driving control for mecanum wheels
+    //____________________________________________________________________________________________________________________________________________________________________________
     public void drivingControl() {
-        double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);  // Calculate magnitude of joystick input
-        double robotAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4;  // Calculate robot's angle
-        double rightX = -gamepad1.right_stick_x;  // Rotation from right stick
-        rotation += 1 * rightX;
+        //gets controller input
+        double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
 
-        // Calculate power for each wheel based on joystick inputs and rotation
+        //make calculations based upon the input
+        double robotAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4;
+        double rightX = -gamepad1.right_stick_x;
+        rotation += 1 * rightX;
         final double v1 = r * Math.cos(robotAngle) - rightX;
         final double v2 = r * Math.sin(robotAngle) + rightX;
         final double v3 = r * Math.sin(robotAngle) - rightX;
         final double v4 = r * Math.cos(robotAngle) + rightX;
 
-        // Set power to each wheel, adjusting with speed modifier
+        //change the power for each wheel
         wheelFL.setPower(-v1 * speedMod);
         wheelFR.setPower(-v2 * speedMod);
         wheelBL.setPower(v3 * speedMod);
@@ -234,8 +236,8 @@ public class Drive_Control_Red extends OpMode {
     }
 
     //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    // Method to control the vertical lift mechanism
     public void Verticallift() {
+
         if ((gamepad1.dpad_up || gamepad2.dpad_up) && (armLevel < armLevelPosition.length - 1) && (getRuntime() - previousRunTime >= inputDelayInSeconds)) {
 
             previousRunTime = getRuntime();
@@ -265,92 +267,67 @@ public class Drive_Control_Red extends OpMode {
         }
         viper.setTargetPosition(armLevelPosition[armLevel]);
         viper.setTargetPositionTolerance(armLevelPosition[armLevel]);
-    }
 
-    // Method to control the rocket motor mechanism
-    public void RocketBoom() {
-        // Check if the dpad_up button on gamepad2 is pressed
-        if (gamepad2.dpad_up) {
-            // Set the rocket motor power to 1 (move forward)
-            Rocket.setPower(1);
-        }
-        // Check if the dpad_down button on gamepad2 is pressed
-        else if (gamepad2.dpad_down) {
-            // Set the rocket motor power to -1 (move backward)
-            Rocket.setPower(-1);
-        }
-        // If neither dpad_up nor dpad_down are pressed, stop the motor
-        else {
-            Rocket.setPower(0);
-        }
-    }
-
-    // Method to control the claw grip mechanism
-    public void ClawGrip() {
-        // Check if the left bumper on gamepad2 is pressed
-        if (gamepad2.left_bumper) {
-            // Set the claw servo to move forward
-            Claw.setPosition(1.0);
-        }
-        // Check if the right bumper on gamepad2 is pressed
-        else if (gamepad2.right_bumper) {
-            // Set the claw servo to move backward
-            Claw.setPosition(-1);
-        }
-        // If neither bumper is pressed, set the claw to stationary position
-        else {
-            Claw.setPosition(0);
-        }
-    }
-
-    // Method to control the claw rotation mechanism
-    public void Clawroation() {
-        // Check if the triangle button on gamepad1 is pressed
-        if (gamepad1.triangle) {
-            // Set the claw rotation to 50% position
-            Claw2.setPosition(.50);
-        }
-        // Check if the square button on gamepad1 is pressed
-        else if (gamepad1.square) {
-            // Set the claw rotation to 0% position
-            Claw2.setPosition(0);
-        }
-    }
-
-    // Method to handle sample shooting based on color detection
-    // public void SampleShoot() {
-        // Check if the blue value is greater than the threshold
-     //   if (blueValue > TARGET_BLUE_THRESHOLD) {
-            // Set the claw to eject the blue sample
-    //        Claw.setPosition(-1);
-    //    }
-        // Check if the blue value is less than the red threshold
-     //   else if (blueValue < TARGET_RED_THRESHOLD) {
-            // Keep the blue sample in the robot
-     //       Claw.setPosition(0);
-     //   }
-
-        // Check if yellow is detected (red and green values are above thresholds and blue is below)
-       // if (redValue > YELLOW_RED_THRESHOLD && greenValue > YELLOW_GREEN_THRESHOLD && blueValue < YELLOW_BLUE_THRESHOLD) {
-            // Display that yellow is detected
-           // telemetry.addData("Status", "Yellow Detected");
-           // telemetry.update();
-            // Keep the yellow sample in the robot
-           // Claw.setPosition(0);
-      //  } else {
-            // Display that no yellow is detected
-      //      telemetry.addData("Status", "No Yellow Detected");
-      //      telemetry.update();
-    //    }
-    // }
-    public void Speices () {
-
-
-    }
 
 }
 
 
+    //    //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    public void RocketBoom() {
+
+        if (gamepad2.y) {
+            Rocket.setPower(1);
+            Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        } else if (gamepad2.x) {
+            Rocket.setPower(-1);
+            Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+
+        }
+    }
+
+
+
+
+    public void ClawGrip() {
+        //Ccontinuous rotation servo
+        if(gamepad2.left_bumper){
+            Claw.setPosition(1.0);
+        }else if(gamepad2.right_bumper){
+            Claw.setPosition(-1);
+        }else {
+            Claw.setPosition(0);
+        }
+
+
+    }
+
+    public void Clawroation() {
+        // Positional Servo
+        if (gamepad1.y) {
+            Claw2.setPosition(.50);
+        } else if (gamepad1.x) {
+            Claw2.setPosition(0);
+        }
+    }
+
+    public void SampleRedshoot(){
+       // if(redValue > TARGET_RED_THRESHOLD){ // checks if the red value is greater than the threshold
+      //      Claw.setPosition(-1); // sets the claw position to -1 if the red value is greater than the threshold
+      //  }else if(redValue < TARGET_BLUE_THRESHOLD) {
+            //Claw.setPosition(0);
+    //    }
+     //   if (redValue > YELLOW_RED_THRESHOLD && greenValue > YELLOW_GREEN_THRESHOLD && blueValue < YELLOW_BLUE_THRESHOLD) {
+            // Yellow object detected
+      //      telemetry.addData("Status", "Yellow Detected");
+       //     telemetry.update();
+      //      Claw.setPosition(0); // Keeps the yellow sample in the robot
+      //  } else {
+            // No yellow object detected
+           // telemetry.addData("Status", "No Yellow Detected");
+          //  telemetry.update();
+        }
+
+    }
 
 
 
