@@ -58,7 +58,7 @@ public class Drive_Control_Red extends OpMode {
     final double TRIGGER_THRESHOLD = 0.75;
     private double previousRunTime;
     private double inputDelayInSeconds = .5;
-    private int[] armLevelPosition = {0, 1000, 2000,};
+    private int[] armLevelPosition = {0, 1000, 2000,3000,3270};
     private int armLevel;
     //private int blueValue = colorSensor.blue();
    // private int redValue = colorSensor.red();
@@ -110,6 +110,7 @@ public class Drive_Control_Red extends OpMode {
         viper.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         viper.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         viper.setTargetPositionTolerance(50);
+        viper.setTargetPosition(50);
         viper.setDirection(DcMotorSimple.Direction.REVERSE);
 
         wheelFL.setDirection(DcMotorSimple.Direction.REVERSE);//REVERSE
@@ -179,25 +180,7 @@ public class Drive_Control_Red extends OpMode {
         telemetry.update();
     }
 
-    // Get the amount of red detected by the color sensor
-    public int getAmountRed() {
-        return colorSensor.red();
-    }
 
-    // Get the amount of blue detected by the color sensor
-    public int getAmountBlue() {
-        return colorSensor.blue();
-    }
-
-    // Detect yellow based on color thresholds
-    //public void DectectYellow() {
-   //     if (redValue > YELLOW_RED_THRESHOLD && greenValue > YELLOW_GREEN_THRESHOLD && blueValue < YELLOW_BLUE_THRESHOLD) {
-   //         telemetry.addData("Status", "Yellow Detected");
-   //     } else {
-    //        telemetry.addData("Status", "No Yellow Detected");
-//}
-    //    telemetry.update();
-  //  }
 
     // Adjust speed for precision control based on trigger inputs
     public void precisionControl() {
@@ -241,13 +224,14 @@ public class Drive_Control_Red extends OpMode {
             previousRunTime = getRuntime();
             armLevel++;
         }
-        if ((gamepad1.dpad_down || gamepad2.dpad_down) && (armLevel > 0) && (getRuntime() - previousRunTime >= inputDelayInSeconds)) {
+       else if ((gamepad1.dpad_down || gamepad2.dpad_down) && (armLevel > 0) && (getRuntime() - previousRunTime >= inputDelayInSeconds)) {
 
             previousRunTime = getRuntime();
             armLevel--;
 
 
         }
+
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         //sets to driving level
         if (gamepad1.x || gamepad2.x) {
@@ -270,18 +254,21 @@ public class Drive_Control_Red extends OpMode {
     // Method to control the rocket motor mechanism
     public void RocketBoom() {
         // Check if the dpad_up button on gamepad2 is pressed
-        if (gamepad2.dpad_up) {
+        if (gamepad2.a) {
             // Set the rocket motor power to 1 (move forward)
-            Rocket.setPower(1);
+            Rocket.setPower(0.75);
+            Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
         // Check if the dpad_down button on gamepad2 is pressed
-        else if (gamepad2.dpad_down) {
+        else if (gamepad2.y) {
             // Set the rocket motor power to -1 (move backward)
-            Rocket.setPower(-1);
+            Rocket.setPower(-0.75);
+            Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
         // If neither dpad_up nor dpad_down are pressed, stop the motor
         else {
             Rocket.setPower(0);
+            Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         }
     }
 
