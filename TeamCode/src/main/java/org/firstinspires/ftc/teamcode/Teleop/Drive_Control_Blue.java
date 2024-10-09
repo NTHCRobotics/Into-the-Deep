@@ -15,8 +15,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 
-
-
 import java.util.Arrays;
 @TeleOp(name="drivercontrolblue", group="Monkeys")
 //@Disabled  This way it will run on the robot
@@ -60,7 +58,7 @@ public class Drive_Control_Blue extends OpMode {
     private boolean isGrabbing = false;
     private double previousRunTime;
     private double inputDelayInSeconds = .5;
-    private int[] armLevelPosition = {0, 1000, 2000,};
+    private int[] armLevelPosition = {0, 1000, 2000};
     private int armLevel;
     // int redValue = colorSensor.red();
     // int blueValue = colorSensor.blue();
@@ -243,13 +241,14 @@ public class Drive_Control_Blue extends OpMode {
             previousRunTime = getRuntime();
             armLevel++;
         }
-        if ((gamepad1.dpad_down || gamepad2.dpad_down) && (armLevel > 0) && (getRuntime() - previousRunTime >= inputDelayInSeconds)) {
+        else if ((gamepad1.dpad_down || gamepad2.dpad_down) && (armLevel > 0) && (getRuntime() - previousRunTime >= inputDelayInSeconds)) {
 
             previousRunTime = getRuntime();
             armLevel--;
 
 
         }
+
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         //sets to driving level
         if (gamepad1.x || gamepad2.x) {
@@ -269,7 +268,7 @@ public class Drive_Control_Blue extends OpMode {
         viper.setTargetPositionTolerance(armLevelPosition[armLevel]);
 
 
-}
+    }
 
 
     //    //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -277,11 +276,9 @@ public class Drive_Control_Blue extends OpMode {
 
         if (gamepad2.y) {
             Rocket.setPower(1);
-            Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         } else if (gamepad2.x) {
             Rocket.setPower(-1);
-            Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-
         }
     }
 
