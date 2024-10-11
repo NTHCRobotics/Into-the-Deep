@@ -14,10 +14,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 
-
-
-
-
 import java.util.Arrays;
 @TeleOp(name="drivercontrol", group="Monkeys")
 //@Disabled  This way it will run on the robot
@@ -58,7 +54,9 @@ public class Drive_Control_Red extends OpMode {
     final double TRIGGER_THRESHOLD = 0.75;
     private double previousRunTime;
     private double inputDelayInSeconds = .5;
-    private int[] armLevelPosition = {0, 1000, 2000,3000,3270};
+    private int[] armLevelPosition = {0,1200,3270};
+    private int[] SprocketLevelPosition = {0,200,750,1100};
+    private int SprocketLevel;
     private int armLevel;
     //private int blueValue = colorSensor.blue();
    // private int redValue = colorSensor.red();
@@ -105,7 +103,7 @@ public class Drive_Control_Red extends OpMode {
         wheelBL.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         wheelBR.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
-
+        // Viper Encoder
         viper.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         viper.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         viper.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -113,8 +111,14 @@ public class Drive_Control_Red extends OpMode {
         viper.setTargetPosition(50);
         viper.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        wheelFL.setDirection(DcMotorSimple.Direction.REVERSE);//REVERSE
-        wheelFR.setDirection(DcMotorSimple.Direction.FORWARD);//FORWARD
+        //Sprocket Encoder
+        Rocket.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        Rocket.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        Rocket.setTargetPosition(0);
+
+        //Wheel Direction
+        wheelFL.setDirection(DcMotorSimple.Direction.FORWARD);//REVERSE
+        wheelFR.setDirection(DcMotorSimple.Direction.REVERSE);//FORWARD
         wheelBL.setDirection(DcMotorSimple.Direction.FORWARD);//FORWARD
         wheelBR.setDirection(DcMotorSimple.Direction.REVERSE);//REVERSE
 
@@ -160,6 +164,7 @@ public class Drive_Control_Red extends OpMode {
         Clawroation();
         RocketBoom();
         //  SampleShoot();
+        //drive2();
         Speices();
 
         // Display telemetry data for debugging and tracking
@@ -177,6 +182,8 @@ public class Drive_Control_Red extends OpMode {
       //  telemetry.addData("Red", redValue);
      //   telemetry.addData("Green", greenValue);
      //   telemetry.addData("Blue", blueValue);
+        telemetry.addData("Rocket Level", SprocketLevelPosition[SprocketLevel]);
+        telemetry.addData("Rocket Position", Rocket.getCurrentPosition());
         telemetry.update();
     }
 
@@ -198,9 +205,9 @@ public class Drive_Control_Red extends OpMode {
 
     // Driving control for mecanum wheels
     public void drivingControl() {
-        double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);  // Calculate magnitude of joystick input
-        double robotAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4;  // Calculate robot's angle
-        double rightX = -gamepad1.right_stick_x;  // Rotation from right stick
+        double r = Math.hypot(gamepad1.right_stick_x, gamepad1.right_stick_y);  // Calculate magnitude of joystick input
+        double robotAngle = Math.atan2(-gamepad1.right_stick_y, gamepad1.right_stick_x) - Math.PI / 4;  // Calculate robot's angle
+        double rightX = -gamepad1.left_stick_x;  // Rotation from right stick
         rotation += 1 * rightX;
 
         // Calculate power for each wheel based on joystick inputs and rotation
@@ -210,21 +217,40 @@ public class Drive_Control_Red extends OpMode {
         final double v4 = r * Math.cos(robotAngle) + rightX;
 
         // Set power to each wheel, adjusting with speed modifier
-        wheelFL.setPower(-v1 * speedMod);
+        wheelFL.setPower(v1 * speedMod);
         wheelFR.setPower(-v2 * speedMod);
         wheelBL.setPower(v3 * speedMod);
-        wheelBR.setPower(v4 * speedMod);
+        wheelBR.setPower(-v4 * speedMod);
     }
+   public void drive2(){
+    // Forward/backward movement controlled by left stick y-axis (negative because y is inverted)
+    double drive = -gamepad1.left_stick_y;  // Forward and backward
+    double strafe = gamepad1.left_stick_x;  // Strafing left and right
+    double rotate = -gamepad1.right_stick_x;  // Rotation from right stick
 
-    //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    // Calculate power for each wheel based on forward/backward, strafing, and rotation
+    final double v1 = drive + strafe + rotate;  // Front-left wheel
+    final double v2 = drive - strafe - rotate;  // Front-right wheel
+    final double v3 = drive - strafe + rotate;  // Back-left wheel
+    final double v4 = drive + strafe - rotate;  // Back-right wheel
+
+    // Set power to each wheel, adjusting with speed modifier
+    wheelFL.setPower(v1 * speedMod);
+    wheelFR.setPower(-v2 * speedMod);
+    wheelBL.setPower(v3 * speedMod);
+    wheelBR.setPower(-v4 * speedMod);
+}
+
+
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     // Method to control the vertical lift mechanism
     public void Verticallift() {
-        if ((gamepad1.dpad_up || gamepad2.dpad_up) && (armLevel < armLevelPosition.length - 1) && (getRuntime() - previousRunTime >= inputDelayInSeconds)) {
+        if ((gamepad2.y) && (armLevel < armLevelPosition.length - 1) && (getRuntime() - previousRunTime >= inputDelayInSeconds)) {
 
             previousRunTime = getRuntime();
             armLevel++;
         }
-       else if ((gamepad1.dpad_down || gamepad2.dpad_down) && (armLevel > 0) && (getRuntime() - previousRunTime >= inputDelayInSeconds)) {
+       else if ((gamepad2.a) && (armLevel > 0) && (getRuntime() - previousRunTime >= inputDelayInSeconds)) {
 
             previousRunTime = getRuntime();
             armLevel--;
@@ -254,51 +280,56 @@ public class Drive_Control_Red extends OpMode {
     // Method to control the rocket motor mechanism
     public void RocketBoom() {
         // Check if the dpad_up button on gamepad2 is pressed
-        if (gamepad2.a) {
-            // Set the rocket motor power to 1 (move forward)
-            Rocket.setPower(0.75);
+        if (gamepad2.dpad_up ) {
+
+            Rocket.setTargetPosition(1110);
+            Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        }
+        if(gamepad2.dpad_left){
+            Rocket.setTargetPosition(750);
+            Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        }
+        if(gamepad2.dpad_right){
+            Rocket.setTargetPosition(180);
             Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
         // Check if the dpad_down button on gamepad2 is pressed
-        else if (gamepad2.y) {
-            // Set the rocket motor power to -1 (move backward)
-            Rocket.setPower(-0.75);
+         if (gamepad2.dpad_down) {
+
+           Rocket.setTargetPosition(0);
             Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
-        // If neither dpad_up nor dpad_down are pressed, stop the motor
-        else {
-            Rocket.setPower(0);
-            Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        }
+
+
+
+        Rocket.setVelocity(750);
     }
 
     // Method to control the claw grip mechanism
     public void ClawGrip() {
         // Check if the left bumper on gamepad2 is pressed
-        if (gamepad2.left_bumper) {
+        if (gamepad2.left_bumper ) {
             // Set the claw servo to move forward
-            Claw.setPosition(1.0);
+            Claw.setPosition(1.0); // Opens the CLaw
         }
         // Check if the right bumper on gamepad2 is pressed
-        else if (gamepad2.right_bumper) {
+        else if ((gamepad2.right_bumper)) {
             // Set the claw servo to move backward
-            Claw.setPosition(-1);
+            Claw.setPosition(0); // Close the Claw
         }
         // If neither bumper is pressed, set the claw to stationary position
-        else {
-            Claw.setPosition(0);
-        }
+
     }
 
     // Method to control the claw rotation mechanism
     public void Clawroation() {
         // Check if the triangle button on gamepad1 is pressed
-        if (gamepad1.triangle) {
+        if (gamepad1.y) {
             // Set the claw rotation to 50% position
             Claw2.setPosition(.50);
         }
         // Check if the square button on gamepad1 is pressed
-        else if (gamepad1.square) {
+        else if (gamepad1.a) {
             // Set the claw rotation to 0% position
             Claw2.setPosition(0);
         }
