@@ -205,9 +205,9 @@ public class Drive_Control_Red extends OpMode {
 
     // Driving control for mecanum wheels
     public void drivingControl() {
-        double r = Math.hypot(gamepad1.right_stick_x, gamepad1.right_stick_y);  // Calculate magnitude of joystick input
+        double r = Math.hypot(-gamepad1.right_stick_x, gamepad1.right_stick_y);  // Calculate magnitude of joystick input
         double robotAngle = Math.atan2(-gamepad1.right_stick_y, gamepad1.right_stick_x) - Math.PI / 4;  // Calculate robot's angle
-        double rightX = -gamepad1.left_stick_x;  // Rotation from right stick
+        double rightX = -gamepad1.left_stick_y;  // Rotation from right stick
         rotation += 1 * rightX;
 
         // Calculate power for each wheel based on joystick inputs and rotation
@@ -310,12 +310,12 @@ public class Drive_Control_Red extends OpMode {
         // Check if the left bumper on gamepad2 is pressed
         if (gamepad2.left_bumper ) {
             // Set the claw servo to move forward
-            Claw.setPosition(1.0); // Opens the CLaw
+            Claw.setPosition(1); // Opens the CLaw
         }
         // Check if the right bumper on gamepad2 is pressed
         else if ((gamepad2.right_bumper)) {
             // Set the claw servo to move backward
-            Claw.setPosition(0); // Close the Claw
+            Claw.setPosition(-0.5); // Close the Claw
         }
         // If neither bumper is pressed, set the claw to stationary position
 
