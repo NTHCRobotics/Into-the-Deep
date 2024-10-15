@@ -280,7 +280,7 @@ public class Drive_Control_Red extends OpMode {
     // Method to control the rocket motor mechanism
     public void RocketBoom() {
         // Check if the dpad_up button on gamepad2 is pressed
-        if (gamepad2.dpad_up ) {
+        if ((gamepad2.dpad_up ) && (armLevel>1)){
 
             Rocket.setTargetPosition(1110);
             Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
