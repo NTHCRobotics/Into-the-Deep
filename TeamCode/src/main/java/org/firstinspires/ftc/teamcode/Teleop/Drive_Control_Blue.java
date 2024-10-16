@@ -55,7 +55,9 @@ public class Drive_Control_Blue extends OpMode {
     final double TRIGGER_THRESHOLD = 0.75;
     private double previousRunTime;
     private double inputDelayInSeconds = .5;
-    private int[] armLevelPosition = {0, 1000, 2000,3000,3270};
+    private int[] armLevelPosition = {0,1200,3270};
+    private int[] SprocketLevelPosition = {0,200,750,1100};
+    private int SprocketLevel;
     private int armLevel;
     //private int blueValue = colorSensor.blue();
     // private int redValue = colorSensor.red();
@@ -110,8 +112,8 @@ public class Drive_Control_Blue extends OpMode {
         viper.setTargetPosition(50);
         viper.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        wheelFL.setDirection(DcMotorSimple.Direction.REVERSE);//REVERSE
-        wheelFR.setDirection(DcMotorSimple.Direction.FORWARD);//FORWARD
+        wheelFL.setDirection(DcMotorSimple.Direction.FORWARD);//REVERSE
+        wheelFR.setDirection(DcMotorSimple.Direction.REVERSE);//FORWARD
         wheelBL.setDirection(DcMotorSimple.Direction.FORWARD);//FORWARD
         wheelBR.setDirection(DcMotorSimple.Direction.REVERSE);//REVERSE
 
@@ -207,10 +209,10 @@ public class Drive_Control_Blue extends OpMode {
         final double v4 = r * Math.cos(robotAngle) + rightX;
 
         // Set power to each wheel, adjusting with speed modifier
-        wheelFL.setPower(-v1 * speedMod);
+        wheelFL.setPower(v1 * speedMod);
         wheelFR.setPower(-v2 * speedMod);
         wheelBL.setPower(v3 * speedMod);
-        wheelBR.setPower(v4 * speedMod);
+        wheelBR.setPower(-v4 * speedMod);
     }
 
     //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -251,35 +253,43 @@ public class Drive_Control_Blue extends OpMode {
     // Method to control the rocket motor mechanism
     public void RocketBoom() {
         // Check if the dpad_up button on gamepad2 is pressed
-        if (gamepad2.a) {
-            // Set the rocket motor power to 1 (move forward)
-            Rocket.setPower(0.75);
+        if ((gamepad2.dpad_up ) && (armLevel>1)){
+
+            Rocket.setTargetPosition(1110);
+            Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        }
+        if(gamepad2.dpad_left){
+            Rocket.setTargetPosition(750);
+            Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        }
+        if(gamepad2.dpad_right){
+            Rocket.setTargetPosition(180);
             Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
         // Check if the dpad_down button on gamepad2 is pressed
-        else if (gamepad2.y) {
-            // Set the rocket motor power to -1 (move backward)
-            Rocket.setPower(-0.75);
+        if (gamepad2.dpad_down) {
+
+            Rocket.setTargetPosition(0);
             Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
-        // If neither dpad_up nor dpad_down are pressed, stop the motor
-        else {
-            Rocket.setPower(0);
-            Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        }
+
+
+
+        Rocket.setVelocity(750);
     }
+
 
     // Method to control the claw grip mechanism
     public void ClawGrip() {
         // Check if the left bumper on gamepad2 is pressed
         if (gamepad2.left_bumper) {
             // Set the claw servo to move forward
-            Claw.setPosition(1.0);
+            Claw.setPosition(0.5);
         }
         // Check if the right bumper on gamepad2 is pressed
         else if (gamepad2.right_bumper) {
             // Set the claw servo to move backward
-            Claw.setPosition(-1);
+            Claw.setPosition(0);
         }
         // If neither bumper is pressed, set the claw to stationary position
         else {
