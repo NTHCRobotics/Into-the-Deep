@@ -56,8 +56,8 @@ public class Drive_Control_Red extends OpMode {
     private double inputDelayInSeconds = .5;
     private int[] armLevelPosition = {0,1200,3270};
     private int[] SprocketLevelPosition = {0,200,750,1100};
-    private int SprocketLevel;
     private int armLevel;
+    private int SprocketLevel;
     //private int blueValue = colorSensor.blue();
    // private int redValue = colorSensor.red();
    // private int greenValue = colorSensor.green();
@@ -164,8 +164,7 @@ public class Drive_Control_Red extends OpMode {
         Clawroation();
         RocketBoom();
         //  SampleShoot();
-        //drive2();
-        Speices();
+
 
         // Display telemetry data for debugging and tracking
         telemetry.addData("Left Trigger Position", gamepad1.left_trigger);
@@ -205,9 +204,9 @@ public class Drive_Control_Red extends OpMode {
 
     // Driving control for mecanum wheels
     public void drivingControl() {
-        double r = Math.hypot(-gamepad1.right_stick_x, gamepad1.right_stick_y);  // Calculate magnitude of joystick input
-        double robotAngle = Math.atan2(-gamepad1.right_stick_y, gamepad1.right_stick_x) - Math.PI / 4;  // Calculate robot's angle
-        double rightX = -gamepad1.left_stick_y;  // Rotation from right stick
+        double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);  // Calculate magnitude of joystick input
+        double robotAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4;  // Calculate robot's angle
+        double rightX = -gamepad1.right_stick_x;  // Rotation from right stick
         rotation += 1 * rightX;
 
         // Calculate power for each wheel based on joystick inputs and rotation
@@ -222,24 +221,7 @@ public class Drive_Control_Red extends OpMode {
         wheelBL.setPower(v3 * speedMod);
         wheelBR.setPower(-v4 * speedMod);
     }
-   public void drive2(){
-    // Forward/backward movement controlled by left stick y-axis (negative because y is inverted)
-    double drive = -gamepad1.left_stick_y;  // Forward and backward
-    double strafe = gamepad1.left_stick_x;  // Strafing left and right
-    double rotate = -gamepad1.right_stick_x;  // Rotation from right stick
 
-    // Calculate power for each wheel based on forward/backward, strafing, and rotation
-    final double v1 = drive + strafe + rotate;  // Front-left wheel
-    final double v2 = drive - strafe - rotate;  // Front-right wheel
-    final double v3 = drive - strafe + rotate;  // Back-left wheel
-    final double v4 = drive + strafe - rotate;  // Back-right wheel
-
-    // Set power to each wheel, adjusting with speed modifier
-    wheelFL.setPower(v1 * speedMod);
-    wheelFR.setPower(-v2 * speedMod);
-    wheelBL.setPower(v3 * speedMod);
-    wheelBR.setPower(-v4 * speedMod);
-}
 
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -294,7 +276,7 @@ public class Drive_Control_Red extends OpMode {
             Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
         // Check if the dpad_down button on gamepad2 is pressed
-         if (gamepad2.dpad_down) {
+         if (gamepad2.dpad_down && (armLevel>1)) {
 
            Rocket.setTargetPosition(0);
             Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -361,10 +343,7 @@ public class Drive_Control_Red extends OpMode {
       //      telemetry.update();
     //    }
     // }
-    public void Speices () {
 
-
-    }
 
 }
 
