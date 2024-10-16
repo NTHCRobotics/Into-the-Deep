@@ -49,8 +49,8 @@ public class    Red_Short extends LinearOpMode {
         wheelBR = hardwareMap.get(DcMotorEx.class, "wheelBR");
 
 
-        wheelFL.setDirection(DcMotorSimple.Direction.REVERSE);//REVERSE
-        wheelFR.setDirection(DcMotorSimple.Direction.FORWARD);//FORWARD
+        wheelFL.setDirection(DcMotorSimple.Direction.FORWARD);//FORWARD
+        wheelFR.setDirection(DcMotorSimple.Direction.REVERSE);//REVERSE
         wheelBL.setDirection(DcMotorSimple.Direction.FORWARD);//FORWARD
         wheelBR.setDirection(DcMotorSimple.Direction.REVERSE);//REVERSE
 
