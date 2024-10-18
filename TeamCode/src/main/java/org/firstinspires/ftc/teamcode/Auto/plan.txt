@@ -1,0 +1,18 @@
+This file is just to outline the plan for Autonomous mode
+
+1) We should be starting with a sample (not specimen) for the following reasons:
+    a) Navigating to the basket, and then to the parking area will be much easier than navigating to the submersible, then to the parking area.
+        (Forward to the baskets, backwards to the observation zone vs forward to the submersible, backwards to original position, 90 degrees turn, move to observation zone)
+    b) It'll be a lot easier to drop a sample in the top basket for 8 points than a specimen on the top rung for 10
+        (Rung is ~1in. diameter, meaning we have 0.5in. margin of error either side, vs 5.5in. w/ 2.75 in. margin of error for the basket.)
+        (I may be wrong, but I don't think the rung can be successful without some kind of vision/distance sensor)
+    c) Math for the rung will be more complex, basket is simpler
+        (For the rung, we'll have to extend the slide above it, then decrease the angle while either retracting the slide, or moving the whole bot. TL;DR, it's going to require trig based on the exact angle of the slide at every given point)
+        (For the basket, we can calculate an angle and distance away that put the sample above the basket, then just release the claw.)
+
+
+
+Start -> Move forward to basket -> Extend viper slide -> Drop sample -> Retract viper slide -> Move backwards to parking -> Chill
+
+If that can't be done in 30 seconds, I don't know what will
+Just put it in park and sip a pina colada ig
