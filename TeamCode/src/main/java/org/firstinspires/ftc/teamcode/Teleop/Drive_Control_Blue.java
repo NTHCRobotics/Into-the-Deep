@@ -110,8 +110,8 @@ public class Drive_Control_Blue extends OpMode {
         viper.setTargetPosition(50);
         viper.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        wheelFL.setDirection(DcMotorSimple.Direction.REVERSE);//REVERSE
-        wheelFR.setDirection(DcMotorSimple.Direction.FORWARD);//FORWARD
+        wheelFL.setDirection(DcMotorSimple.Direction.FORWARD);//REVERSE
+        wheelFR.setDirection(DcMotorSimple.Direction.REVERSE);//FORWARD
         wheelBL.setDirection(DcMotorSimple.Direction.FORWARD);//FORWARD
         wheelBR.setDirection(DcMotorSimple.Direction.REVERSE);//REVERSE
 
@@ -195,9 +195,9 @@ public class Drive_Control_Blue extends OpMode {
 
     // Driving control for mecanum wheels
     public void drivingControl() {
-        double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);  // Calculate magnitude of joystick input
-        double robotAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4;  // Calculate robot's angle
-        double rightX = -gamepad1.right_stick_x;  // Rotation from right stick
+        double r = Math.hypot(-gamepad1.right_stick_x, gamepad1.right_stick_y);  // Calculate magnitude of joystick input
+        double robotAngle = Math.atan2(-gamepad1.right_stick_y, gamepad1.right_stick_x) - Math.PI / 4;  // Calculate robot's angle
+        double rightX = -gamepad1.left_stick_y;  // Rotation from right stick
         rotation += 1 * rightX;
 
         // Calculate power for each wheel based on joystick inputs and rotation
@@ -207,10 +207,10 @@ public class Drive_Control_Blue extends OpMode {
         final double v4 = r * Math.cos(robotAngle) + rightX;
 
         // Set power to each wheel, adjusting with speed modifier
-        wheelFL.setPower(-v1 * speedMod);
+        wheelFL.setPower(v1 * speedMod);
         wheelFR.setPower(-v2 * speedMod);
         wheelBL.setPower(v3 * speedMod);
-        wheelBR.setPower(v4 * speedMod);
+        wheelBR.setPower(-v4 * speedMod);
     }
 
     //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -240,8 +240,7 @@ public class Drive_Control_Blue extends OpMode {
             viper.setVelocity(1000);
             //if statement to set speed only going down
         }
-
-        if (getRuntime() - previousRunTime >= inputDelayInSeconds + .25) {
+    if (getRuntime() - previousRunTime >= inputDelayInSeconds + .25) {
 
         }
         viper.setTargetPosition(armLevelPosition[armLevel]);
@@ -281,10 +280,7 @@ public class Drive_Control_Blue extends OpMode {
             // Set the claw servo to move backward
             Claw.setPosition(-1);
         }
-        // If neither bumper is pressed, set the claw to stationary position
-        else {
-            Claw.setPosition(0);
-        }
+        // If neither bumper is pressed, set the claw to stationary positi
     }
 
     // Method to control the claw rotation mechanism
