@@ -265,7 +265,7 @@ public class Drive_Control_Red extends OpMode {
         // Check if the dpad_up button on gamepad2 is pressed
         if ((gamepad2.dpad_up ) && (armLevel<1)){
 
-            Rocket.setTargetPosition(1050);
+            Rocket.setTargetPosition(900);
             Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
         else if(gamepad2.dpad_left){
