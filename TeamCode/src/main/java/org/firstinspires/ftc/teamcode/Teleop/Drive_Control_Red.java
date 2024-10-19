@@ -54,7 +54,8 @@ public class Drive_Control_Red extends OpMode {
     final double TRIGGER_THRESHOLD = 0.75;
     private double previousRunTime;
     private double inputDelayInSeconds = .5;
-    private int[] armLevelPosition = {0,1200,2200,3270};
+    private int[] armLevelPosition = {0,800,1700,3270};
+    // note 1200 has a postion
     private int[] SprocketLevelPosition = {0,200,750,1100};
     private int SprocketLevel;
     private int armLevel;
@@ -243,10 +244,13 @@ public class Drive_Control_Red extends OpMode {
 
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         //sets to driving level
-        if (gamepad1.x || gamepad2.x) {
+        if ( gamepad2.x) {
             armLevel = 1;
         }
+        if(gamepad1.b){
+            armLevel = 0;
 
+        }
         viper.setVelocity(1000);
         if (armLevel == 1) {
             viper.setVelocity(1000);

@@ -23,7 +23,7 @@ public class Red_Short_By_Time extends LinearOpMode {
     private ElapsedTime  runtime = new ElapsedTime();
 
 
-    static final double  FORWARD_SPEED = 0.6;
+    static final double  FORWARD_SPEED = -0.6;
     static final double     TURN_SPEED    = 0.5;
     @Override
     public void runOpMode() throws InterruptedException {
@@ -40,8 +40,8 @@ public class Red_Short_By_Time extends LinearOpMode {
 
 
 
-        wheelFL.setDirection(DcMotorSimple.Direction.REVERSE);//REVERSE
-        wheelFR.setDirection(DcMotorSimple.Direction.FORWARD);//FORWARD
+        wheelFL.setDirection(DcMotorSimple.Direction.FORWARD);//REVERSE
+        wheelFR.setDirection(DcMotorSimple.Direction.REVERSE);//FORWARD
         wheelBL.setDirection(DcMotorSimple.Direction.FORWARD);//FORWARD
         wheelBR.setDirection(DcMotorSimple.Direction.REVERSE);//REVERSE
 
@@ -62,12 +62,12 @@ public class Red_Short_By_Time extends LinearOpMode {
         wheelBR.setPower(FORWARD_SPEED);
         wheelBL.setPower(FORWARD_SPEED);
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 2.0)) {
+        while (opModeIsActive() && (runtime.seconds() < 1.2)) {
             telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
 
-        while (opModeIsActive()&& (runtime.seconds() < 2.0)){
+        while (opModeIsActive()&& (runtime.seconds() < 1.2)){
 
         }
 

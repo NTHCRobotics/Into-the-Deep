@@ -55,7 +55,7 @@ public class Drive_Control_Blue extends OpMode {
     final double TRIGGER_THRESHOLD = 0.75;
     private double previousRunTime;
     private double inputDelayInSeconds = .5;
-    private int[] armLevelPosition = {0,1200,2200,3270};
+    private int[] armLevelPosition = {0,800,2350,3270};
     private int[] SprocketLevelPosition = {0,200,750,1100};
     private int SprocketLevel;
     private int armLevel;
@@ -243,7 +243,7 @@ public class Drive_Control_Blue extends OpMode {
 
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         //sets to driving level
-        if (gamepad1.x || gamepad2.x) {
+        if ( gamepad2.x) {
             armLevel = 1;
         }
 
@@ -277,7 +277,7 @@ public class Drive_Control_Blue extends OpMode {
             Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
         // Check if the dpad_down button on gamepad2 is pressed
-        else if (gamepad2.dpad_down) {
+        else if ((gamepad2.dpad_down) &&(armLevel>2)) {
 
             Rocket.setTargetPosition(0);
             Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.acmerobotics.dashboard.config.Config;
 
-@Autonomous(name="Robot: Auto Drive By Time", group="Robot")
+@Autonomous(name="Robot: Auto Drive By Time to blue", group="Robot")
 
 @Config
 public class Blue_Short_By_TIme extends LinearOpMode {
@@ -23,7 +23,7 @@ public class Blue_Short_By_TIme extends LinearOpMode {
     private ElapsedTime  runtime = new ElapsedTime();
 
 
-    static final double  FORWARD_SPEED = 0.6;
+    static final double  FORWARD_SPEED = -0.6;
     static final double     TURN_SPEED    = 0.5;
     @Override
     public void runOpMode() throws InterruptedException {
@@ -39,9 +39,8 @@ public class Blue_Short_By_TIme extends LinearOpMode {
         wheelBR.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
 
-
-        wheelFL.setDirection(DcMotorSimple.Direction.REVERSE);//REVERSE
-        wheelFR.setDirection(DcMotorSimple.Direction.FORWARD);//FORWARD
+        wheelFL.setDirection(DcMotorSimple.Direction.FORWARD);//REVERSE
+        wheelFR.setDirection(DcMotorSimple.Direction.REVERSE);//FORWARD
         wheelBL.setDirection(DcMotorSimple.Direction.FORWARD);//FORWARD
         wheelBR.setDirection(DcMotorSimple.Direction.REVERSE);//REVERSE
 
@@ -62,12 +61,12 @@ public class Blue_Short_By_TIme extends LinearOpMode {
         wheelBR.setPower(FORWARD_SPEED);
         wheelBL.setPower(FORWARD_SPEED);
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 2.0)) {
+        while (opModeIsActive() && (runtime.seconds() < 1.2)) {
             telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
 
-        while (opModeIsActive()&& (runtime.seconds() < 2.0)){
+        while (opModeIsActive()&& (runtime.seconds() < 1.2)){
 
         }
 
