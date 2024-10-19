@@ -15,7 +15,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 import java.util.Arrays;
-@TeleOp(name="drivercontrol", group="Monkeys")
+@TeleOp(name="drivercontrolred", group="Monkeys")
 //@Disabled  This way it will run on the robot
 public class Drive_Control_Red extends OpMode {
 
@@ -54,18 +54,18 @@ public class Drive_Control_Red extends OpMode {
     final double TRIGGER_THRESHOLD = 0.75;
     private double previousRunTime;
     private double inputDelayInSeconds = .5;
-    private int[] armLevelPosition = {0,1200,3270};
+    private int[] armLevelPosition = {0,1200,2200,3270};
     private int[] SprocketLevelPosition = {0,200,750,1100};
-    private int armLevel;
     private int SprocketLevel;
+    private int armLevel;
     //private int blueValue = colorSensor.blue();
-   // private int redValue = colorSensor.red();
-   // private int greenValue = colorSensor.green();
-  //  private static final int YELLOW_RED_THRESHOLD = 200;  // Minimum red value for yellow
-   // private static final int YELLOW_GREEN_THRESHOLD = 200; // Minimum green value for yellow
-   // private static final int YELLOW_BLUE_THRESHOLD = 100; // Maximum blue value for yellow
-   // private static final int TARGET_RED_THRESHOLD = 100;  // Minimum red value for scoring color
-  //  private static final int TARGET_BLUE_THRESHOLD = 100; // Minimum blue value for scoring color
+    // private int redValue = colorSensor.red();
+    // private int greenValue = colorSensor.green();
+    //  private static final int YELLOW_RED_THRESHOLD = 200;  // Minimum red value for yellow
+    // private static final int YELLOW_GREEN_THRESHOLD = 200; // Minimum green value for yellow
+    // private static final int YELLOW_BLUE_THRESHOLD = 100; // Maximum blue value for yellow
+    // private static final int TARGET_RED_THRESHOLD = 100;  // Minimum red value for scoring color
+    //  private static final int TARGET_BLUE_THRESHOLD = 100; // Minimum blue value for scoring color
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -159,12 +159,13 @@ public class Drive_Control_Red extends OpMode {
         precisionControl();
         drivingControl();
         Verticallift();
-       // DectectYellow();
+        // DectectYellow();
         ClawGrip();
         Clawroation();
         RocketBoom();
         //  SampleShoot();
-
+        //drive2();
+        Speices();
 
         // Display telemetry data for debugging and tracking
         telemetry.addData("Left Trigger Position", gamepad1.left_trigger);
@@ -178,9 +179,9 @@ public class Drive_Control_Red extends OpMode {
         telemetry.addData("Velocity", viper.getVelocity());
         telemetry.addData("is at target", !viper.isBusy());
         telemetry.addData("Tolerance: ", viper.getTargetPositionTolerance());
-      //  telemetry.addData("Red", redValue);
-     //   telemetry.addData("Green", greenValue);
-     //   telemetry.addData("Blue", blueValue);
+        //  telemetry.addData("Red", redValue);
+        //   telemetry.addData("Green", greenValue);
+        //   telemetry.addData("Blue", blueValue);
         telemetry.addData("Rocket Level", SprocketLevelPosition[SprocketLevel]);
         telemetry.addData("Rocket Position", Rocket.getCurrentPosition());
         telemetry.update();
@@ -204,9 +205,9 @@ public class Drive_Control_Red extends OpMode {
 
     // Driving control for mecanum wheels
     public void drivingControl() {
-        double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);  // Calculate magnitude of joystick input
-        double robotAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4;  // Calculate robot's angle
-        double rightX = -gamepad1.right_stick_x;  // Rotation from right stick
+        double r = Math.hypot(-gamepad1.right_stick_x, -gamepad1.left_stick_x);  // Calculate magnitude of joystick input
+        double robotAngle = Math.atan2(-gamepad1.right_stick_x, -gamepad1.left_stick_x) - Math.PI / 4;  // Calculate robot's angle
+        double rightX = -gamepad1.left_stick_y;  // Move Forward and Move Backwards
         rotation += 1 * rightX;
 
         // Calculate power for each wheel based on joystick inputs and rotation
@@ -224,7 +225,7 @@ public class Drive_Control_Red extends OpMode {
 
 
 
-//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     // Method to control the vertical lift mechanism
     public void Verticallift() {
         if ((gamepad2.y) && (armLevel < armLevelPosition.length - 1) && (getRuntime() - previousRunTime >= inputDelayInSeconds)) {
@@ -232,7 +233,7 @@ public class Drive_Control_Red extends OpMode {
             previousRunTime = getRuntime();
             armLevel++;
         }
-       else if ((gamepad2.a) && (armLevel > 0) && (getRuntime() - previousRunTime >= inputDelayInSeconds)) {
+        else if ((gamepad2.a) && (armLevel > 0) && (getRuntime() - previousRunTime >= inputDelayInSeconds)) {
 
             previousRunTime = getRuntime();
             armLevel--;
@@ -262,23 +263,23 @@ public class Drive_Control_Red extends OpMode {
     // Method to control the rocket motor mechanism
     public void RocketBoom() {
         // Check if the dpad_up button on gamepad2 is pressed
-        if ((gamepad2.dpad_up ) && (armLevel>1)){
+        if ((gamepad2.dpad_up ) && (armLevel<1)){
 
-            Rocket.setTargetPosition(1110);
+            Rocket.setTargetPosition(920);
             Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
-        if(gamepad2.dpad_left){
+        else if(gamepad2.dpad_left){
             Rocket.setTargetPosition(750);
             Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
-        if(gamepad2.dpad_right){
-            Rocket.setTargetPosition(180);
+        else  if(gamepad2.dpad_right){
+            Rocket.setTargetPosition(98);
             Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
         // Check if the dpad_down button on gamepad2 is pressed
-         if (gamepad2.dpad_down && (armLevel>1)) {
+        else if (gamepad2.dpad_down) {
 
-           Rocket.setTargetPosition(0);
+            Rocket.setTargetPosition(0);
             Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
 
@@ -292,12 +293,12 @@ public class Drive_Control_Red extends OpMode {
         // Check if the left bumper on gamepad2 is pressed
         if (gamepad2.left_bumper ) {
             // Set the claw servo to move forward
-            Claw.setPosition(1); // Opens the CLaw
+            Claw.setPosition(0.7); // Opens the CLaw
         }
         // Check if the right bumper on gamepad2 is pressed
         else if ((gamepad2.right_bumper)) {
             // Set the claw servo to move backward
-            Claw.setPosition(-0.5); // Close the Claw
+            Claw.setPosition(0.87); // Close the Claw
         }
         // If neither bumper is pressed, set the claw to stationary position
 
@@ -319,31 +320,34 @@ public class Drive_Control_Red extends OpMode {
 
     // Method to handle sample shooting based on color detection
     // public void SampleShoot() {
-        // Check if the blue value is greater than the threshold
-     //   if (blueValue > TARGET_BLUE_THRESHOLD) {
-            // Set the claw to eject the blue sample
+    // Check if the blue value is greater than the threshold
+    //   if (blueValue > TARGET_BLUE_THRESHOLD) {
+    // Set the claw to eject the blue sample
     //        Claw.setPosition(-1);
     //    }
-        // Check if the blue value is less than the red threshold
-     //   else if (blueValue < TARGET_RED_THRESHOLD) {
-            // Keep the blue sample in the robot
-     //       Claw.setPosition(0);
-     //   }
+    // Check if the blue value is less than the red threshold
+    //   else if (blueValue < TARGET_RED_THRESHOLD) {
+    // Keep the blue sample in the robot
+    //       Claw.setPosition(0);
+    //   }
 
-        // Check if yellow is detected (red and green values are above thresholds and blue is below)
-       // if (redValue > YELLOW_RED_THRESHOLD && greenValue > YELLOW_GREEN_THRESHOLD && blueValue < YELLOW_BLUE_THRESHOLD) {
-            // Display that yellow is detected
-           // telemetry.addData("Status", "Yellow Detected");
-           // telemetry.update();
-            // Keep the yellow sample in the robot
-           // Claw.setPosition(0);
-      //  } else {
-            // Display that no yellow is detected
-      //      telemetry.addData("Status", "No Yellow Detected");
-      //      telemetry.update();
+    // Check if yellow is detected (red and green values are above thresholds and blue is below)
+    // if (redValue > YELLOW_RED_THRESHOLD && greenValue > YELLOW_GREEN_THRESHOLD && blueValue < YELLOW_BLUE_THRESHOLD) {
+    // Display that yellow is detected
+    // telemetry.addData("Status", "Yellow Detected");
+    // telemetry.update();
+    // Keep the yellow sample in the robot
+    // Claw.setPosition(0);
+    //  } else {
+    // Display that no yellow is detected
+    //      telemetry.addData("Status", "No Yellow Detected");
+    //      telemetry.update();
     //    }
     // }
+    public void Speices () {
 
+
+    }
 
 }
 
