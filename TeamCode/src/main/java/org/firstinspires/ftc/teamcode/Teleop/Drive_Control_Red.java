@@ -15,7 +15,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 import java.util.Arrays;
-@TeleOp(name="drivercontrol", group="Monkeys")
+@TeleOp(name="drivercontrolred", group="Monkeys")
 //@Disabled  This way it will run on the robot
 public class Drive_Control_Red extends OpMode {
 
@@ -265,7 +265,7 @@ public class Drive_Control_Red extends OpMode {
         // Check if the dpad_up button on gamepad2 is pressed
         if ((gamepad2.dpad_up ) && (armLevel<1)){
 
-            Rocket.setTargetPosition(900);
+            Rocket.setTargetPosition(920);
             Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
         else if(gamepad2.dpad_left){
