@@ -277,7 +277,7 @@ public class Drive_Control_Monkey extends OpMode {
             Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
         // Check if the dpad_down button on gamepad2 is pressed
-        else if ((gamepad1.dpad_down) &&(armLevel>2)) {
+        else if (gamepad1.dpad_down) {
 
             Rocket.setTargetPosition(0);
             Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
