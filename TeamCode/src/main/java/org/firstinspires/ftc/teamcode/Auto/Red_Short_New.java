@@ -13,12 +13,10 @@ public class Red_Short_New extends LinearOpMode{
     private ElapsedTime runtime = new ElapsedTime();
 
     //Declare/set motors
-    private DcMotorEx wheelFL = hardwareMap.get(DcMotorEx.class, "wheelFL");
-    private DcMotorEx wheelFR;
-    private DcMotorEx wheelBL;
-    private DcMotorEx wheelBR;
-    //List of all motors for ease-of-access
-
+    private final DcMotorEx wheelFL = hardwareMap.get(DcMotorEx.class, "wheelFL");
+    private final DcMotorEx wheelFR = hardwareMap.get(DcMotorEx.class, "wheelFR");
+    private final DcMotorEx wheelBL = hardwareMap.get(DcMotorEx.class, "wheelBL");
+    private final DcMotorEx wheelBR = hardwareMap.get(DcMotorEx.class, "wheelBR");
 
     //TODO: Declare viper slide extension, claw, claw arm rotation
 
@@ -31,14 +29,16 @@ public class Red_Short_New extends LinearOpMode{
     static final double distPerRot = 2.0 * Math.PI * 1.89; // c=(2)(pi)(r), r = 3.78in/2 = 1.89in
     static final double height = 2.0; //Height of viper slide above the ground
     static final double initialX = 0.0; //Initial x position, there will be no variance in y, therefore no variable. Maybe change later :p
-    static final double SPEED = 1.0;
+    static final double SPEED = 0.5;
+
+    static final double FIELDSIZE = 60.0;
 
     @Override
     public void runOpMode() throws InterruptedException{
         waitForStart();
         telemetry.addData("Status", "Ready to run");
         waitForStart();
-        double target = 60.0 - VSLength * Math.cos(VSAngle); //Calculates distance from bucket needed to extend and hit
+        double target = FIELDSIZE - VSLength * Math.cos(VSAngle); //Calculates distance from bucket needed to extend and hit
         move(initialX, target);
     }
 
@@ -66,24 +66,25 @@ public class Red_Short_New extends LinearOpMode{
         }
         setPowerToAllWheels(0);
         //
+        setModeToAllWheels(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
-    public void setModeToAllWheels(DcMotor.RunMode mode){
+    public void setModeToAllWheels(DcMotor.RunMode mode){ //Set certain RunMode to all wheels
         wheelFL.setMode(mode);
         wheelFR.setMode(mode);
         wheelBL.setMode(mode);
-        wheelFR.setMode(mode);
+        wheelBR.setMode(mode);
     }
-    public void setTargetToAllWheels(double target){
+    public void setTargetToAllWheels(double target){ //Set Encoder tick target to all wheels
         wheelFL.setTargetPosition((int) Math.round(target));
         wheelFR.setTargetPosition((int) Math.round(target));
         wheelBL.setTargetPosition((int) Math.round(target));
-        wheelFR.setTargetPosition((int) Math.round(target));
+        wheelBR.setTargetPosition((int) Math.round(target));
     }
-    public void setPowerToAllWheels(double power){
+    public void setPowerToAllWheels(double power){//Set power to all wheels
         wheelFL.setPower(power);
         wheelFR.setPower(power);
         wheelBL.setPower(power);
-        wheelFR.setPower(power);
+        wheelBR.setPower(power);
     }
 }
