@@ -68,18 +68,11 @@ public class    Red_Short extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(11.8, 61.7, Math.toRadians(90)));
-        Action trajectoryAction1;
-        trajectoryAction1 = drive.actionBuilder(drive.pose)
-                .lineToX(45)
+        Pose2d initialPose = new Pose2d(11.8, 61.7, Math.toRadians(90));
+        MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
+        Action trajectoryAction1 = drive.actionBuilder(drive.pose)
+                .splineTo(new Vector2d(52, -62), Math.toRadians(254.48))
                 .build();
-
-
-
-
-
-
-
 
 
 

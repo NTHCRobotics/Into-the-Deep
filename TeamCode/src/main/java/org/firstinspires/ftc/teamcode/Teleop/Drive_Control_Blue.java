@@ -16,7 +16,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 import java.util.Arrays;
-@TeleOp(name="drivercontrolblue", group="Monkeys")
+@TeleOp(name="drivercontrolblue4", group="Monkeys")
 //@Disabled  This way it will run on the robot
 public class Drive_Control_Blue extends OpMode {
     // Declare OpMode members.
@@ -44,6 +44,11 @@ public class Drive_Control_Blue extends OpMode {
     //Servos
     private Servo Claw2; // Second CLaw
     private Servo Claw; // Primary Claw
+    private Servo bucket; // Bucket
+
+
+
+
 
     //Sensors
     private ColorSensor colorSensor; // Color sensor for detecting objects/colors
@@ -55,7 +60,7 @@ public class Drive_Control_Blue extends OpMode {
     final double TRIGGER_THRESHOLD = 0.75;
     private double previousRunTime;
     private double inputDelayInSeconds = .5;
-    private int[] armLevelPosition = {0,800,2350,3270};
+    private int[] armLevelPosition = {0,2350,4397};
     private int[] SprocketLevelPosition = {0,200,750,1100};
     private int SprocketLevel;
     private int armLevel;
@@ -94,6 +99,7 @@ public class Drive_Control_Blue extends OpMode {
         //------------SERVOS////
         Claw = hardwareMap.get(Servo.class, "Claw");
         Claw2 = hardwareMap.get(Servo.class, "Claw2");
+        bucket = hardwareMap.get(Servo.class, "bucket");
 
         //Motor Encoders
         //Wheels
@@ -113,10 +119,12 @@ public class Drive_Control_Blue extends OpMode {
         viper.setDirection(DcMotorSimple.Direction.REVERSE);
 
         //Sprocket Encoder
-        Rocket.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        Rocket.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        Rocket.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        Rocket.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
         Rocket.setTargetPosition(0);
-
+        Rocket.setTargetPositionTolerance(50);
+        Rocket.setDirection(DcMotorSimple.Direction.REVERSE);
+       // Rocket.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         //Wheel Direction
         wheelFL.setDirection(DcMotorSimple.Direction.FORWARD);//REVERSE
         wheelFR.setDirection(DcMotorSimple.Direction.REVERSE);//FORWARD
@@ -164,6 +172,7 @@ public class Drive_Control_Blue extends OpMode {
         ClawGrip();
         Clawroation();
         RocketBoom();
+        Bucket();
         //  SampleShoot();
 
 
@@ -184,6 +193,9 @@ public class Drive_Control_Blue extends OpMode {
         //   telemetry.addData("Blue", blueValue);
         telemetry.addData("Rocket Level", SprocketLevelPosition[SprocketLevel]);
         telemetry.addData("Rocket Position", Rocket.getCurrentPosition());
+        telemetry.addData("Rocket Velocity", Rocket.getVelocity());
+        telemetry.addData("Rocket is at target", !Rocket.isBusy());
+
         telemetry.update();
     }
 
@@ -244,7 +256,7 @@ public class Drive_Control_Blue extends OpMode {
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         //sets to driving level
         if ( gamepad2.x) {
-            armLevel = 1;
+            armLevel = 0;
         }
 
         viper.setVelocity(1000);
@@ -262,30 +274,18 @@ public class Drive_Control_Blue extends OpMode {
 
     // Method to control the rocket motor mechanism
     public void RocketBoom() {
-        // Check if the dpad_up button on gamepad2 is pressed
-        if ((gamepad2.dpad_up ) && (armLevel<1)){
 
-            Rocket.setTargetPosition(920);
-            Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        }
-        else if(gamepad2.dpad_left){
-            Rocket.setTargetPosition(750);
-            Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        }
-        else  if(gamepad2.dpad_right){
-            Rocket.setTargetPosition(98);
-            Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        }
-        // Check if the dpad_down button on gamepad2 is pressed
-        else if ((gamepad2.dpad_down) &&(armLevel>2)) {
+        Rocket.setVelocity(50);
+        if (gamepad2.dpad_up ) {
 
+        Rocket.setTargetPosition(30);
+        }
+        if (gamepad2.dpad_down) {
             Rocket.setTargetPosition(0);
-            Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
 
 
 
-        Rocket.setVelocity(750);
     }
 
     // Method to control the claw grip mechanism
@@ -309,14 +309,24 @@ public class Drive_Control_Blue extends OpMode {
         // Check if the triangle button on gamepad1 is pressed
         if (gamepad1.y) {
             // Set the claw rotation to 50% position
-            Claw2.setPosition(.50);
+            Claw2.setPosition(1);
         }
         // Check if the square button on gamepad1 is pressed
         else if (gamepad1.a) {
             // Set the claw rotation to 0% position
-            Claw2.setPosition(0);
+            Claw2.setPosition(0.7);
         }
     }
+
+    public void Bucket(){
+         if (gamepad1.left_bumper) {
+             bucket.setPosition(0.7);
+         }
+         else if (gamepad1.right_bumper){
+             bucket.setPosition(0);
+         }
+        }
+
 
     public void SampleRedshoot(){
        // if(redValue > TARGET_RED_THRESHOLD){ // checks if the red value is greater than the threshold
