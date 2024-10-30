@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode.Teleop;
-
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -16,9 +16,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 import java.util.Arrays;
-@TeleOp(name="drivercontrolblue13", group="Monkeys")
+@TeleOp(name="drivercontrolaxolotl", group="Axolotls")
 //@Disabled  This way it will run on the robot
-public class Drive_Control_Blue extends OpMode {
+public class Drive_Control_New extends OpMode {
     // Declare OpMode members.
     // Timer for tracking the runtime of the robot's operation.
     private final ElapsedTime runtime = new ElapsedTime();  //timer
@@ -42,12 +42,8 @@ public class Drive_Control_Blue extends OpMode {
     private DcMotorEx Rocket; // Motor for rotate the Vertical lift
 
     //Servos
-    private Servo Claw2; // Second CLaw
-    private Servo Claw; // Primary Claw
-    private Servo bucket; // Bucket
-
-
-
+    private CRServo intake; // intake
+    private Servo wrist; // wrist
 
 
     //Sensors
@@ -60,10 +56,42 @@ public class Drive_Control_Blue extends OpMode {
     final double TRIGGER_THRESHOLD = 0.75;
     private double previousRunTime;
     private double inputDelayInSeconds = .5;
-    private int[] armLevelPosition = {0,2350,3000};
-    private int[] SprocketLevelPosition = {0,200,750,1100};
+    private int[] armLevelPosition = {0, 2350, 3000};
+    private int[] SprocketLevelPosition = {0, 200, 750, 1100};
     private int SprocketLevel;
     private int armLevel;
+
+
+    final double ARM_TICKS_PER_DEGREE =
+            28 // number of encoder ticks per rotation of the bare motor
+                    * 250047.0 / 4913.0 // This is the exact gear ratio of the 50.9:1 Yellow Jacket gearbox
+                    * 100.0 / 20.0 // This is the external gear reduction, a 20T pinion gear that drives a 100T hub-mount gear
+                    * 1 / 360.0; // we want ticks per degree, not per rotation
+
+    final double ARM_COLLAPSED_INTO_ROBOT = 0;
+    final double ARM_COLLECT = 250 * ARM_TICKS_PER_DEGREE;
+    final double ARM_CLEAR_BARRIER = 230 * ARM_TICKS_PER_DEGREE;
+    final double ARM_SCORE_SPECIMEN = 160 * ARM_TICKS_PER_DEGREE;
+    final double ARM_SCORE_SAMPLE_IN_LOW = 160 * ARM_TICKS_PER_DEGREE;
+    final double ARM_ATTACH_HANGING_HOOK = 120 * ARM_TICKS_PER_DEGREE;
+    final double ARM_WINCH_ROBOT = 15 * ARM_TICKS_PER_DEGREE;
+
+    /* Variables to store the speed the intake servo should be set at to intake, and deposit game elements. */
+    final double INTAKE_COLLECT = -1.0;
+    final double INTAKE_OFF = 0.0;
+    final double INTAKE_DEPOSIT = 0.5;
+
+    /* Variables to store the positions that the wrist should be set to when folding in, or folding out. */
+    final double WRIST_FOLDED_IN = 0.8333;
+    final double WRIST_FOLDED_OUT = 0.5;
+
+    /* A number in degrees that the triggers can adjust the arm position by */
+    final double FUDGE_FACTOR = 15 * ARM_TICKS_PER_DEGREE;
+
+    /* Variables that are used to set the arm to a specific position */
+    double armPosition = (int) ARM_COLLAPSED_INTO_ROBOT;
+    double armPositionFudgeFactor;
+
     //private int blueValue = colorSensor.blue();
     // private int redValue = colorSensor.red();
     // private int greenValue = colorSensor.green();
@@ -97,10 +125,8 @@ public class Drive_Control_Blue extends OpMode {
 
 
         //------------SERVOS////
-        Claw = hardwareMap.get(Servo.class, "Claw");
-        Claw2 = hardwareMap.get(Servo.class, "Claw2");
-        bucket = hardwareMap.get(Servo.class, "bucket");
-
+        intake = hardwareMap.get(CRServo.class, "intake");
+        wrist = hardwareMap.get(Servo.class, "wrist");
         //Motor Encoders
         //Wheels
 
@@ -124,11 +150,7 @@ public class Drive_Control_Blue extends OpMode {
         Rocket.setTargetPosition(0);
 
 
-
-
-
-
-       // Rocket.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        // Rocket.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         //Wheel Direction
         wheelFL.setDirection(DcMotorSimple.Direction.FORWARD);//REVERSE
         wheelFR.setDirection(DcMotorSimple.Direction.REVERSE);//FORWARD
@@ -173,9 +195,8 @@ public class Drive_Control_Blue extends OpMode {
         drivingControl();
         Verticallift();
         // DectectYellow();
-        ClawGrip();
-        Clawroation();
         RocketBoom();
+        IntakeCommands();
         //Bucket();
         //  SampleShoot();
 
@@ -202,7 +223,6 @@ public class Drive_Control_Blue extends OpMode {
 
         telemetry.update();
     }
-
 
 
     // Adjust speed for precision control based on trigger inputs
@@ -240,19 +260,17 @@ public class Drive_Control_Blue extends OpMode {
     }
 
 
-
-
     //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     // Method to control the vertical lift mechanism
     public void Verticallift() {
         if (gamepad2.y) {
 
-            armLevel = 1 ;
+            armLevel = 1;
         }
 
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         //sets to driving level
-        if ( gamepad2.x) {
+        if (gamepad2.x) {
             armLevel = 0;
         }
 
@@ -272,98 +290,84 @@ public class Drive_Control_Blue extends OpMode {
     // Method to control the rocket motor mechanism
     public void RocketBoom() {
         Rocket.setPower(-0.2);
-        if (gamepad2.dpad_up ) {
+        if (gamepad2.dpad_up) {
             Rocket.setTargetPosition(20);
-         Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
-        }
-       else if (gamepad2.dpad_down) {
-          //  Rocket.setTargetPosition(0);
+        } else if (gamepad2.dpad_down) {
+            //  Rocket.setTargetPosition(0);
             Rocket.setTargetPosition(10);
             Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        } else {
+            Rocket.setTargetPosition(0);
         }
-       else{
-           Rocket.setTargetPosition(0);
-        }
-
-
-
 
 
     }
 
-    // Method to control the claw grip mechanism
-    public void ClawGrip() {
-        // Check if the left bumper on gamepad2 is pressed
-        if (gamepad2.left_bumper ) {
-            // Set the claw servo to move forward
-            Claw.setPosition(0.7); // Opens the CLaw
-        }
-        // Check if the right bumper on gamepad2 is pressed
-        else if ((gamepad2.right_bumper)) {
-            // Set the claw servo to move backward
-            Claw.setPosition(0.87); // Close the Claw
-        }
-        // If neither bumper is pressed, set the claw to stationary position
+    public void IntakeCommands() {
 
-    }
-
-    // Method to control the claw rotation mechanism
-    public void Clawroation() {
-        // Check if the triangle button on gamepad1 is pressed
-        if (gamepad1.y) {
-            // Set the claw rotation to 50% position
-            Claw2.setPosition(1);
-        }
-        // Check if the square button on gamepad1 is pressed
-        else if (gamepad1.a) {
-            // Set the claw rotation to 0% position
-            Claw2.setPosition(0.7);
+        if (gamepad1.a) {
+            intake.setPower(INTAKE_COLLECT);
+        } else if (gamepad1.x) {
+            intake.setPower(INTAKE_OFF);
+        } else if (gamepad1.b) {
+            intake.setPower(INTAKE_DEPOSIT);
         }
     }
+    public void ScoringCommands2() {
 
- //   public void Bucket(){
-  //       if (gamepad1.left_bumper) {
-    //         bucket.setPosition(0.7);
-      //   }
-       //  else if (gamepad1.right_bumper){
-          //   bucket.setPosition(0);
-         //}
-        //}
+            if(gamepad1.right_bumper){
+                /* This is the intaking/collecting arm position */
+                armPosition = ARM_COLLECT;
+                wrist.setPosition(WRIST_FOLDED_OUT);
+                intake.setPower(INTAKE_COLLECT);
+            }
+
+            else if (gamepad1.left_bumper){
+                    /* This is about 20° up from the collecting position to clear the barrier
+                    Note here that we don't set the wrist position or the intake power when we
+                    select this "mode", this means that the intake and wrist will continue what
+                    they were doing before we clicked left bumper. */
+                armPosition = ARM_CLEAR_BARRIER;
+            }
+
+            else if (gamepad1.y){
+                /* This is the correct height to score the sample in the LOW BASKET */
+                armPosition = ARM_SCORE_SAMPLE_IN_LOW;
+            }
+
+            else if (gamepad1.dpad_left) {
+                    /* This turns off the intake, folds in the wrist, and moves the arm
+                    back to folded inside the robot. This is also the starting configuration */
+                armPosition = ARM_COLLAPSED_INTO_ROBOT;
+                intake.setPower(INTAKE_OFF);
+                wrist.setPosition(WRIST_FOLDED_IN);
+            }
+
+            else if (gamepad1.dpad_right){
+                /* This is the correct height to score SPECIMEN on the HIGH CHAMBER */
+                armPosition = ARM_SCORE_SPECIMEN;
+                wrist.setPosition(WRIST_FOLDED_IN);
+            }
+
+            else if (gamepad1.dpad_up){
+                /* This sets the arm to vertical to hook onto the LOW RUNG for hanging */
+                armPosition = ARM_ATTACH_HANGING_HOOK;
+                intake.setPower(INTAKE_OFF);
+                wrist.setPosition(WRIST_FOLDED_IN);
+            }
+
+            else if (gamepad1.dpad_down){
+                /* this moves the arm down to lift the robot up once it has been hooked */
+                armPosition = ARM_WINCH_ROBOT;
+                intake.setPower(INTAKE_OFF);
+                wrist.setPosition(WRIST_FOLDED_IN);
+            }
 
 
-    public void SampleRedshoot(){
-       // if(redValue > TARGET_RED_THRESHOLD){ // checks if the red value is greater than the threshold
-      //      Claw.setPosition(-1); // sets the claw position to -1 if the red value is greater than the threshold
-      //  }else if(redValue < TARGET_BLUE_THRESHOLD) {
-            //Claw.setPosition(0);
-    //    }
-     //   if (redValue > YELLOW_RED_THRESHOLD && greenValue > YELLOW_GREEN_THRESHOLD && blueValue < YELLOW_BLUE_THRESHOLD) {
-            // Yellow object detected
-      //      telemetry.addData("Status", "Yellow Detected");
-       //     telemetry.update();
-      //      Claw.setPosition(0); // Keeps the yellow sample in the robot
-      //  } else {
-            // No yellow object detected
-           // telemetry.addData("Status", "No Yellow Detected");
-          //  telemetry.update();
         }
 
-    }
-
-
-
-
-
-/*
- * Code to run ONCE after the driver hits STOP
- */
-
-/*
- * Code to run ONCE after the driver hits STOP
- */
-
-
-//@Override
+}
