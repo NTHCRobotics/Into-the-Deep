@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 //NOTE: All units in inches/feet! (We're American here)
 public class Red_Short_New extends LinearOpMode{
 
-    //Declare runtimer
+    //Declare run timer
     private ElapsedTime runtime = new ElapsedTime();
 
     //Declare/set motors
