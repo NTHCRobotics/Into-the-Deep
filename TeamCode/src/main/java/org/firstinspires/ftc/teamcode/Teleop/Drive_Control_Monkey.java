@@ -16,7 +16,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 import java.util.Arrays;
-@TeleOp(name="drivercontrolmonkey", group="Monkeys")
+@TeleOp(name="drivercontrolaxoltl2", group="Monkeys")
 //@Disabled  This way it will run on the robot
 public class Drive_Control_Monkey extends OpMode {
     // Declare OpMode members.
@@ -93,7 +93,7 @@ public class Drive_Control_Monkey extends OpMode {
 
         //------------SERVOS////
         Claw = hardwareMap.get(Servo.class, "Claw");
-        Claw2 = hardwareMap.get(Servo.class, "Claw2");
+        //Claw2 = hardwareMap.get(Servo.class, "Claw2");
 
         //Motor Encoders
         //Wheels

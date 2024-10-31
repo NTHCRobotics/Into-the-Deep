@@ -16,7 +16,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 import java.util.Arrays;
-@TeleOp(name="drivercontrolaxolotl", group="Axolotls")
+@TeleOp(name="drivercontrol", group="Axolotls")
 //@Disabled  This way it will run on the robot
 public class Drive_Control_New extends OpMode {
     // Declare OpMode members.
