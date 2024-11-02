@@ -16,7 +16,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 import java.util.Arrays;
-@TeleOp(name="drivercontrolblue13", group="Monkeys")
+@TeleOp(name="drivercontrolblue", group="Monkeys")
 //@Disabled  This way it will run on the robot
 public class Drive_Control_Blue extends OpMode {
     // Declare OpMode members.
@@ -44,11 +44,6 @@ public class Drive_Control_Blue extends OpMode {
     //Servos
     private Servo Claw2; // Second CLaw
     private Servo Claw; // Primary Claw
-    private Servo bucket; // Bucket
-
-
-
-
 
     //Sensors
     private ColorSensor colorSensor; // Color sensor for detecting objects/colors
@@ -60,7 +55,7 @@ public class Drive_Control_Blue extends OpMode {
     final double TRIGGER_THRESHOLD = 0.75;
     private double previousRunTime;
     private double inputDelayInSeconds = .5;
-    private int[] armLevelPosition = {0,2350,3000};
+    private int[] armLevelPosition = {0,975,1700,2255,};
     private int[] SprocketLevelPosition = {0,200,750,1100};
     private int SprocketLevel;
     private int armLevel;
@@ -97,9 +92,8 @@ public class Drive_Control_Blue extends OpMode {
 
 
         //------------SERVOS////
-        Claw = hardwareMap.get(Servo.class, "Claw");
-        Claw2 = hardwareMap.get(Servo.class, "Claw2");
-        bucket = hardwareMap.get(Servo.class, "bucket");
+        Claw = hardwareMap.get(Servo.class, "claw");
+        //Claw2 = hardwareMap.get(Servo.class, "Claw2");
 
         //Motor Encoders
         //Wheels
@@ -113,27 +107,22 @@ public class Drive_Control_Blue extends OpMode {
         // Viper Encoder
         viper.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         viper.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        viper.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        viper.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         viper.setTargetPositionTolerance(50);
         viper.setTargetPosition(50);
         viper.setDirection(DcMotorSimple.Direction.REVERSE);
 
         //Sprocket Encoder
         Rocket.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        Rocket.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        Rocket.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        Rocket.setDirection(DcMotorSimple.Direction.REVERSE);
         Rocket.setTargetPosition(0);
 
-
-
-
-
-
-       // Rocket.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         //Wheel Direction
-        wheelFL.setDirection(DcMotorSimple.Direction.FORWARD);//REVERSE
-        wheelFR.setDirection(DcMotorSimple.Direction.REVERSE);//FORWARD
-        wheelBL.setDirection(DcMotorSimple.Direction.FORWARD);//FORWARD
-        wheelBR.setDirection(DcMotorSimple.Direction.REVERSE);//REVERSE
+        wheelFL.setDirection(DcMotorSimple.Direction.REVERSE);//REVERSE
+        wheelFR.setDirection(DcMotorSimple.Direction.FORWARD);//FORWARD
+        wheelBL.setDirection(DcMotorSimple.Direction.REVERSE);//FORWARD
+        wheelBR.setDirection(DcMotorSimple.Direction.FORWARD);//REVERSE
 
         //Sensors
         //colorSensor = hardwareMap.get(ColorSensor.class, "colorSensor");
@@ -174,9 +163,8 @@ public class Drive_Control_Blue extends OpMode {
         Verticallift();
         // DectectYellow();
         ClawGrip();
-        Clawroation();
+
         RocketBoom();
-        //Bucket();
         //  SampleShoot();
 
 
@@ -197,9 +185,6 @@ public class Drive_Control_Blue extends OpMode {
         //   telemetry.addData("Blue", blueValue);
         telemetry.addData("Rocket Level", SprocketLevelPosition[SprocketLevel]);
         telemetry.addData("Rocket Position", Rocket.getCurrentPosition());
-        telemetry.addData("Rocket Velocity", Rocket.getVelocity());
-        telemetry.addData("Rocket is at target", !Rocket.isBusy());
-
         telemetry.update();
     }
 
@@ -219,7 +204,6 @@ public class Drive_Control_Blue extends OpMode {
         }
     }
 
-    // Driving control for mecanum wheels
     public void drivingControl() {
         double r = Math.hypot(-gamepad1.right_stick_x, -gamepad1.left_stick_x);  // Calculate magnitude of joystick input
         double robotAngle = Math.atan2(-gamepad1.right_stick_x, -gamepad1.left_stick_x) - Math.PI / 4;  // Calculate robot's angle
@@ -241,19 +225,28 @@ public class Drive_Control_Blue extends OpMode {
 
 
 
-
     //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     // Method to control the vertical lift mechanism
     public void Verticallift() {
-        if (gamepad2.y) {
+        if ((gamepad2.y) && (armLevel < armLevelPosition.length - 1) && (getRuntime() - previousRunTime >= inputDelayInSeconds)) {
 
-            armLevel = 1 ;
+            armLevel = 3;
+        }
+        else if ((gamepad2.a) && (armLevel > 0) && (getRuntime() - previousRunTime >= inputDelayInSeconds)) {
+
+            armLevel = 0;
+
+
+        }
+        else  if (gamepad2.b){
+            armLevel = 2;
         }
 
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         //sets to driving level
         if ( gamepad2.x) {
-            armLevel = 0;
+            armLevel = 1;
+
         }
 
         viper.setVelocity(1000);
@@ -271,27 +264,30 @@ public class Drive_Control_Blue extends OpMode {
 
     // Method to control the rocket motor mechanism
     public void RocketBoom() {
-        Rocket.setPower(-0.2);
+        // Check if the dpad_up button on gamepad2 is pressed
         if (gamepad2.dpad_up ) {
-            Rocket.setTargetPosition(20);
-         Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-
-        }
-       else if (gamepad2.dpad_down) {
-          //  Rocket.setTargetPosition(0);
-            Rocket.setTargetPosition(10);
+            Rocket.setTargetPosition(920);
             Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
         }
-       else{
-           Rocket.setTargetPosition(0);
+        else if(gamepad2.dpad_left){
+            Rocket.setTargetPosition(800);
+            Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        }
+        else  if(gamepad2.dpad_right){
+            Rocket.setTargetPosition(98);
+            Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        }
+        // Check if the dpad_down button on gamepad2 is pressed
+        else if (gamepad2.dpad_down) {
+
+            Rocket.setTargetPosition(0);
+            Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
 
 
 
-
-
+        Rocket.setVelocity(600);
     }
 
     // Method to control the claw grip mechanism
@@ -299,59 +295,39 @@ public class Drive_Control_Blue extends OpMode {
         // Check if the left bumper on gamepad2 is pressed
         if (gamepad2.left_bumper ) {
             // Set the claw servo to move forward
-            Claw.setPosition(0.7); // Opens the CLaw
+            Claw.setPosition(0.2);// Opens the CLaw
         }
         // Check if the right bumper on gamepad2 is pressed
         else if ((gamepad2.right_bumper)) {
             // Set the claw servo to move backward
-            Claw.setPosition(0.87); // Close the Claw
+            Claw.setPosition(0); // Close the Claw
         }
         // If neither bumper is pressed, set the claw to stationary position
 
     }
 
     // Method to control the claw rotation mechanism
-    public void Clawroation() {
-        // Check if the triangle button on gamepad1 is pressed
-        if (gamepad1.y) {
-            // Set the claw rotation to 50% position
-            Claw2.setPosition(1);
-        }
-        // Check if the square button on gamepad1 is pressed
-        else if (gamepad1.a) {
-            // Set the claw rotation to 0% position
-            Claw2.setPosition(0.7);
-        }
-    }
 
- //   public void Bucket(){
-  //       if (gamepad1.left_bumper) {
-    //         bucket.setPosition(0.7);
-      //   }
-       //  else if (gamepad1.right_bumper){
-          //   bucket.setPosition(0);
-         //}
-        //}
 
 
     public void SampleRedshoot(){
-       // if(redValue > TARGET_RED_THRESHOLD){ // checks if the red value is greater than the threshold
-      //      Claw.setPosition(-1); // sets the claw position to -1 if the red value is greater than the threshold
-      //  }else if(redValue < TARGET_BLUE_THRESHOLD) {
-            //Claw.setPosition(0);
-    //    }
-     //   if (redValue > YELLOW_RED_THRESHOLD && greenValue > YELLOW_GREEN_THRESHOLD && blueValue < YELLOW_BLUE_THRESHOLD) {
-            // Yellow object detected
-      //      telemetry.addData("Status", "Yellow Detected");
-       //     telemetry.update();
-      //      Claw.setPosition(0); // Keeps the yellow sample in the robot
-      //  } else {
-            // No yellow object detected
-           // telemetry.addData("Status", "No Yellow Detected");
-          //  telemetry.update();
-        }
-
+        // if(redValue > TARGET_RED_THRESHOLD){ // checks if the red value is greater than the threshold
+        //      Claw.setPosition(-1); // sets the claw position to -1 if the red value is greater than the threshold
+        //  }else if(redValue < TARGET_BLUE_THRESHOLD) {
+        //Claw.setPosition(0);
+        //    }
+        //   if (redValue > YELLOW_RED_THRESHOLD && greenValue > YELLOW_GREEN_THRESHOLD && blueValue < YELLOW_BLUE_THRESHOLD) {
+        // Yellow object detected
+        //      telemetry.addData("Status", "Yellow Detected");
+        //     telemetry.update();
+        //      Claw.setPosition(0); // Keeps the yellow sample in the robot
+        //  } else {
+        // No yellow object detected
+        // telemetry.addData("Status", "No Yellow Detected");
+        //  telemetry.update();
     }
+
+}
 
 
 
