@@ -16,7 +16,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 import java.util.Arrays;
-@TeleOp(name="drivercontrolaxoltl2", group="Monkeys")
+@TeleOp(name="drivercontrolaxoltl4", group="Monkeys")
 //@Disabled  This way it will run on the robot
 public class Drive_Control_Monkey extends OpMode {
     // Declare OpMode members.
@@ -55,7 +55,7 @@ public class Drive_Control_Monkey extends OpMode {
     final double TRIGGER_THRESHOLD = 0.75;
     private double previousRunTime;
     private double inputDelayInSeconds = .5;
-    private int[] armLevelPosition = {0,800,2350,3270};
+    private int[] armLevelPosition = {0,975,1700,2255,};
     private int[] SprocketLevelPosition = {0,200,750,1100};
     private int SprocketLevel;
     private int armLevel;
@@ -92,7 +92,7 @@ public class Drive_Control_Monkey extends OpMode {
 
 
         //------------SERVOS////
-        Claw = hardwareMap.get(Servo.class, "Claw");
+        Claw = hardwareMap.get(Servo.class, "claw");
         //Claw2 = hardwareMap.get(Servo.class, "Claw2");
 
         //Motor Encoders
@@ -115,6 +115,7 @@ public class Drive_Control_Monkey extends OpMode {
         //Sprocket Encoder
         Rocket.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         Rocket.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        Rocket.setDirection(DcMotorSimple.Direction.REVERSE);
         Rocket.setTargetPosition(0);
 
         //Wheel Direction
@@ -162,7 +163,7 @@ public class Drive_Control_Monkey extends OpMode {
         Verticallift();
         // DectectYellow();
         ClawGrip();
-        Clawroation();
+
         RocketBoom();
         //  SampleShoot();
 
@@ -230,21 +231,23 @@ public class Drive_Control_Monkey extends OpMode {
     public void Verticallift() {
         if ((gamepad1.y) && (armLevel < armLevelPosition.length - 1) && (getRuntime() - previousRunTime >= inputDelayInSeconds)) {
 
-            previousRunTime = getRuntime();
-            armLevel++;
+            armLevel = 3;
         }
         else if ((gamepad1.a) && (armLevel > 0) && (getRuntime() - previousRunTime >= inputDelayInSeconds)) {
 
-            previousRunTime = getRuntime();
-            armLevel--;
+          armLevel = 0;
 
 
+        }
+        else  if (gamepad1.b){
+            armLevel = 2;
         }
 
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         //sets to driving level
         if ( gamepad1.x) {
             armLevel = 1;
+
         }
 
         viper.setVelocity(1000);
@@ -263,21 +266,21 @@ public class Drive_Control_Monkey extends OpMode {
     // Method to control the rocket motor mechanism
     public void RocketBoom() {
         // Check if the dpad_up button on gamepad2 is pressed
-        if ((gamepad1.dpad_up ) && (armLevel<1)){
+        if (gamepad2.dpad_up ) {
 
             Rocket.setTargetPosition(920);
             Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
-        else if(gamepad1.dpad_left){
-            Rocket.setTargetPosition(750);
+        else if(gamepad2.dpad_left){
+            Rocket.setTargetPosition(800);
             Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
-        else  if(gamepad1.dpad_right){
+        else  if(gamepad2.dpad_right){
             Rocket.setTargetPosition(98);
             Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
         // Check if the dpad_down button on gamepad2 is pressed
-        else if (gamepad1.dpad_down) {
+        else if (gamepad2.dpad_down) {
 
             Rocket.setTargetPosition(0);
             Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -291,32 +294,22 @@ public class Drive_Control_Monkey extends OpMode {
     // Method to control the claw grip mechanism
     public void ClawGrip() {
         // Check if the left bumper on gamepad2 is pressed
-        if (gamepad1.left_bumper ) {
+        if (gamepad2.left_bumper ) {
             // Set the claw servo to move forward
-            Claw.setPosition(0.7); // Opens the CLaw
+            Claw.setPosition(0.5); // Opens the CLaw
         }
         // Check if the right bumper on gamepad2 is pressed
-        else if ((gamepad1.right_bumper)) {
+        else if ((gamepad2.right_bumper)) {
             // Set the claw servo to move backward
-            Claw.setPosition(0.87); // Close the Claw
+            Claw.setPosition(-0.1); // Close the Claw
         }
         // If neither bumper is pressed, set the claw to stationary position
 
     }
 
     // Method to control the claw rotation mechanism
-    public void Clawroation() {
-        // Check if the triangle button on gamepad1 is pressed
-        if (gamepad2.y) {
-            // Set the claw rotation to 50% position
-            Claw2.setPosition(.50);
-        }
-        // Check if the square button on gamepad1 is pressed
-        else if (gamepad2.a) {
-            // Set the claw rotation to 0% position
-            Claw2.setPosition(0);
-        }
-    }
+
+
 
     public void SampleRedshoot(){
         // if(redValue > TARGET_RED_THRESHOLD){ // checks if the red value is greater than the threshold
