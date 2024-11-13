@@ -33,7 +33,7 @@ public class    Red_Short extends LinearOpMode {
     private DcMotorEx wheelFR;
     private DcMotorEx wheelBL;
     private DcMotorEx wheelBR;
-
+    private  Servo Claw;
     private ElapsedTime runtime = new ElapsedTime();
 
 
@@ -48,6 +48,8 @@ public class    Red_Short extends LinearOpMode {
         wheelBL = hardwareMap.get(DcMotorEx.class, "wheelBL");
         wheelBR = hardwareMap.get(DcMotorEx.class, "wheelBR");
 
+        //Servos
+        Claw = hardwareMap.get(Servo.class, "Claw");
 
         wheelFL.setDirection(DcMotorSimple.Direction.FORWARD);//FORWARD
         wheelFR.setDirection(DcMotorSimple.Direction.REVERSE);//REVERSE
