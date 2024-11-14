@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.Auto;
 
 
 
+import androidx.annotation.NonNull;
+
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 // RR-specific imports
@@ -34,13 +36,42 @@ public class    Blue_Long extends LinearOpMode {
     private DcMotorEx wheelFR;
     private DcMotorEx wheelBL;
     private DcMotorEx wheelBR;
-
+    private DcMotorEx viper;
+    private Servo claw;
     private ElapsedTime runtime = new ElapsedTime();
 
 
     static final double FORWARD_SPEED = 0.6;
     static final double TURN_SPEED = 0.5;
+    public class Claw {
+        private Servo claw;
 
+        public Claw(HardwareMap hardwareMap) {
+            claw = hardwareMap.get(Servo.class, "claw");
+        }
+
+        public class CloseClaw implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                claw.setPosition(0.55);
+                return false;
+            }
+        }
+        public Action closeClaw() {
+            return new CloseClaw();
+        }
+
+        public class OpenClaw implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                claw.setPosition(1.0);
+                return false;
+            }
+        }
+        public Action openClaw() {
+            return new OpenClaw();
+        }
+    }
     @Override
     public void runOpMode() throws InterruptedException {
         //Motors
@@ -48,7 +79,8 @@ public class    Blue_Long extends LinearOpMode {
         wheelFR = hardwareMap.get(DcMotorEx.class, "wheelFR");
         wheelBL = hardwareMap.get(DcMotorEx.class, "wheelBL");
         wheelBR = hardwareMap.get(DcMotorEx.class, "wheelBR");
-
+        viper = hardwareMap.get(DcMotorEx.class, "viper");
+        claw = hardwareMap.get(Servo.class, "claw");
 
         wheelFL.setDirection(DcMotorSimple.Direction.REVERSE);//REVERSE
         wheelFR.setDirection(DcMotorSimple.Direction.FORWARD);//FORWARD
@@ -69,19 +101,32 @@ public class    Blue_Long extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
+
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(11.8, 61.7, Math.toRadians(90)));
         Action trajectoryAction1;
         trajectoryAction1 = drive.actionBuilder(drive.pose)
-                .lineToYSplineHeading(33, Math.toRadians(0))
-                .waitSeconds(2)
-                .setTangent(Math.toRadians(90))
-                .lineToY(48)
-                .setTangent(Math.toRadians(0))
-                .lineToX(32)
-                .strafeTo(new Vector2d(44.5, 30))
-                .turn(Math.toRadians(180))
-                .lineToX(47.5)
-                .waitSeconds(3)
+                // Pre load Sample
+                .splineTo(new Vector2d(52 ,54), Math.toRadians(40))
+                .build();
+        Action trajectoryAction2;
+        trajectoryAction2 = drive.actionBuilder(drive.pose)
+                // first sample
+                .splineTo(new Vector2d(43, 45), Math.toRadians(60))
+                .splineTo(new Vector2d(46, 39), Math.toRadians(100))
+                .splineTo(new Vector2d(52 ,54), Math.toRadians(40))
+                .build();
+        Action trajeectoryAction3;
+        trajeectoryAction3 = drive.actionBuilder(drive.pose)
+
+                // second sample
+                .splineTo(new Vector2d(57.5, 36), Math.toRadians(90))
+                .splineTo(new Vector2d(52 ,54), Math.toRadians(40))
+                .build();
+        Action trajectoryAction4;
+        trajectoryAction4 = drive.actionBuilder(drive.pose)
+                // third sample
+                .splineTo(new Vector2d(50, 24), Math.toRadians(30))
+                .splineTo(new Vector2d(52 ,54), Math.toRadians(40))
                 .build();
 
 

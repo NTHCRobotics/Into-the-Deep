@@ -17,9 +17,16 @@ public class Meep{
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
 
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(10, -68, 0))
-                .splineTo(new Vector2d(52, -62), Math.toRadians(254.48))
+        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-12.1, -62.2, 90))
+
+                .splineTo(new Vector2d(-55, -54), Math.toRadians(230))
+                .splineTo(new Vector2d(-35, -38), Math.toRadians(90))
+                                .splineTo(new Vector2d(-54, -25), Math.toRadians(180))
+                .splineTo(new Vector2d(-55, -54), Math.toRadians(230))
+
                 .build());
+
+
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_OFFICIAL)
                 .setDarkMode(true)

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Auto;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 // RR-specific imports
@@ -29,6 +30,7 @@ public class Red_Long extends LinearOpMode{
     private DcMotorEx wheelFR;
     private DcMotorEx wheelBL;
     private DcMotorEx wheelBR;
+    private DcMotorEx viper;
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -43,6 +45,7 @@ public class Red_Long extends LinearOpMode{
         wheelFR = hardwareMap.get(DcMotorEx.class, "wheelFR");
         wheelBL = hardwareMap.get(DcMotorEx.class, "wheelBL");
         wheelBR = hardwareMap.get(DcMotorEx.class, "wheelBR");
+        viper = hardwareMap.get(DcMotorEx.class, "viper");
 
 
         wheelFL.setDirection(DcMotorSimple.Direction.REVERSE);//REVERSE
@@ -56,6 +59,15 @@ public class Red_Long extends LinearOpMode{
         wheelBL.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         wheelBR.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
+
+        // Viper Encoder
+        viper.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        viper.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        viper.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        viper.setTargetPositionTolerance(50);
+        viper.setTargetPosition(50);
+        viper.setDirection(DcMotorSimple.Direction.REVERSE);
+
         waitForStart();
 // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Ready to run");    //
@@ -64,22 +76,33 @@ public class Red_Long extends LinearOpMode{
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
+        
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(11.8, 61.7, Math.toRadians(90)));
         Action trajectoryAction1;
         trajectoryAction1 = drive.actionBuilder(drive.pose)
-                .lineToYSplineHeading(33, Math.toRadians(0))
-                .waitSeconds(2)
-                .setTangent(Math.toRadians(90))
-                .lineToY(48)
-                .setTangent(Math.toRadians(0))
-                .lineToX(32)
-                .strafeTo(new Vector2d(44.5, 30))
-                .turn(Math.toRadians(180))
-                .lineToX(47.5)
+                // Pre load Sample
+                .splineTo(new Vector2d(-33,-35.7), Math.toRadians(120))
+                .splineTo(new Vector2d(-55, -54), Math.toRadians(230))
+                // first sample
+                .splineTo(new Vector2d(-47, -33), Math.toRadians(90))
+                .splineTo(new Vector2d(-55, -54), Math.toRadians(230))
                 .waitSeconds(3)
+                // Second sample
+                .splineTo(new Vector2d(-57., -34), Math.toRadians(90))
+                .splineTo(new Vector2d(-55, -54), Math.toRadians(230))
+                .waitSeconds(3)
+                // Third sample
+                .splineTo(new Vector2d(-35, -38), Math.toRadians(90))
+                .splineTo(new Vector2d(-54, -25), Math.toRadians(180))
+                .splineTo(new Vector2d(-55, -54), Math.toRadians(230))
                 .build();
-
-
+        
+        
+        Actions.runBlocking(
+                new SequentialAction(
+                        trajectoryAction1
+                )
+              );
 
 
     }
