@@ -19,10 +19,6 @@ public class Meep{
 
         myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-12.1, -62.2, 90))
 
-                .splineTo(new Vector2d(-55, -54), Math.toRadians(230))
-                .splineTo(new Vector2d(-35, -38), Math.toRadians(90))
-                                .splineTo(new Vector2d(-54, -25), Math.toRadians(180))
-                .splineTo(new Vector2d(-55, -54), Math.toRadians(230))
 
                 .build());
 

@@ -75,10 +75,35 @@ public class Red_Long extends LinearOpMode{
             return new ViperDown();
         }
     }
+    public class ViperUp implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            viper.setTargetPosition(2265);
+            return false;
+        }
+    }
+
+    public Action ViperUp() {
+        return new ViperUp();
+    }
+
+    public class ViperDown implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            viper.setTargetPosition(0);
+            return false;
+        }
+    }
+
+    public Action ViperDown() {
+        return new ViperDown();
+    }
+}
 
 
 
-    public class Claw {
+
+public class Claw {
         private Servo claw;
 
         public Claw(HardwareMap hardwareMap) {
@@ -149,17 +174,28 @@ public class Red_Long extends LinearOpMode{
                 // Pre load Sample
                 .splineTo(new Vector2d(-33,-35.7), Math.toRadians(120))
                 .splineTo(new Vector2d(-55, -54), Math.toRadians(230))
+                .build();
                 // first sample
+       Action trajectoryFirstSample;
+        trajectoryFirstSample = drive.actionBuilder(drive.pose)
                 .splineTo(new Vector2d(-47, -33), Math.toRadians(90))
-                .splineTo(new Vector2d(-55, -54), Math.toRadians(230))
                 .waitSeconds(3)
+                .build();
                 // Second sample
+        Action trajectorySecondSample;
+        trajectorySecondSample = drive.actionBuilder(drive.pose)
                 .splineTo(new Vector2d(-57., -34), Math.toRadians(90))
-                .splineTo(new Vector2d(-55, -54), Math.toRadians(230))
                 .waitSeconds(3)
+                .build();
                 // Third sample
+        Action trajectoryThirdSample;
+        trajectoryThirdSample = drive.actionBuilder(drive.pose)
                 .splineTo(new Vector2d(-35, -38), Math.toRadians(90))
                 .splineTo(new Vector2d(-54, -25), Math.toRadians(180))
+                .build();
+
+        Action trajectoryScore;
+        trajectoryScore = drive.actionBuilder(drive.pose)
                 .splineTo(new Vector2d(-55, -54), Math.toRadians(230))
                 .build();
         
