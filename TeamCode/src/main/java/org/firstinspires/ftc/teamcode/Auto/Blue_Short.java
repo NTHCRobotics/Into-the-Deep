@@ -1,9 +1,6 @@
 package org.firstinspires.ftc.teamcode.Auto;
 
-
-import com.qualcomm.robotcore.util.ElapsedTime;
-
-// RR-specific imports
+import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
@@ -11,64 +8,121 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
-
-// Non-RR imports
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
+@Config
+@Autonomous(name = "BLUE_TEST_AUTO_PIXEL", group = "Autonomous")
+public class Blue_Short extends LinearOpMode {
+    public class Lift {
+        private DcMotorEx lift;
 
-@Autonomous(name="BlueShort", group="Robot")
+        public Lift(HardwareMap hardwareMap) {
+            lift = hardwareMap.get(DcMotorEx.class, "liftMotor");
+            lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            lift.setDirection(DcMotorSimple.Direction.FORWARD);
+        }
 
+        public class LiftUp implements Action {
+            private boolean initialized = false;
 
-public class    Blue_Short extends LinearOpMode {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                if (!initialized) {
+                    lift.setPower(0.8);
+                    initialized = true;
+                }
 
-    private DcMotorEx wheelFL;
-    private DcMotorEx wheelFR;
-    private DcMotorEx wheelBL;
-    private DcMotorEx wheelBR;
+                double pos = lift.getCurrentPosition();
+                packet.put("liftPos", pos);
+                if (pos < 3000.0) {
+                    return true;
+                } else {
+                    lift.setPower(0);
+                    return false;
+                }
+            }
+        }
+        public Action liftUp() {
+            return new LiftUp();
+        }
 
-    private ElapsedTime runtime = new ElapsedTime();
+        public class LiftDown implements Action {
+            private boolean initialized = false;
 
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                if (!initialized) {
+                    lift.setPower(-0.8);
+                    initialized = true;
+                }
 
-    static final double FORWARD_SPEED = 0.6;
-    static final double TURN_SPEED = 0.5;
+                double pos = lift.getCurrentPosition();
+                packet.put("liftPos", pos);
+                if (pos > 100.0) {
+                    return true;
+                } else {
+                    lift.setPower(0);
+                    return false;
+                }
+            }
+        }
+        public Action liftDown(){
+            return new LiftDown();
+        }
+    }
+
+    public class Claw {
+        private Servo claw;
+
+        public Claw(HardwareMap hardwareMap) {
+            claw = hardwareMap.get(Servo.class, "claw");
+        }
+
+        public class CloseClaw implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                claw.setPosition(0.55);
+                return false;
+            }
+        }
+        public Action closeClaw() {
+            return new CloseClaw();
+        }
+
+        public class OpenClaw implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                claw.setPosition(1.0);
+                return false;
+            }
+        }
+        public Action openClaw() {
+            return new OpenClaw();
+        }
+    }
 
     @Override
-    public void runOpMode() throws InterruptedException {
-        //Motors
-        wheelFL = hardwareMap.get(DcMotorEx.class, "wheelFL");
-        wheelFR = hardwareMap.get(DcMotorEx.class, "wheelFR");
-        wheelBL = hardwareMap.get(DcMotorEx.class, "wheelBL");
-        wheelBR = hardwareMap.get(DcMotorEx.class, "wheelBR");
-
-
-        wheelFL.setDirection(DcMotorSimple.Direction.REVERSE);//REVERSE
-        wheelFR.setDirection(DcMotorSimple.Direction.FORWARD);//FORWARD
-        wheelBL.setDirection(DcMotorSimple.Direction.FORWARD);//FORWARD
-        wheelBR.setDirection(DcMotorSimple.Direction.REVERSE);//REVERSE
-
-
-        wheelFL.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        wheelFR.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        wheelBL.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        wheelBR.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-
-        waitForStart();
-// Send telemetry message to signify robot waiting;
-        telemetry.addData("Status", "Ready to run");    //
-        telemetry.update();
-
-        // Wait for the game to start (driver presses PLAY)
-        waitForStart();
-
+    public void runOpMode() {
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(11.8, 61.7, Math.toRadians(90)));
+        Claw claw = new Claw(hardwareMap);
+        Lift lift = new Lift(hardwareMap);
+
+        // vision here that outputs position
+        int visionOutputPosition = 1;
+
         Action trajectoryAction1;
+        Action trajectoryAction2;
+        Action trajectoryAction3;
+        Action trajectoryActionCloseOut;
+
         trajectoryAction1 = drive.actionBuilder(drive.pose)
                 .lineToYSplineHeading(33, Math.toRadians(0))
                 .waitSeconds(2)
@@ -81,9 +135,39 @@ public class    Blue_Short extends LinearOpMode {
                 .lineToX(47.5)
                 .waitSeconds(3)
                 .build();
+        trajectoryAction2 = drive.actionBuilder(drive.pose)
+                .lineToY(37)
+                .setTangent(Math.toRadians(0))
+                .lineToX(18)
+                .waitSeconds(3)
+                .setTangent(Math.toRadians(0))
+                .lineToXSplineHeading(46, Math.toRadians(180))
+                .waitSeconds(3)
+                .build();
+        trajectoryAction3 = drive.actionBuilder(drive.pose)
+                .lineToYSplineHeading(33, Math.toRadians(180))
+                .waitSeconds(2)
+                .strafeTo(new Vector2d(46, 30))
+                .waitSeconds(3)
+                .build();
+        trajectoryActionCloseOut = drive.actionBuilder(drive.pose)
+                .strafeTo(new Vector2d(48, 12))
+                .build();
+
+        // actions that need to happen on init; for instance, a claw tightening.
+        Actions.runBlocking(claw.closeClaw());
 
 
 
 
+        Actions.runBlocking(
+                new SequentialAction(
+                        trajectoryAction1,
+                        lift.liftUp(),
+                        claw.openClaw(),
+                        lift.liftDown(),
+                        trajectoryActionCloseOut
+                )
+        );
     }
 }
