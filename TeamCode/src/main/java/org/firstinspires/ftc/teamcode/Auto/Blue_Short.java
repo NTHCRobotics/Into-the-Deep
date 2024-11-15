@@ -22,92 +22,93 @@ import com.qualcomm.robotcore.hardware.Servo;
 @Autonomous(name = "BLUE_TEST_AUTO_PIXEL", group = "Autonomous")
 public class Blue_Short extends LinearOpMode {
     public class Lift {
-        private DcMotorEx lift;
 
-        public Lift(HardwareMap hardwareMap) {
-            lift = hardwareMap.get(DcMotorEx.class, "liftMotor");
-            lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            lift.setDirection(DcMotorSimple.Direction.FORWARD);
+            private DcMotorEx lift;
+
+            public Lift(HardwareMap hardwareMap) {
+                lift = hardwareMap.get(DcMotorEx.class, "liftMotor");
+                lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                lift.setDirection(DcMotorSimple.Direction.FORWARD);
+            }
+
+            public class LiftUp implements Action {
+                private boolean initialized = false;
+
+                @Override
+                public boolean run(@NonNull TelemetryPacket packet) {
+                    if (!initialized) {
+                        lift.setPower(0.8);
+                        initialized = true;
+                    }
+
+                    double pos = lift.getCurrentPosition();
+                    packet.put("liftPos", pos);
+                    if (pos < 3000.0) {
+                        return true;
+                    } else {
+                        lift.setPower(0);
+                        return false;
+                    }
+                }
+            }
+            public Action liftUp() {
+                return new LiftUp();
+            }
+
+            public class LiftDown implements Action {
+                private boolean initialized = false;
+
+                @Override
+                public boolean run(@NonNull TelemetryPacket packet) {
+                    if (!initialized) {
+                        lift.setPower(-0.8);
+                        initialized = true;
+                    }
+
+                    double pos = lift.getCurrentPosition();
+                    packet.put("liftPos", pos);
+                    if (pos > 100.0) {
+                        return true;
+                    } else {
+                        lift.setPower(0);
+                        return false;
+                    }
+                }
+            }
+            public Action liftDown(){
+                return new LiftDown();
+            }
         }
 
-        public class LiftUp implements Action {
-            private boolean initialized = false;
+        public class Claw {
+            private Servo claw;
 
-            @Override
-            public boolean run(@NonNull TelemetryPacket packet) {
-                if (!initialized) {
-                    lift.setPower(0.8);
-                    initialized = true;
-                }
+            public Claw(HardwareMap hardwareMap) {
+                claw = hardwareMap.get(Servo.class, "claw");
+            }
 
-                double pos = lift.getCurrentPosition();
-                packet.put("liftPos", pos);
-                if (pos < 3000.0) {
-                    return true;
-                } else {
-                    lift.setPower(0);
+            public class CloseClaw implements Action {
+                @Override
+                public boolean run(@NonNull TelemetryPacket packet) {
+                    claw.setPosition(0.55);
                     return false;
                 }
             }
-        }
-        public Action liftUp() {
-            return new LiftUp();
-        }
+            public Action closeClaw() {
+                return new CloseClaw();
+            }
 
-        public class LiftDown implements Action {
-            private boolean initialized = false;
-
-            @Override
-            public boolean run(@NonNull TelemetryPacket packet) {
-                if (!initialized) {
-                    lift.setPower(-0.8);
-                    initialized = true;
-                }
-
-                double pos = lift.getCurrentPosition();
-                packet.put("liftPos", pos);
-                if (pos > 100.0) {
-                    return true;
-                } else {
-                    lift.setPower(0);
+            public class OpenClaw implements Action {
+                @Override
+                public boolean run(@NonNull TelemetryPacket packet) {
+                    claw.setPosition(1.0);
                     return false;
                 }
             }
-        }
-        public Action liftDown(){
-            return new LiftDown();
-        }
-    }
-
-    public class Claw {
-        private Servo claw;
-
-        public Claw(HardwareMap hardwareMap) {
-            claw = hardwareMap.get(Servo.class, "claw");
-        }
-
-        public class CloseClaw implements Action {
-            @Override
-            public boolean run(@NonNull TelemetryPacket packet) {
-                claw.setPosition(0.55);
-                return false;
+            public Action openClaw() {
+                return new OpenClaw();
             }
         }
-        public Action closeClaw() {
-            return new CloseClaw();
-        }
-
-        public class OpenClaw implements Action {
-            @Override
-            public boolean run(@NonNull TelemetryPacket packet) {
-                claw.setPosition(1.0);
-                return false;
-            }
-        }
-        public Action openClaw() {
-            return new OpenClaw();
-        }
-    }
 
     @Override
     public void runOpMode() {

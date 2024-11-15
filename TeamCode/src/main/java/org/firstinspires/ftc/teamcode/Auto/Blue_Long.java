@@ -5,6 +5,7 @@ package org.firstinspires.ftc.teamcode.Auto;
 
 import androidx.annotation.NonNull;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 // RR-specific imports
@@ -43,6 +44,46 @@ public class    Blue_Long extends LinearOpMode {
 
     static final double FORWARD_SPEED = 0.6;
     static final double TURN_SPEED = 0.5;
+    public class Viper {
+        private DcMotorEx viper;
+
+        public Viper(HardwareMap hardwareMap) {
+            viper = hardwareMap.get(DcMotorEx.class, "viper");
+            viper.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+            viper.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+            viper.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            viper.setTargetPositionTolerance(50);
+            viper.setTargetPosition(50);
+            viper.setDirection(DcMotorSimple.Direction.REVERSE);
+        }
+
+        public class ViperUp implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                viper.setTargetPosition(2265);
+                return false;
+            }
+        }
+
+        public Action ViperUp() {
+            return new ViperUp();
+        }
+
+        public class ViperDown implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                viper.setTargetPosition(0);
+                return false;
+            }
+        }
+
+        public Action ViperDown() {
+            return new ViperDown();
+        }
+    }
+
+
+
     public class Claw {
         private Servo claw;
 
@@ -53,11 +94,12 @@ public class    Blue_Long extends LinearOpMode {
         public class CloseClaw implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                claw.setPosition(0.55);
+                claw.setPosition(0.6);
                 return false;
             }
         }
         public Action closeClaw() {
+
             return new CloseClaw();
         }
 
@@ -69,7 +111,8 @@ public class    Blue_Long extends LinearOpMode {
             }
         }
         public Action openClaw() {
-            return new OpenClaw();
+            return new
+                    OpenClaw();
         }
     }
     @Override
@@ -79,8 +122,8 @@ public class    Blue_Long extends LinearOpMode {
         wheelFR = hardwareMap.get(DcMotorEx.class, "wheelFR");
         wheelBL = hardwareMap.get(DcMotorEx.class, "wheelBL");
         wheelBR = hardwareMap.get(DcMotorEx.class, "wheelBR");
-        viper = hardwareMap.get(DcMotorEx.class, "viper");
-        claw = hardwareMap.get(Servo.class, "claw");
+        Claw claw = new Claw(hardwareMap);
+        Viper viper = new Viper(hardwareMap);
 
         wheelFL.setDirection(DcMotorSimple.Direction.REVERSE);//REVERSE
         wheelFR.setDirection(DcMotorSimple.Direction.FORWARD);//FORWARD
@@ -92,6 +135,7 @@ public class    Blue_Long extends LinearOpMode {
         wheelFR.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         wheelBL.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         wheelBR.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+
 
         waitForStart();
 // Send telemetry message to signify robot waiting;
@@ -130,7 +174,16 @@ public class    Blue_Long extends LinearOpMode {
                 .build();
 
 
+        Actions.runBlocking(
+                new SequentialAction(
+                        trajectoryAction1,
+                        viper.ViperDown(),
+                        claw.openClaw(),
+                        viper.ViperDown()
 
+
+                )
+        );
 
     }
 }
