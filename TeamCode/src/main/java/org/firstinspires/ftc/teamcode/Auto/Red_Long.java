@@ -25,7 +25,7 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 @Autonomous(name="Red_long ",group = "Robot")
 
 
-public class Red_Long extends LinearOpMode{
+public class Red_Long extends LinearOpMode {
 
     private DcMotorEx wheelFL;
     private DcMotorEx wheelFR;
@@ -38,6 +38,7 @@ public class Red_Long extends LinearOpMode{
 
     static final double FORWARD_SPEED = 0.6;
     static final double TURN_SPEED = 0.5;
+
     public class Viper {
         private DcMotorEx viper;
 
@@ -75,30 +76,41 @@ public class Red_Long extends LinearOpMode{
             return new ViperDown();
         }
     }
-    public class ViperUp implements Action {
-        @Override
-        public boolean run(@NonNull TelemetryPacket packet) {
-            viper.setTargetPosition(2265);
-            return false;
+    public class Rocket {
+        private DcMotorEx Rocket;
+
+        public Rocket(HardwareMap hardwareMap) {
+            Rocket = hardwareMap.get(DcMotorEx.class, "rocket");
+            Rocket.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            Rocket.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            Rocket.setDirection(DcMotorSimple.Direction.FORWARD);
+            Rocket.setTargetPosition(0);
+        }
+
+        public class RocketUp implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                Rocket.setTargetPosition(975);
+                return false;
+            }
+        }
+
+        public Action RocketUp() {
+            return new RocketUp();
+        }
+
+        public class RocketDown implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                Rocket.setTargetPosition(0);
+                return false;
+            }
+        }
+
+        public Action RocketDown() {
+            return new RocketDown();
         }
     }
-
-    public Action ViperUp() {
-        return new ViperUp();
-    }
-
-    public class ViperDown implements Action {
-        @Override
-        public boolean run(@NonNull TelemetryPacket packet) {
-            viper.setTargetPosition(0);
-            return false;
-        }
-    }
-
-    public Action ViperDown() {
-        return new ViperDown();
-    }
-}
 
 
 
@@ -168,7 +180,11 @@ public class Claw {
         waitForStart();
 
         
-        MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(11.8, 61.7, Math.toRadians(90)));
+        MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(-12.8, -62.7, Math.toRadians(90)));
+        MecanumDrive drive1 = new MecanumDrive(hardwareMap, new Pose2d(-55, -54, Math.toRadians(230)));
+        MecanumDrive scoresample1 = new MecanumDrive(hardwareMap, new Pose2d(-47, -33, Math.toRadians(90)));
+        MecanumDrive scoresample2 = new MecanumDrive(hardwareMap, new Pose2d(-57, -34, Math.toRadians(90)));
+        MecanumDrive scoresample3 = new MecanumDrive(hardwareMap, new Pose2d(-54, -25, Math.toRadians(180)));
         Action trajectoryAction1;
         trajectoryAction1 = drive.actionBuilder(drive.pose)
                 // Pre load Sample
@@ -177,32 +193,41 @@ public class Claw {
                 .build();
                 // first sample
        Action trajectoryFirstSample;
-        trajectoryFirstSample = drive.actionBuilder(drive.pose)
+        trajectoryFirstSample = drive1.actionBuilder(drive1.pose)
                 .splineTo(new Vector2d(-47, -33), Math.toRadians(90))
                 .waitSeconds(3)
                 .build();
                 // Second sample
         Action trajectorySecondSample;
-        trajectorySecondSample = drive.actionBuilder(drive.pose)
+        trajectorySecondSample = drive1.actionBuilder(drive1.pose)
                 .splineTo(new Vector2d(-57., -34), Math.toRadians(90))
                 .waitSeconds(3)
                 .build();
                 // Third sample
         Action trajectoryThirdSample;
-        trajectoryThirdSample = drive.actionBuilder(drive.pose)
+        trajectoryThirdSample = drive1.actionBuilder(drive1.pose)
                 .splineTo(new Vector2d(-35, -38), Math.toRadians(90))
                 .splineTo(new Vector2d(-54, -25), Math.toRadians(180))
                 .build();
 
         Action trajectoryScore;
-        trajectoryScore = drive.actionBuilder(drive.pose)
+        trajectoryScore = drive1.actionBuilder(scoresample1.pose)
+                .splineTo(new Vector2d(-55, -54), Math.toRadians(230))
+                .build();
+        Action trajectoryScore2;
+        trajectoryScore2 = drive1.actionBuilder(scoresample2.pose)
+                .splineTo(new Vector2d(-55, -54), Math.toRadians(230))
+                .build();
+        Action trajectoryScore3;
+        trajectoryScore3 = drive1.actionBuilder(scoresample3.pose)
                 .splineTo(new Vector2d(-55, -54), Math.toRadians(230))
                 .build();
         
         
         Actions.runBlocking(
                 new SequentialAction(
-                        trajectoryAction1
+                        trajectoryAction1,
+                        claw.openClaw()
 
                 )
               );

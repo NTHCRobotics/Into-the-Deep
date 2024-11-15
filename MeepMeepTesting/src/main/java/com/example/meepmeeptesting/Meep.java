@@ -17,8 +17,8 @@ public class Meep{
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
 
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-12.1, -62.2, 90))
-
+        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-55, -54, 230))
+                .splineTo(new Vector2d(-57., -34), Math.toRadians(90))
 
                 .build());
 
