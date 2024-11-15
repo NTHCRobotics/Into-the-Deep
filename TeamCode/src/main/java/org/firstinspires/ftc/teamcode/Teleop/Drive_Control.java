@@ -191,10 +191,10 @@ public class Drive_Control extends OpMode {
 
     // Adjust speed for precision control based on trigger inputs
     public void precisionControl() {
-        if (gamepad1.left_bumper) {
+        if (gamepad1.left_trigger > 0) {
             speedMod = .25;
             gamepad1.rumble(1, 1, 200);  // Rumble feedback for precision mode
-        } else if (gamepad1.right_bumper) {
+        } else if (gamepad1.right_trigger > 0) {
             speedMod = 0.5;
             gamepad1.rumble(1, 1, 200);  // Rumble feedback for medium speed mode
         } else {
@@ -202,6 +202,7 @@ public class Drive_Control extends OpMode {
             gamepad1.stopRumble();  // Stop rumble if neither trigger is pressed
         }
     }
+
 
 
     public  void drive(){
