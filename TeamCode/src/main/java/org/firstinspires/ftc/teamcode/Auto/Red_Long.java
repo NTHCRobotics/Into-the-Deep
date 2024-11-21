@@ -23,6 +23,20 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
+import com.acmerobotics.roadrunner.TrajectoryBuilder;
+import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.ParallelAction;
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.SleepAction;
+import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
+import com.acmerobotics.roadrunner.Vector2d;
+import com.acmerobotics.roadrunner.ftc.Actions;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import
 
 @Autonomous(name="Red_long ",group = "Robot")
 
@@ -36,7 +50,8 @@ public class Red_Long extends LinearOpMode {
 
 
     private ElapsedTime runtime = new ElapsedTime();
-
+    private final Pose2d initialPose = new Pose2d(-24, -62.5, Math.toRadians(180));
+    private Action path0, path1, path2, path3;
 
     static final double FORWARD_SPEED = 0.6;
     static final double TURN_SPEED = 0.5;
@@ -184,65 +199,30 @@ public class Claw {
 
         
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(-12.8, -62.7, Math.toRadians(90)));
-        MecanumDrive drive1 = new MecanumDrive(hardwareMap, new Pose2d(-55, -54, Math.toRadians(230)));
-        MecanumDrive scoresample1 = new MecanumDrive(hardwareMap, new Pose2d(-47, -33, Math.toRadians(90)));
-        MecanumDrive scoresample2 = new MecanumDrive(hardwareMap, new Pose2d(-57, -34, Math.toRadians(90)));
-        MecanumDrive scoresample3 = new MecanumDrive(hardwareMap, new Pose2d(-54, -25, Math.toRadians(180)));
-        Action trajectoryAction1;
-        trajectoryAction1 = drive.actionBuilder(drive.pose)
-                // Pre load Sample
-                .splineTo(new Vector2d(-33,-35.7), Math.toRadians(120))
-                .splineTo(new Vector2d(-55, -54), Math.toRadians(230))
-                .turnTo(240)
-                .build();
-                // first sample
-       Action trajectoryFirstSample;
-        trajectoryFirstSample = drive1.actionBuilder(drive1.pose)
-                .splineTo(new Vector2d(-47, -33), Math.toRadians(90))
-                .waitSeconds(3)
-                .build();
-                // Second sample
-        Action trajectorySecondSample;
-        trajectorySecondSample = drive1.actionBuilder(drive1.pose)
-                .splineTo(new Vector2d(-57., -34), Math.toRadians(90))
-                .waitSeconds(3)
-                .build();
-                // Third sample
-        Action trajectoryThirdSample;
-        trajectoryThirdSample = drive1.actionBuilder(drive1.pose)
-                .splineTo(new Vector2d(-35, -38), Math.toRadians(90))
-                .splineTo(new Vector2d(-54, -25), Math.toRadians(180))
 
-
-                .build();
-
-
-        Action trajectoryScore;
-        trajectoryScore = drive1.actionBuilder(scoresample1.pose)
-                .splineTo(new Vector2d(-55, -54), Math.toRadians(230))
-                .turnTo(240)
-                .build();
-        Action trajectoryScore2;
-        trajectoryScore2 = drive1.actionBuilder(scoresample2.pose)
-                .splineTo(new Vector2d(-55, -54), Math.toRadians(230))
-                .turnTo(240)
-                .build();
-        Action trajectoryScore3;
-        trajectoryScore3 = drive1.actionBuilder(scoresample3.pose)
-                .splineTo(new Vector2d(-55, -54), Math.toRadians(230))
-                .turnTo(240)
-                .build();
-
-        
-        
-        Actions.runBlocking(
-                new SequentialAction(
-                        trajectoryAction1,
-                        claw.openClaw()
-
-                )
-              );
-
+        TrajectoryActionBuilder tab0 = drive.actionBuilder(initialPose)
+                .splineTo(new Vector2d(-50, -58), Math.toRadians(225));
+        TrajectoryActionBuilder tab1 = drive.actionBuilder(new Pose2d(-50, -58, Math.toRadians(225)))
+                .setReversed(true)
+                .splineTo(new Vector2d(-34, -40), Math.toRadians(0))
+                .setReversed(false)
+                .splineTo(new Vector2d( -46, -60), Math.toRadians(90))
+                .lineToY(62);
+        TrajectoryActionBuilder tab2 = drive.actionBuilder(new Pose2d(-46, -62, Math.toRadians(90)))
+                .setReversed(true)
+                .splineTo(new Vector2d(-34, -48), Math.toRadians(0))
+                .setReversed(false)
+                .splineTo(new Vector2d(-58, -49), Math.toRadians(225));
+        TrajectoryActionBuilder tab3 = drive.actionBuilder(new Pose2d(-58, -49, Math.toRadians(225)))
+                .setReversed(true)
+                .splineTo(new Vector2d(-34, -48), Math.toRadians(0))
+                .setReversed(false)
+                .splineTo(new Vector2d(-30, -34), Math.toRadians(0));
+        path0 = tab0.build();
+        path1 = tab1.build();
+        path2 = tab2.build();
+        path3 = tab3.build();
+    }
 
     }
-}
+
