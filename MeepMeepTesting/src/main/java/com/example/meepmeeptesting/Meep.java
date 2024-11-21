@@ -8,6 +8,8 @@ import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 import com.acmerobotics.roadrunner.TrajectoryBuilder;
+import com.acmerobotics.roadrunner.SleepAction;
+
 
 public class Meep{
     public static void main(String[] args) {
@@ -18,27 +20,35 @@ public class Meep{
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
 
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-12.8, -62, 90))
-                .splineTo(new Vector2d(-33,-35.7), Math.toRadians(120))
-                .splineTo(new Vector2d(-55, -54), Math.toRadians(230))
-                        .turnTo(240)
-                        .waitSeconds(1)
-                .splineTo(new Vector2d(-47, -33), Math.toRadians(90))
-                        .waitSeconds(1)
-                .splineTo(new Vector2d(-55, -54), Math.toRadians(230))
-                        .turnTo(240)
-                        .waitSeconds(1)
-                .splineTo(new Vector2d(-57., -34), Math.toRadians(90))
-                        .waitSeconds(1)
-                .splineTo(new Vector2d(-55, -54), Math.toRadians(230))
-                .turnTo(240)
-                        .waitSeconds(1)
-                .splineTo(new Vector2d(-35, -38), Math.toRadians(90))
-                .splineTo(new Vector2d(-54, -25), Math.toRadians(180))
-                        .waitSeconds(1)
-                .splineTo(new Vector2d(-55, -54), Math.toRadians(230))
+        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-24, -62.5, 180))
+                        .setReversed(true)
+                . splineTo(new Vector2d(-55, -58), Math.toRadians(225))
+                .setReversed(false)
+                .splineTo(new Vector2d(-47.8, -31.9), Math.toRadians(90))
+                .setReversed(true)
+              //  .waitSeconds(1)
+                .splineTo(new Vector2d( -55, -58), Math.toRadians(225))
+                        .setReversed(false)
+                .splineTo(new Vector2d(-56.6,-36.6), Math.toRadians(90))
+                .setReversed(true)
+                .splineTo(new Vector2d(-55,-58), Math.toRadians(225))
 
-                .turnTo(240)
+                .setReversed(false)
+                        .splineTo(new Vector2d(-68, -36), Math.toRadians(90))
+
+                        .setReversed(true)
+                        .splineTo(new Vector2d(-55, -58), Math.toRadians(225))
+                        .setReversed(false)
+                        .splineTo(new Vector2d(-32, -11), Math.toRadians(90))
+                        .setReversed(true)
+                                .splineTo(new Vector2d(-19, -10.4), Math.toRadians(225))
+
+
+
+
+
+
+
 
 
 
