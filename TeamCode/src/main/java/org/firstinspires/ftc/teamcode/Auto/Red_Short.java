@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.Auto;
 
 
 
+import com.acmerobotics.roadrunner.Trajectory;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 // RR-specific imports
@@ -12,6 +14,7 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
+import  com.acmerobotics.roadrunner.TrajectoryBuilder;
 
 // Non-RR imports
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -69,14 +72,14 @@ public class    Red_Short extends LinearOpMode {
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
-
-        Pose2d initialPose = new Pose2d(11.8, 61.7, Math.toRadians(90));
-        MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
-        Action trajectoryAction1 = drive.actionBuilder(drive.pose)
-                .splineTo(new Vector2d(52, -62), Math.toRadians(254.48))
-                .build();
-
+        MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(-12.8, -62.7, Math.toRadians(90)));
 
 
     }
 }
+
+
+
+
+
+

@@ -5,6 +5,8 @@ package org.firstinspires.ftc.teamcode.Auto;
 
 import androidx.annotation.NonNull;
 
+import com.acmerobotics.roadrunner.Trajectory;
+import com.acmerobotics.roadrunner.TrajectoryBuilder;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -145,7 +147,6 @@ public class    Blue_Long extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(11.8, 61.7, Math.toRadians(90)));
         Action trajectoryAction1;
         trajectoryAction1 = drive.actionBuilder(drive.pose)
@@ -172,6 +173,8 @@ public class    Blue_Long extends LinearOpMode {
                 .splineTo(new Vector2d(50, 24), Math.toRadians(30))
                 .splineTo(new Vector2d(52 ,54), Math.toRadians(40))
                 .build();
+        Pose2d startPose = new Pose2d(10, -8, Math.toRadians(90));
+
 
 
         Actions.runBlocking(

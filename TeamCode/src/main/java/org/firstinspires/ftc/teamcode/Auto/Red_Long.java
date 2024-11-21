@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.Auto;
 
 import androidx.annotation.NonNull;
 
+import com.acmerobotics.roadrunner.Trajectory;
+import com.acmerobotics.roadrunner.TrajectoryBuilder;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -176,6 +178,7 @@ public class Claw {
         telemetry.addData("Status", "Ready to run");    //
         telemetry.update();
 
+
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
@@ -190,6 +193,7 @@ public class Claw {
                 // Pre load Sample
                 .splineTo(new Vector2d(-33,-35.7), Math.toRadians(120))
                 .splineTo(new Vector2d(-55, -54), Math.toRadians(230))
+                .turnTo(240)
                 .build();
                 // first sample
        Action trajectoryFirstSample;
@@ -208,20 +212,27 @@ public class Claw {
         trajectoryThirdSample = drive1.actionBuilder(drive1.pose)
                 .splineTo(new Vector2d(-35, -38), Math.toRadians(90))
                 .splineTo(new Vector2d(-54, -25), Math.toRadians(180))
+
+
                 .build();
+
 
         Action trajectoryScore;
         trajectoryScore = drive1.actionBuilder(scoresample1.pose)
                 .splineTo(new Vector2d(-55, -54), Math.toRadians(230))
+                .turnTo(240)
                 .build();
         Action trajectoryScore2;
         trajectoryScore2 = drive1.actionBuilder(scoresample2.pose)
                 .splineTo(new Vector2d(-55, -54), Math.toRadians(230))
+                .turnTo(240)
                 .build();
         Action trajectoryScore3;
         trajectoryScore3 = drive1.actionBuilder(scoresample3.pose)
                 .splineTo(new Vector2d(-55, -54), Math.toRadians(230))
+                .turnTo(240)
                 .build();
+
         
         
         Actions.runBlocking(

@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name="drivercontrolaxoltl7", group="Axoltl")
+@TeleOp(name="drivercontrolaxoltl8", group="Axoltl")
 //@Disabled  This way it will run on the robot
 public class Drive_Control extends OpMode {
     // Declare OpMode members.
@@ -230,7 +230,7 @@ public class Drive_Control extends OpMode {
         if ((gamepad2.y) && (armLevel < armLevelPosition.length - 1) && (getRuntime() - previousRunTime >= inputDelayInSeconds)) {
 
             armLevel = 3;
-            RotationalClaw.setPosition(1);
+            RotationalClaw.setPosition(.43);
         }
         else if ((gamepad2.a) && (armLevel > 0) && (getRuntime() - previousRunTime >= inputDelayInSeconds)) {
 
