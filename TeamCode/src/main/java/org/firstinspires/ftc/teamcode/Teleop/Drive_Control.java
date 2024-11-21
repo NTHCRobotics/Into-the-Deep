@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name="drivercontrolaxoltl8", group="Axoltl")
+@TeleOp(name="drivercontrolaxoltl9", group="Axoltl")
 //@Disabled  This way it will run on the robot
 public class Drive_Control extends OpMode {
     // Declare OpMode members.
@@ -228,9 +228,9 @@ public class Drive_Control extends OpMode {
     // Method to control the vertical lift mechanism
     public void Verticallift() {
         if ((gamepad2.y) && (armLevel < armLevelPosition.length - 1) && (getRuntime() - previousRunTime >= inputDelayInSeconds)) {
-
-            armLevel = 3;
             RotationalClaw.setPosition(.43);
+            armLevel = 3;
+
         }
         else if ((gamepad2.a) && (armLevel > 0) && (getRuntime() - previousRunTime >= inputDelayInSeconds)) {
 
@@ -323,6 +323,7 @@ public class Drive_Control extends OpMode {
         if(gamepad2.left_bumper){
             RotationalClaw.setPosition(1);
         }
+        // Score postion
         else if(gamepad2.right_bumper){
             RotationalClaw.setPosition(0);
         }

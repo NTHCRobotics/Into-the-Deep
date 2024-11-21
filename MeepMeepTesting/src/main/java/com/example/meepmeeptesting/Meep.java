@@ -20,7 +20,7 @@ public class Meep{
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
 
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-24, -62.5, 180))
+        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-12.8, -62.7, 180))
                         .setReversed(true)
                 . splineTo(new Vector2d(-55, -58), Math.toRadians(225))
                 .setReversed(false)
@@ -34,14 +34,18 @@ public class Meep{
                 .splineTo(new Vector2d(-55,-58), Math.toRadians(225))
 
                 .setReversed(false)
-                        .splineTo(new Vector2d(-68, -36), Math.toRadians(90))
 
+
+                .splineTo(new Vector2d(-56.6,-36.6), Math.toRadians(140))
                         .setReversed(true)
                         .splineTo(new Vector2d(-55, -58), Math.toRadians(225))
                         .setReversed(false)
-                        .splineTo(new Vector2d(-32, -11), Math.toRadians(90))
+                        .splineTo(new Vector2d(-37, -11), Math.toRadians(40))
                         .setReversed(true)
-                                .splineTo(new Vector2d(-19, -10.4), Math.toRadians(225))
+                                .splineTo(new Vector2d(-23,-11),Math.toRadians(0))
+                        //.setReversed(true)
+              //  .splineTo(new Vector2d(-19, -10.4), Math.toRadians(225))
+
 
 
 

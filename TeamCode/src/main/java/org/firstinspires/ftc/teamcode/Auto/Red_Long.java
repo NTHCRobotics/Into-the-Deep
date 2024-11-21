@@ -161,6 +161,20 @@ public class Claw {
             return new OpenClaw();
         }
     }
+  public class RotateClaw {
+      private Servo rotationalClaw;
+
+      public RotateClaw(HardwareMap hardwareMap) {
+          rotationalClaw = hardwareMap.get(Servo.class,"rotationalClaw");
+      }
+      public class Pickuprotate implements Action{
+          @Override
+          public boolean run(@NonNull TelemetryPacket packet){
+              rotationalClaw.setPosition(0.43);
+              return  false;
+          }
+      }
+  }
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -186,6 +200,7 @@ public class Claw {
         Claw claw = new Claw(hardwareMap);
         Viper viper = new Viper(hardwareMap);
         Rocket rocket = new Rocket(hardwareMap);
+
 
 
 
@@ -219,14 +234,15 @@ public class Claw {
                      .splineTo(new Vector2d(-55,-58), Math.toRadians(225));
         TrajectoryActionBuilder tab3 = drive.actionBuilder(new Pose2d(-58, -49, Math.toRadians(225)))
                 .setReversed(false)
-                .splineTo(new Vector2d(-68, -36), Math.toRadians(90));
+                .splineTo(new Vector2d(-56.6,-36.6), Math.toRadians(90));
         TrajectoryActionBuilder tabpark3 = drive.actionBuilder(new Pose2d(-68, -36, Math.toRadians(90)))
                 .setReversed(true)
                 .splineTo(new Vector2d(-55, -58), Math.toRadians(225));
         TrajectoryActionBuilder tabfinal = drive.actionBuilder(new Pose2d(-55, -58, Math.toRadians(225)))
-                .splineTo(new Vector2d(-32, -11), Math.toRadians(90))
+                .setReversed(false)
+                .splineTo(new Vector2d(-37, -11), Math.toRadians(40))
                 .setReversed(true)
-                .splineTo(new Vector2d(-19, -10.4), Math.toRadians(225));
+                .splineTo(new Vector2d(-23,-11),Math.toRadians(0));
 
         path0 = tab0.build();
         path1 = tab1.build();
@@ -243,6 +259,7 @@ public class Claw {
                 path0,
                 rocket.RocketUp(),
                 viper.ViperUp(),
+
                 claw.openClaw(),
                 viper.ViperDown(),
                 rocket.RocketDown(),
@@ -275,6 +292,7 @@ public class Claw {
                 pathpark3,
                 rocket.RocketUp(),
                 viper.ViperUp(),
+
                 claw.openClaw(),
                 new SleepAction(1),
                 pathfinal
