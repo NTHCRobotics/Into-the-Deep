@@ -34,12 +34,12 @@ public class Drive_Control extends OpMode {
     private DcMotorEx wheelBR; // Back right wheel
     private DcMotorEx viper; //Vertical lift mechanism
     private DcMotorEx Rocket; // Motor for rotate the Vertical lift
-
+    private DcMotorEx HangRight;
+    private DcMotorEx HangLeft;
     //Servos
     private Servo RotationalClaw; // Second CLaw
     private Servo Claw; // Primary Claw
-    private Servo HangRight;
-    private Servo HangLeft;
+
 
     //Sensors
     private ColorSensor colorSensor; // Color sensor for detecting objects/colors
@@ -81,7 +81,8 @@ public class Drive_Control extends OpMode {
         wheelFR = hardwareMap.get(DcMotorEx.class, "wheelFR");
         wheelBL = hardwareMap.get(DcMotorEx.class, "wheelBL");
         wheelBR = hardwareMap.get(DcMotorEx.class, "wheelBR");
-
+        HangRight = hardwareMap.get(DcMotorEx.class, "hangRight");
+        HangLeft = hardwareMap.get(DcMotorEx.class, "hangLeft");
 
         viper = hardwareMap.get(DcMotorEx.class, "viper");
         Rocket = hardwareMap.get(DcMotorEx.class, "rocket");
@@ -90,8 +91,7 @@ public class Drive_Control extends OpMode {
         //------------SERVOS////
         Claw = hardwareMap.get(Servo.class, "claw");
         RotationalClaw = hardwareMap.get(Servo.class, "rotationalClaw");
-        HangRight = hardwareMap.get(Servo.class, "hangRight");
-        HangLeft = hardwareMap.get(Servo.class, "hangLeft");
+
 
         //Motor Encoders
         //Wheels
@@ -276,8 +276,9 @@ public class Drive_Control extends OpMode {
             Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
         else if(gamepad2.dpad_right){
-            Rocket.setTargetPosition(200);
+            Rocket.setTargetPosition(215);
             Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            RotationalClaw.setPosition(0.43);
         }
 // Check if the dpad_down button on gamepad2 is pressed
         else if (gamepad2.dpad_down) {
@@ -296,14 +297,14 @@ public class Drive_Control extends OpMode {
     // Method to control the claw grip mechanism
     public void ClawGrip() {
         // Check if the left bumper on gamepad2 is pressed
-        if (gamepad1.a ) {
+        if (gamepad2.left_trigger>0) {
             // Set the claw servo to move forward
             Claw.setPosition(1);// Opens the CLaw
         }
         // Check if the right bumper on gamepad2 is pressed
-        else if (gamepad1.y) {
+        else if (gamepad2.right_trigger>0) {
             // Set the claw servo to move backward
-            Claw.setPosition(0.6); // Close the Claw
+            Claw.setPosition(0.65); // Close the Claw
         }
         // If neither bumper is pressed, set the claw to stationary position
 
@@ -311,12 +312,12 @@ public class Drive_Control extends OpMode {
 
     public void SecondHang(){
         if (gamepad1.dpad_up) {
-            HangRight.setPosition(1);
-            HangLeft.setPosition(0);
+            HangRight.setPower(1);
+            HangLeft.setPower(1);
         }
         else if (gamepad1.dpad_down) {
-            HangRight.setPosition(0);
-            HangLeft.setPosition(1);
+            HangRight.setPower(-1);;
+            HangLeft.setPower(-1);
         }
     }
     public void ClawRotation(){
