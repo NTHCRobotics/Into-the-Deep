@@ -207,7 +207,7 @@ public class Drive_Control extends OpMode {
 
     public  void drive(){
         double x = gamepad1.left_stick_x;
-        double y = gamepad1.left_stick_y;
+        double y = -gamepad1.left_stick_y;
         double rotation = -gamepad1.right_stick_x;
         double FL= (y+x+rotation)*speedMod;
         double FR= (y-x-rotation)*speedMod;
@@ -311,11 +311,13 @@ public class Drive_Control extends OpMode {
     }
 
     public void SecondHang(){
-        if (gamepad1.dpad_up) {
+       //Going Down
+        if (gamepad1.dpad_down) {
             HangRight.setPower(0.3);
             HangLeft.setPower(0.3);
         }
-        else if (gamepad1.dpad_down) {
+        // Going Up
+        else if (gamepad1.dpad_up) {
             HangRight.setPower(-0.3);;
             HangLeft.setPower(-0.3);
         }

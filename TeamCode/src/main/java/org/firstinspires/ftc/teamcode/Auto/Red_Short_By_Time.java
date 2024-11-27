@@ -33,10 +33,10 @@ public class Red_Short_By_Time extends LinearOpMode {
         wheelBL = hardwareMap.get(DcMotorEx.class, "wheelBL");
         wheelBR = hardwareMap.get(DcMotorEx.class, "wheelBR");
 
-        wheelFL.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        wheelFR.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        wheelBL.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        wheelBR.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        wheelFL.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        wheelFR.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        wheelBL.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        wheelBR.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
 
 
