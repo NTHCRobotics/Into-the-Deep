@@ -312,12 +312,12 @@ public class Drive_Control extends OpMode {
 
     public void SecondHang(){
         if (gamepad1.dpad_up) {
-            HangRight.setPower(1);
-            HangLeft.setPower(1);
+            HangRight.setPower(0.3);
+            HangLeft.setPower(0.3);
         }
         else if (gamepad1.dpad_down) {
-            HangRight.setPower(-1);;
-            HangLeft.setPower(-1);
+            HangRight.setPower(-0.3);;
+            HangLeft.setPower(-0.3);
         }
     }
     public void ClawRotation(){
