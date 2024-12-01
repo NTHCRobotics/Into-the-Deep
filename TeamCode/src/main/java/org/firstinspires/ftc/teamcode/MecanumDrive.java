@@ -67,12 +67,11 @@ public final class MecanumDrive {
         // drive model parameters
         public double inPerTick = 1.876;
         public double lateralInPerTick = inPerTick;
-        public double trackWidthTicks = 0;
-
+        public double trackWidthTicks = 29;
         // feedforward parameters (in tick units)
-        public double kS = 0;
-        public double kV = 0;
-        public double kA = 0;
+        public double kS = 7.8424753469943065;
+        public double kV = 0.00003404123492065965;
+        public double kA = 0.001;
 
         // path profile parameters (in inches)
         public double maxWheelVel = 50;
@@ -229,13 +228,17 @@ public final class MecanumDrive {
         rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        leftFront.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        leftBack.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        rightBack.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        rightFront.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         // TODO: reverse motor directions if needed
         //   leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         //Wheel Direction
-        leftFront.setDirection(DcMotorSimple.Direction.FORWARD);//FORWARD
-        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);//REVERSE
-        leftBack.setDirection(DcMotorSimple.Direction.FORWARD);//FORWARD
-        rightBack.setDirection(DcMotorSimple.Direction.REVERSE);//REVERSE
+        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);//FORWARD
+        rightFront.setDirection(DcMotorSimple.Direction.FORWARD);//REVERSE
+        leftBack.setDirection(DcMotorSimple.Direction.REVERSE);//FORWARD
+        rightBack.setDirection(DcMotorSimple.Direction.FORWARD);//REVERSE
 
         // TODO: make sure your config has an IMU with this name (can be BNO or BHI)
         //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html

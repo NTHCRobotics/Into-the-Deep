@@ -2,6 +2,7 @@ package com.example.meepmeeptesting;
 
 
 
+import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.noahbres.meepmeep.MeepMeep;
@@ -20,29 +21,12 @@ public class Meep{
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
 
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-12.8, -62.7, 180))
-                        .setReversed(true)
-                . splineTo(new Vector2d(-55, -58), Math.toRadians(225))
-                .setReversed(false)
-                .splineTo(new Vector2d(-47.8, -31.9), Math.toRadians(90))
-                .setReversed(true)
-              //  .waitSeconds(1)
-                .splineTo(new Vector2d( -55, -58), Math.toRadians(225))
-                        .setReversed(false)
-                .splineTo(new Vector2d(-56.6,-36.6), Math.toRadians(90))
-                .setReversed(true)
-                .splineTo(new Vector2d(-55,-58), Math.toRadians(225))
-
-                .setReversed(false)
+        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(11.8, -62.7, 90))
 
 
-                .splineTo(new Vector2d(-56.6,-36.6), Math.toRadians(140))
-                        .setReversed(true)
-                        .splineTo(new Vector2d(-55, -58), Math.toRadians(225))
-                        .setReversed(false)
-                        .splineTo(new Vector2d(-37, -11), Math.toRadians(40))
-                        .setReversed(true)
-                                .splineTo(new Vector2d(-23,-11),Math.toRadians(0))
+
+                // Pre load Sample
+                .splineTo(new Vector2d(52 ,54), Math.toRadians(40))
                         //.setReversed(true)
               //  .splineTo(new Vector2d(-19, -10.4), Math.toRadians(225))
 

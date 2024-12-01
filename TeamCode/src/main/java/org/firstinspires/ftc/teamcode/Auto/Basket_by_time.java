@@ -20,9 +20,10 @@ public class Basket_by_time extends LinearOpMode {
     private DcMotorEx wheelFR;
     private DcMotorEx wheelBL;
     private DcMotorEx wheelBR;
+    private DcMotorEx viper; //Vertical lift mechanism
+    private DcMotorEx Rocket; // Motor for rotate the Vertical lift
     private Servo Claw;
     private ElapsedTime  runtime = new ElapsedTime();
-
 
     static final double  FORWARD_SPEED = -0.5;
     static final double     TURN_SPEED    = 0.5;
@@ -34,11 +35,27 @@ public class Basket_by_time extends LinearOpMode {
         wheelBL = hardwareMap.get(DcMotorEx.class, "wheelBL");
         wheelBR = hardwareMap.get(DcMotorEx.class, "wheelBR");
         Claw = hardwareMap.get(Servo.class, "claw");
+        viper = hardwareMap.get(DcMotorEx.class, "viper");
+        Rocket = hardwareMap.get(DcMotorEx.class, "rocket");
+
 
         wheelFL.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         wheelFR.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         wheelBL.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         wheelBR.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        // Viper Encoder
+        viper.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        viper.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        viper.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        viper.setTargetPositionTolerance(50);
+        viper.setTargetPosition(50);
+        viper.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        //Sprocket Encoder
+        Rocket.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        Rocket.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        Rocket.setDirection(DcMotorSimple.Direction.FORWARD);
+        Rocket.setTargetPosition(0);
 
 
 
@@ -79,6 +96,7 @@ public class Basket_by_time extends LinearOpMode {
         wheelBR.setPower(0);
         wheelFR.setPower(0);
         wheelFL.setPower(0);
+        Rocket.setTargetPosition(760);
         Claw.setPosition(0.2);
 
 

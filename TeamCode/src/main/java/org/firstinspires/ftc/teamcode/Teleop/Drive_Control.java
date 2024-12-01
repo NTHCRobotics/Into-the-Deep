@@ -206,8 +206,8 @@ public class Drive_Control extends OpMode {
 
 
     public  void drive(){
-        double x = gamepad1.left_stick_x;
-        double y = -gamepad1.left_stick_y;
+        double x =- gamepad1.left_stick_x;
+        double y = gamepad1.left_stick_y;
         double rotation = -gamepad1.right_stick_x;
         double FL= (y+x+rotation)*speedMod;
         double FR= (y-x-rotation)*speedMod;

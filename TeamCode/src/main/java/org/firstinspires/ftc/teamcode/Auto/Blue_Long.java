@@ -151,7 +151,8 @@ public class    Blue_Long extends LinearOpMode {
         Action trajectoryAction1;
         trajectoryAction1 = drive.actionBuilder(drive.pose)
                 // Pre load Sample
-                .splineTo(new Vector2d(52 ,54), Math.toRadians(40))
+               .splineTo(new Vector2d(52 ,54), Math.toRadians(90))
+
                 .build();
         Action trajectoryAction2;
         trajectoryAction2 = drive.actionBuilder(drive.pose)
@@ -179,10 +180,8 @@ public class    Blue_Long extends LinearOpMode {
 
         Actions.runBlocking(
                 new SequentialAction(
-                        trajectoryAction1,
-                        viper.ViperDown(),
-                        claw.openClaw(),
-                        viper.ViperDown()
+                        trajectoryAction1
+
 
 
                 )

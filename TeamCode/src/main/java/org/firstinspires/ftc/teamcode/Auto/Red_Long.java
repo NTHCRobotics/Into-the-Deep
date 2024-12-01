@@ -219,6 +219,7 @@ public class Claw {
         TrajectoryActionBuilder tab0 = drive.actionBuilder(initialPose)
                 .setReversed(true)
                 .splineTo(new Vector2d(-55, -58), Math.toRadians(225));
+
         TrajectoryActionBuilder tab1park = drive.actionBuilder(new Pose2d(-47.8,-31.9, Math.toRadians(90)))
                 .setReversed(true)
                 .splineTo(new Vector2d(-55, -58), Math.toRadians(225));
@@ -253,53 +254,18 @@ public class Claw {
         pathpark3 = tabpark3.build();
         pathfinal= tabfinal.build();
 
+        Actions.runBlocking(
+                new SequentialAction(
+                       tab0.build()
 
-        new SequentialAction(
-                // Pre Load
-                path0,
-                rocket.RocketUp(),
-                viper.ViperUp(),
 
-                claw.openClaw(),
-                viper.ViperDown(),
-                rocket.RocketDown(),
-                new SleepAction(1),
-                //First Sample
-                path1,
-                claw.closeClaw(),
-                new SleepAction(0.5),
-                pathpark1,
-                rocket.RocketUp(),
-                viper.ViperUp(),
-                claw.openClaw(),
-                viper.ViperDown(),
-                rocket.RocketDown(),
-                new SleepAction(1),
-                // Second Sample
-                path2,
-                claw.closeClaw(),
-                new SleepAction(0.5),
-                pathpark2,
-                rocket.RocketUp(),
-                viper.ViperUp(),
-                claw.openClaw(),
-                viper.ViperDown(),
-                rocket.RocketDown(),
-                new SleepAction(1),
-                path3 ,
-                claw.closeClaw(),
-                new SleepAction(0.5),
-                pathpark3,
-                rocket.RocketUp(),
-                viper.ViperUp(),
 
-                claw.openClaw(),
-                new SleepAction(1),
-                pathfinal
+                )
         );
 
 
     }
+}
 
-    }
+
 
