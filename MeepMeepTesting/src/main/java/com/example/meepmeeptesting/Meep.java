@@ -21,12 +21,17 @@ public class Meep{
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
 
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(11.8, -62.7, 90))
+        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-12.8, -62.7, 90))
 
 
-
+                                .lineToX(-23)
                 // Pre load Sample
-                .splineTo(new Vector2d(52 ,54), Math.toRadians(40))
+                .lineToYSplineHeading(-36, Math.toRadians(90))
+
+
+                .strafeTo(new Vector2d(-47,-36))
+                        .setReversed(true)
+                                .splineTo(new Vector2d(-55, -58), Math.toRadians(220))
                         //.setReversed(true)
               //  .splineTo(new Vector2d(-19, -10.4), Math.toRadians(225))
 
@@ -40,7 +45,7 @@ public class Meep{
 
 
 
-                        .build());
+                .build());
 
 
 

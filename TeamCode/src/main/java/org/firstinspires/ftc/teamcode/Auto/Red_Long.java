@@ -220,6 +220,15 @@ public class Claw {
                 .setReversed(true)
                 .splineTo(new Vector2d(-55, -58), Math.toRadians(225));
 
+        Action trajectoryAction1;
+        trajectoryAction1 = drive.actionBuilder(drive.pose)
+                .lineToYSplineHeading(-36, Math.toRadians(90))
+                .strafeTo(new Vector2d(-47,-36))
+                .setReversed(true)
+                .splineTo(new Vector2d(-55, -58), Math.toRadians(220))
+
+                .build();
+
         TrajectoryActionBuilder tab1park = drive.actionBuilder(new Pose2d(-47.8,-31.9, Math.toRadians(90)))
                 .setReversed(true)
                 .splineTo(new Vector2d(-55, -58), Math.toRadians(225));
@@ -227,6 +236,7 @@ public class Claw {
                 .setReversed(false)
                 .splineTo(new Vector2d(-47.8, -31.9), Math.toRadians(90))
                 .setReversed(true);
+
         TrajectoryActionBuilder tab2 = drive.actionBuilder(new Pose2d(-55, -58, Math.toRadians(225)))
                 .setReversed(false)
                 .splineTo(new Vector2d(-56.6,-36.6), Math.toRadians(90));
@@ -256,7 +266,7 @@ public class Claw {
 
         Actions.runBlocking(
                 new SequentialAction(
-                       tab0.build()
+                       trajectoryAction1
 
 
 
