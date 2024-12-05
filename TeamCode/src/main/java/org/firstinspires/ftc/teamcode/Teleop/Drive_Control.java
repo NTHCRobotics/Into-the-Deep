@@ -7,10 +7,11 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name="drivercontrolaxoltl9", group="Axoltl")
+@TeleOp(name="drivercontrolaxoltl10", group="Axoltl")
 //@Disabled  This way it will run on the robot
 public class Drive_Control extends OpMode {
     // Declare OpMode members.
@@ -51,7 +52,7 @@ public class Drive_Control extends OpMode {
     final double TRIGGER_THRESHOLD = 0.75;
     private double previousRunTime;
     private double inputDelayInSeconds = .5;
-    private int[] armLevelPosition = {0,975,1700,2265,};
+    private int[] armLevelPosition = {0,975,1700,3200,};
     private int[] SprocketLevelPosition = {0,200,750,1100};
     private int SprocketLevel;
     private int armLevel;
@@ -109,6 +110,25 @@ public class Drive_Control extends OpMode {
         viper.setTargetPositionTolerance(50);
         viper.setTargetPosition(50);
         viper.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        HangRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        HangRight.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        HangRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        HangRight.setTargetPositionTolerance(50);
+        HangRight.setTargetPosition(1);
+        HangRight.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        HangLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        HangLeft.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        HangLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        HangLeft.setTargetPositionTolerance(50);
+        HangLeft.setTargetPosition(1);
+        HangLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        HangRight.setVelocity(200);
+        HangLeft.setVelocity(200);
+
+
 
         //Sprocket Encoder
         Rocket.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -236,6 +256,7 @@ public class Drive_Control extends OpMode {
 
           armLevel = 0;
           RotationalClaw.setPosition(.43);
+          viper.setVelocity(3000);
 
 
         }
@@ -267,22 +288,24 @@ public class Drive_Control extends OpMode {
     public void RocketBoom() {
         // Check if the dpad_up button on gamepad2 is pressed
         if (gamepad2.dpad_up ) {
-
+            // Scoring Postion
             Rocket.setTargetPosition(970);
             Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
         else if(gamepad2.dpad_left){
+           // Hang Postion
             Rocket.setTargetPosition(760);
             Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
         else if(gamepad2.dpad_right){
+            // Pick Up postion
             Rocket.setTargetPosition(215);
             Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             RotationalClaw.setPosition(0.43);
         }
 // Check if the dpad_down button on gamepad2 is pressed
         else if (gamepad2.dpad_down) {
-
+            // Rest Postion
             Rocket.setTargetPosition(0);
             Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             RotationalClaw.setPosition(0.43);
@@ -313,13 +336,17 @@ public class Drive_Control extends OpMode {
     public void SecondHang(){
        //Going Down
         if (gamepad1.dpad_down) {
-            HangRight.setPower(0.3);
-            HangLeft.setPower(0.3);
+            HangRight.setTargetPosition(0);
+            HangLeft.setTargetPosition(0);
         }
         // Going Up
         else if (gamepad1.dpad_up) {
-            HangRight.setPower(-0.3);;
-            HangLeft.setPower(-0.3);
+            HangRight.setTargetPosition(550);;
+            HangLeft.setTargetPosition(550);
+        } else if (gamepad1.dpad_left) {
+            HangLeft.setTargetPosition(245);
+            HangRight.setTargetPosition(220);
+
         }
     }
     public void ClawRotation(){
