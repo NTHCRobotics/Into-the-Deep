@@ -26,11 +26,67 @@ public class Basket_by_time extends LinearOpMode {
     private Servo Claw;
     private Servo RotationalClaw; // Second CLaw
     private ElapsedTime  runtime = new ElapsedTime();
+    private int[] armLevelPosition = {0, 1200, 2500, 3250,};
+    private int armLevel;
 
     static final double  FORWARD_SPEED = -0.5;
     static final double Backward_Speed = 0.5;
-    static final double     Right_TURN_SPEED    = 0.5;
-    static  final double Left_Turn_Speed = -0.5;
+
+    public  void Right_Turn (){
+        wheelFL.setPower(0.5);
+        wheelFR.setPower(-0.5);
+
+        wheelBL.setPower(0.5);
+        wheelFR.setPower(-0.5);
+
+    }
+    public  void Left_turn(){
+        wheelFL.setPower(-0.2);
+        wheelFR.setPower(0.2);
+
+        wheelBL.setPower(-0.2);
+        wheelBR.setPower(0.2);
+    }
+    public  void Strafe_Left(){
+        wheelFL.setPower(FORWARD_SPEED);
+        wheelFR.setPower(Backward_Speed);
+        wheelBR.setPower(FORWARD_SPEED);
+        wheelBL.setPower(Backward_Speed);
+
+
+    }
+    public  void Strafe_Right(){
+       wheelFL.setPower(Backward_Speed);
+       wheelFR.setPower(FORWARD_SPEED);
+       wheelBL.setPower(FORWARD_SPEED);
+       wheelBR.setPower(Backward_Speed);
+        }
+
+    public void Move_Forward(){
+        wheelFR.setPower(FORWARD_SPEED);
+        wheelFL.setPower(FORWARD_SPEED);
+        wheelBL.setPower(FORWARD_SPEED);
+        wheelBR.setPower(FORWARD_SPEED);
+    }
+    public  void Move_Backward(){
+        wheelFR.setPower(Backward_Speed);
+        wheelFL.setPower(Backward_Speed);
+        wheelBL.setPower(Backward_Speed);
+        wheelBR.setPower(Backward_Speed);
+    }
+    public void Wheel_Stop(){
+        wheelBL.setPower(0);
+        wheelBR.setPower(0);
+        wheelFR.setPower(0);
+        wheelFL.setPower(0);
+    }
+
+
+
+
+
+
+
     @Override
     public void runOpMode() throws InterruptedException {
         //Motors
@@ -41,7 +97,7 @@ public class Basket_by_time extends LinearOpMode {
         Claw = hardwareMap.get(Servo.class, "claw");
         viper = hardwareMap.get(DcMotorEx.class, "viper");
         Rocket = hardwareMap.get(DcMotorEx.class, "rocket");
-        RotationalClaw = hardwareMap.get(Servo.class, "rotationalClaw");
+        RotationalClaw = hardwareMap.get(Servo.class, "rotateClaw");
 
 
         wheelFL.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
@@ -55,6 +111,8 @@ public class Basket_by_time extends LinearOpMode {
         viper.setTargetPositionTolerance(50);
         viper.setTargetPosition(50);
         viper.setDirection(DcMotorSimple.Direction.REVERSE);
+        viper.setVelocity(3000);
+        viper.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         //Sprocket Encoder
         Rocket.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -62,6 +120,7 @@ public class Basket_by_time extends LinearOpMode {
         Rocket.setDirection(DcMotorSimple.Direction.FORWARD);
         Rocket.setTargetPosition(0);
         Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        Rocket.setVelocity(600);
 
 
 
@@ -69,6 +128,18 @@ public class Basket_by_time extends LinearOpMode {
         wheelFR.setDirection(DcMotorSimple.Direction.REVERSE);//FORWARD
         wheelBL.setDirection(DcMotorSimple.Direction.FORWARD);//FORWARD
         wheelBR.setDirection(DcMotorSimple.Direction.REVERSE);//REVERSE
+
+        wheelFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        wheelFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        wheelBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        wheelBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+
+
+        telemetry.addData("Rocket Position", Rocket.getCurrentPosition());
+        telemetry.update();
+
+
 
 
         waitForStart();
@@ -82,52 +153,88 @@ public class Basket_by_time extends LinearOpMode {
         // Step through each leg of the path, ensuring that the Auto mode has not been stopped along the way
 
         // Step 1:  Drive forward for 1 seconds
-        Claw.setPosition(0.65);
-        wheelFL.setPower(FORWARD_SPEED);
-        wheelFR.setPower(FORWARD_SPEED);
-        wheelBR.setPower(FORWARD_SPEED);
-        wheelBL.setPower(FORWARD_SPEED);
+        Claw.setPosition(0.7);
+       Move_Backward();
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 1.0)) {
+        while (opModeIsActive() && (runtime.seconds() < 1.3)) {
             telemetry.addData("Path 1", "Leg 1: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
         // Will Strafe in some direction
-        wheelFL.setPower(FORWARD_SPEED);
-        wheelFR.setPower(Backward_Speed);
-        wheelBR.setPower(FORWARD_SPEED);
-        wheelBL.setPower(Backward_Speed);
-        while (opModeIsActive()&& (runtime.seconds() < 0.2)){
+        runtime.reset();
+        Strafe_Left();
+        while (opModeIsActive()&& (runtime.seconds() < 0.5)){
                 telemetry.addData("Path 1 Strafe ", "Leg 2",runtime.seconds());
+                telemetry.update();
         }
+        runtime.reset();
         // Turn for 0.2 seconds
-        wheelFL.setPower(Left_Turn_Speed);
 
-        wheelBR.setPower(Left_Turn_Speed);
-        while (opModeIsActive()&& (runtime.seconds() < 0.2)){
+        Left_turn();
+        while (opModeIsActive()&& (runtime.seconds() < 1.4)){
             telemetry.addData("Path 1 Turn ", "Leg 3",runtime.seconds());
         }
+
+
+        wheelBL.setPower(0);
+        wheelBR.setPower(0);
+        wheelFR.setPower(0);
+        wheelFL.setPower(0);
+
+        runtime.reset();
         Rocket.setTargetPosition(970);
-        while (opModeIsActive()&& (runtime.seconds() < 0.2)){
+        while (opModeIsActive()&& (runtime.seconds() < 2.1)){
             telemetry.addData("Path 1 Sprocket Scoring Postion ", "Leg 4",runtime.seconds());
         }
-        RotationalClaw.setPosition(.43);
-        viper.setTargetPosition(1500);
-        while (opModeIsActive()&& (runtime.seconds() < 1.2)){
+        runtime.reset();
+        RotationalClaw.setPosition(.88);
+        while (opModeIsActive()&& (runtime.seconds() < 2)){
             telemetry.addData("Path 1 Viper Scoring Postion ", "Leg 5",runtime.seconds());
 
         }
-        RotationalClaw.setPosition(0);
-        Claw.setPosition(0.65);
-        while (opModeIsActive()&& (runtime.seconds() < 0.5)) {
-            telemetry.addData("Claw Command ", "Leg 6", runtime.seconds());
+
+        viper.setTargetPosition(3250);
+        while (opModeIsActive()&& (runtime.seconds() < 5)){
+            telemetry.addData("Path 1 Viper Scoring Postion ", "Leg 5",runtime.seconds());
+
+        }
+        runtime.reset();
+        Move_Backward();
+
+        while (opModeIsActive()&& (runtime.seconds() < 0.3)){
+            telemetry.addData("Path 1 Sprocket Scoring Postion ", "Leg 4",runtime.seconds());
+        }
+        runtime.reset();
+        wheelBL.setPower(0);
+        wheelBR.setPower(0);
+        wheelFR.setPower(0);
+        wheelFL.setPower(0);
+        while (opModeIsActive()&& (runtime.seconds() < 0.2)){
+            telemetry.addData("Path 1 Sprocket Scoring Postion ", "Leg 4",runtime.seconds());
         }
 
-        RotationalClaw.setPosition(0.43);
+
+
+
+        runtime.reset();
+        RotationalClaw.setPosition(0.5);
+
+        while (opModeIsActive()&& (runtime.seconds() < 1.5)) {
+            telemetry.addData("Claw Command ", "Leg 6", runtime.seconds());
+        }
+        Claw.setPosition(1);
+        runtime.reset();
+        while (opModeIsActive()&& (runtime.seconds() < 1.5)) {
+            telemetry.addData("Claw Command ", "Leg 6", runtime.seconds());
+        }
+        runtime.reset();
+        RotationalClaw.setPosition(0.68);
         viper.setTargetPosition(0);
         while (opModeIsActive()&& (runtime.seconds() < 1.2)) {
             telemetry.addData("Path 1 Viper Rest", "Leg 7", runtime.seconds());
         }
+        runtime.reset();
+        
 
         Rocket.setTargetPosition(0);
         Claw.setPosition(1);
@@ -135,191 +242,6 @@ public class Basket_by_time extends LinearOpMode {
             telemetry.addData("Path 1 Sprocket Rest Postion ", "Leg 8", runtime.seconds());
         }
 
-        // Seq 2
-        wheelFL.setPower(Right_TURN_SPEED);
-
-        wheelBR.setPower(Right_TURN_SPEED);
-        while (opModeIsActive()&& (runtime.seconds() < 0.5)) {
-            telemetry.addData("Path 2 Wheel Rotation ", "Path 2 Leg 1", runtime.seconds());
-        }
-
-        Rocket.setTargetPosition(210);
-        while (opModeIsActive()&& (runtime.seconds() < 0.5)) {
-            telemetry.addData("Path 2 Rocket Pick up Postion ", "Path 2 Leg 2", runtime.seconds());
-        }
-
-        viper.setTargetPosition(1000);
-        while (opModeIsActive()&& (runtime.seconds() < 0.75)) {
-            telemetry.addData("Path 2 Rocket Viper PickUp ", "Path 2 Leg 3", runtime.seconds());
-        }
-
-        RotationalClaw.setPosition(1);
-        Claw.setPosition(0.65);
-        while (opModeIsActive()&& (runtime.seconds() < 0.5)) {
-            telemetry.addData("Path 2 Rocket Claw Command Pick Up ", "Path 2  Leg 4", runtime.seconds());
-        }
-        viper.setTargetPosition(0);
-        while (opModeIsActive()&& (runtime.seconds() < 0.5)) {
-            telemetry.addData("Path 2 Viper Rest ", "Path 2 Leg 5", runtime.seconds());
-        }
-        wheelFL.setPower(Left_Turn_Speed);
-
-        wheelBR.setPower(Left_Turn_Speed);
-
-        while (opModeIsActive()&& (runtime.seconds() < 0.5)) {
-            telemetry.addData("Path 2 Viper Rest ", "Path 2 Leg 5", runtime.seconds());
-        }
-      Rocket.setTargetPosition(970);
-        RotationalClaw.setPosition(0.43);
-        while (opModeIsActive()&& (runtime.seconds() < 0.5)) {
-            telemetry.addData("Path 2 Rocket Score  Postion ", "Path 2 Leg 6", runtime.seconds());
-        }
-
-      viper.setTargetPosition(2500);
-        while (opModeIsActive()&& (runtime.seconds() < 0.5)) {
-            telemetry.addData("Path 2 Viper Score Postion ", "Path 2 Leg 7", runtime.seconds());
-        }
-      RotationalClaw.setPosition(0);
-      Claw.setPosition(0.65);
-        while (opModeIsActive()&& (runtime.seconds() < 0.5)) {
-            telemetry.addData("Path 2 Claw Score Command ", "Path 2 Leg 8", runtime.seconds());
-        }
-
-      RotationalClaw.setPosition(0.43);
-      viper.setTargetPosition(0);
-
-        while (opModeIsActive()&& (runtime.seconds() < 0.5)) {
-            telemetry.addData("Path 2 Viper Rest ", "Path 2 Leg 9", runtime.seconds());
-        }
-
-       // Seq 3
-        Rocket.setTargetPosition(210);
-
-        while (opModeIsActive()&& (runtime.seconds() < 0.5)) {
-            telemetry.addData("Path 2 Rocket Pick Up ", "Path 3 Leg 1", runtime.seconds());
-        }
-
-        wheelFL.setPower(Right_TURN_SPEED);
-
-        wheelBR.setPower(Right_TURN_SPEED);
-
-        while (opModeIsActive()&& (runtime.seconds() < 0.5)) {
-            telemetry.addData("Path 2 Wheel Rotation ", "Path 3 Leg 2", runtime.seconds());
-        }
-
-        Rocket.setTargetPosition(210);
-        while (opModeIsActive()&& (runtime.seconds() < 0.5)) {
-            telemetry.addData("Path 2 Rocket Pick up Postion ", "Path 3 Leg 3", runtime.seconds());
-        }
-
-        viper.setTargetPosition(1000);
-        while (opModeIsActive()&& (runtime.seconds() < 0.75)) {
-            telemetry.addData("Path 2 Rocket Viper PickUp ", "Path 3 Leg 4", runtime.seconds());
-        }
-
-        RotationalClaw.setPosition(1);
-        Claw.setPosition(0.65);
-        while (opModeIsActive()&& (runtime.seconds() < 0.5)) {
-            telemetry.addData("Path 2 Rocket Claw Command Pick Up ", "Path 3  Leg 5", runtime.seconds());
-        }
-        viper.setTargetPosition(0);
-        while (opModeIsActive()&& (runtime.seconds() < 0.5)) {
-            telemetry.addData("Path 2 Viper Rest ", "Path 2 Leg 5", runtime.seconds());
-        }
-        wheelFL.setPower(Left_Turn_Speed);
-
-        wheelBR.setPower(Left_Turn_Speed);
-
-        while (opModeIsActive()&& (runtime.seconds() < 0.5)) {
-            telemetry.addData("Path 2 Viper Rest ", "Path 3 Leg 6", runtime.seconds());
-        }
-        Rocket.setTargetPosition(970);
-        RotationalClaw.setPosition(0.43);
-        while (opModeIsActive()&& (runtime.seconds() < 0.5)) {
-            telemetry.addData("Path 2 Rocket Score  Postion ", "Path 3 Leg 7", runtime.seconds());
-        }
-
-        viper.setTargetPosition(2500);
-        while (opModeIsActive()&& (runtime.seconds() < 0.5)) {
-            telemetry.addData("Path 2 Viper Score Postion ", "Path 3 Leg 8", runtime.seconds());
-        }
-        RotationalClaw.setPosition(0);
-        Claw.setPosition(0.65);
-        while (opModeIsActive()&& (runtime.seconds() < 0.5)) {
-            telemetry.addData("Path 2 Claw Score Command ", "Path 3 Leg 9", runtime.seconds());
-        }
-
-        RotationalClaw.setPosition(0.43);
-        viper.setTargetPosition(0);
-
-        while (opModeIsActive()&& (runtime.seconds() < 0.5)) {
-            telemetry.addData("Path 2 Viper Rest ", "Path 3 Leg 10", runtime.seconds());
-        }
-
-        // Seq 4
-        // Seq 3
-        Rocket.setTargetPosition(210);
-
-        while (opModeIsActive()&& (runtime.seconds() < 0.5)) {
-            telemetry.addData("Path 2 Rocket Pick Up ", "Path 4 Leg 1", runtime.seconds());
-        }
-
-        wheelFL.setPower(Right_TURN_SPEED);
-
-        wheelBR.setPower(Right_TURN_SPEED);
-
-        while (opModeIsActive()&& (runtime.seconds() < 0.5)) {
-            telemetry.addData("Path 2 Wheel Rotation ", "Path 4 Leg 2", runtime.seconds());
-        }
-
-        Rocket.setTargetPosition(210);
-        while (opModeIsActive()&& (runtime.seconds() < 0.5)) {
-            telemetry.addData("Path 2 Rocket Pick up Postion ", "Path 4 Leg 3", runtime.seconds());
-        }
-
-        viper.setTargetPosition(1000);
-        while (opModeIsActive()&& (runtime.seconds() < 0.75)) {
-            telemetry.addData("Path 2 Rocket Viper PickUp ", "Path 4 Leg 4", runtime.seconds());
-        }
-
-        RotationalClaw.setPosition(1);
-        Claw.setPosition(0.65);
-        while (opModeIsActive()&& (runtime.seconds() < 0.5)) {
-            telemetry.addData("Path 2 Rocket Claw Command Pick Up ", "Path 4  Leg 5", runtime.seconds());
-        }
-        viper.setTargetPosition(0);
-        while (opModeIsActive()&& (runtime.seconds() < 0.5)) {
-            telemetry.addData("Path 2 Viper Rest ", "Path 4 Leg 5", runtime.seconds());
-        }
-        wheelFL.setPower(Left_Turn_Speed);
-
-        wheelBR.setPower(Left_Turn_Speed);
-
-        while (opModeIsActive()&& (runtime.seconds() < 0.5)) {
-            telemetry.addData("Path 2 Viper Rest ", "Path 4 Leg 6", runtime.seconds());
-        }
-        Rocket.setTargetPosition(970);
-        RotationalClaw.setPosition(0.43);
-        while (opModeIsActive()&& (runtime.seconds() < 0.5)) {
-            telemetry.addData("Path 2 Rocket Score  Postion ", "Path 4 Leg 7", runtime.seconds());
-        }
-
-        viper.setTargetPosition(2500);
-        while (opModeIsActive()&& (runtime.seconds() < 0.5)) {
-            telemetry.addData("Path 2 Viper Score Postion ", "Path 4 Leg 8", runtime.seconds());
-        }
-        RotationalClaw.setPosition(0);
-        Claw.setPosition(0.65);
-        while (opModeIsActive()&& (runtime.seconds() < 0.5)) {
-            telemetry.addData("Path 2 Claw Score Command ", "Path 4 Leg 9", runtime.seconds());
-        }
-
-        RotationalClaw.setPosition(0.43);
-        viper.setTargetPosition(0);
-
-        while (opModeIsActive()&& (runtime.seconds() < 0.5)) {
-            telemetry.addData("Path 2 Viper Rest ", "Path 4 Leg 10", runtime.seconds());
-        }
 
 
 
