@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name="drivercontrolaxoltl10", group="Axoltl")
+@TeleOp(name="drivercontrolaxoltl", group="Axoltl")
 //@Disabled  This way it will run on the robot
 public class Drive_Control_New extends OpMode {
     // Declare OpMode members.
@@ -50,10 +50,13 @@ public class Drive_Control_New extends OpMode {
     final double TRIGGER_THRESHOLD = 0.75;
     private double previousRunTime;
     private double inputDelayInSeconds = .5;
-    private int[] armLevelPosition = {0, 1600, 2500, 3250,};
+    private int[] armLevelPosition = {0, 1600, 2500, 3245,};
     private int[] SprocketLevelPosition = {0, 200, 750, 1100};
     private int SprocketLevel;
     private int armLevel;
+
+    private ElapsedTime timer = new ElapsedTime();
+
     //private int blueValue = colorSensor.blue();
     // private int redValue = colorSensor.red();
     // private int greenValue = colorSensor.green();
@@ -120,6 +123,7 @@ public class Drive_Control_New extends OpMode {
         Rocket.setTargetPosition(0);
 
 
+
         //Wheel Direction
         wheelFL.setDirection(DcMotorSimple.Direction.FORWARD);//FORWARD
         wheelFR.setDirection(DcMotorSimple.Direction.REVERSE);//REVERSE
@@ -170,6 +174,7 @@ public class Drive_Control_New extends OpMode {
         ClawRotation();
         Score();
         PickUp();
+        Reset();
         //  SampleShoot();
 
 
@@ -190,16 +195,17 @@ public class Drive_Control_New extends OpMode {
         //   telemetry.addData("Blue", blueValue);
         telemetry.addData("Rocket Level", SprocketLevelPosition[SprocketLevel]);
         telemetry.addData("Rocket Position", Rocket.getCurrentPosition());
+        telemetry.addData("Rocket Velocity", Rocket.getVelocity());
         telemetry.update();
     }
 
 
     // Adjust speed for precision control based on trigger inputs
     public void precisionControl() {
-        if (gamepad1.left_trigger > 0) {
+        if (gamepad1.share) {
             speedMod = .25;
             gamepad1.rumble(1, 1, 200);  // Rumble feedback for precision mode
-        } else if (gamepad1.right_trigger > 0) {
+        } else if (gamepad1.options) {
             speedMod = 0.5;
             gamepad1.rumble(1, 1, 200);  // Rumble feedback for medium speed mode
         } else {
@@ -230,12 +236,12 @@ public class Drive_Control_New extends OpMode {
     //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     // Method to control the vertical lift mechanism
     public void Verticallift() {
-        if ((gamepad2.y) && (armLevel < armLevelPosition.length - 1) && (getRuntime() - previousRunTime >= inputDelayInSeconds)) {
+        if ((gamepad1.y) && (armLevel < armLevelPosition.length - 1) && (getRuntime() - previousRunTime >= inputDelayInSeconds)) {
             RotationalClaw.setPosition(.68);
             armLevel = 3;
             viper.setVelocity(10000);
 
-        } else if ((gamepad2.a) && (armLevel > 0) && (getRuntime() - previousRunTime >= inputDelayInSeconds)) {
+        } else if ((gamepad1.a) && (armLevel > 0) && (getRuntime() - previousRunTime >= inputDelayInSeconds)) {
 
             armLevel = 0;
             RotationalClaw.setPosition(.68);
@@ -243,7 +249,7 @@ public class Drive_Control_New extends OpMode {
 
 
 
-        } else if (gamepad2.b) {
+        } else if (gamepad1.b) {
             armLevel = 2;
             viper.setVelocity(10000);
             RotationalClaw.setPosition(.68);
@@ -251,7 +257,7 @@ public class Drive_Control_New extends OpMode {
 
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         //sets to driving level
-        if (gamepad2.x) {
+        if (gamepad1.x) {
             armLevel = 1;
             viper.setVelocity(10000);
             RotationalClaw.setPosition(.68);
@@ -307,31 +313,92 @@ public class Drive_Control_New extends OpMode {
 
     public void PickUp(){
         if(gamepad1.dpad_left){
+
+            if(armLevel == 3){
+
+            }
+            Rocket.setVelocity(1500);
+            viper.setVelocity(5000);
+            RotationalClaw.setPosition(0.68);
             Rocket.setTargetPosition(225);
-            RotationalClaw.setPosition(0.43);
+
+            Claw.setPosition(1);
+            timer.reset();
+            while (timer.milliseconds() < 200 ){
+                telemetry.addData("Status" , "Waiting...");
+                telemetry.update();
+            }
             armLevel = 1;
+            timer.reset();
+            while (timer.milliseconds() < 1000 ){
+                telemetry.addData("Status" , "Waiting...");
+                telemetry.update();
+            }
+            RotationalClaw.setPosition(1);
+
+
+            Claw.setPosition(1);
+            viper.setTargetPosition(armLevelPosition[armLevel]);
+            viper.setTargetPositionTolerance(armLevelPosition[armLevel]);
 
 
         }
+
     }
 
     public  void Score(){
+        Rocket.setVelocity(1000);
+        viper.setVelocity(5000);
         if(gamepad1.dpad_up) {
+
             Rocket.setTargetPosition(970);
-            RotationalClaw.setPosition(1);
+            RotationalClaw.setPosition(0.68);
+            timer.reset();
+            while (timer.milliseconds() < 1500 ){
+                telemetry.addData("Status" , "Waiting...");
+                telemetry.update();
+            }
+
+
+            RotationalClaw.setPosition(0.43);
             armLevel = 3;
+
         }
+        viper.setTargetPosition(armLevelPosition[armLevel]);
+        viper.setTargetPositionTolerance(armLevelPosition[armLevel]);
+    }
+
+    public  void Reset() {
+        Rocket.setVelocity(1000);
+        viper.setVelocity(5000);
+        if (gamepad1.dpad_down) {
+            armLevel = 0;
+            Claw.setPosition(1);
+            RotationalClaw.setPosition(.68);
+            viper.setTargetPosition(armLevelPosition[armLevel]);
+            viper.setTargetPositionTolerance(armLevelPosition[armLevel]);
+            timer.reset();
+            while (timer.milliseconds() < 1000 ){
+                telemetry.addData("Status" , "Waiting...");
+                telemetry.update();
+            }
+            Rocket.setTargetPosition(0);
+
+
+
+        }
+
     }
 
     // Method to control the claw grip mechanism
     public void ClawGrip() {
         // Check if the left bumper on gamepad2 is pressed
-        if (gamepad2.left_trigger > 0) {
+        if (gamepad1.left_trigger > 0) {
             // Set the claw servo to move forward
             Claw.setPosition(1);// Opens the CLaw
         }
         // Check if the right bumper on gamepad2 is pressed
-        else if (gamepad2.right_trigger > 0) {
+        else if (gamepad1.right_trigger > 0) {
             // Set the claw servo to move backward
             Claw.setPosition(0.65); // Close the Claw
         }
@@ -341,12 +408,12 @@ public class Drive_Control_New extends OpMode {
 
     public void SecondHang() {
         //Going Down
-        if (gamepad1.dpad_up) {
+        if (gamepad2.dpad_up) {
             HangRight.setPosition(0.7); // Correct Postion
             HangLeft.setPosition(0.57);
         }
         // Going Up
-        else if (gamepad1.dpad_down) {
+        else if (gamepad2.dpad_down) {
             HangRight.setPosition(0); // Correct Postion
             HangLeft.setPosition(1);
 
@@ -355,11 +422,11 @@ public class Drive_Control_New extends OpMode {
     }
 
     public void ClawRotation() {
-        if (gamepad2.left_bumper) {
+        if (gamepad1.left_bumper) {
             RotationalClaw.setPosition(1);
         }
         // Score postion
-        else if (gamepad2.right_bumper) {
+        else if (gamepad1.right_bumper) {
             RotationalClaw.setPosition(0.43);
         }
     }

@@ -273,7 +273,7 @@ public class Drive_Control_Monkey extends OpMode {
             // Scoring Postion
             Rocket.setTargetPosition(970);
             Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        } else if (gamepad1.dpad_left) {
+        } else if (gamepad1.dpad_right) {
             // Hang Postion
             Rocket.setTargetPosition(760);
             Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -291,7 +291,7 @@ public class Drive_Control_Monkey extends OpMode {
             RotationalClaw.setPosition(0.68);
 
         }
-        else if (gamepad1.dpad_right){
+        else if (gamepad1.dpad_left){
             Rocket.setTargetPosition(225);
             Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             RotationalClaw.setPosition(0.6);
