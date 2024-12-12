@@ -111,7 +111,7 @@ public class Basket_by_time extends LinearOpMode {
         viper.setTargetPositionTolerance(50);
         viper.setTargetPosition(50);
         viper.setDirection(DcMotorSimple.Direction.REVERSE);
-        viper.setVelocity(3000);
+        viper.setVelocity(10000);
         viper.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         //Sprocket Encoder
@@ -120,7 +120,7 @@ public class Basket_by_time extends LinearOpMode {
         Rocket.setDirection(DcMotorSimple.Direction.FORWARD);
         Rocket.setTargetPosition(0);
         Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        Rocket.setVelocity(600);
+        Rocket.setVelocity(2000);
 
 
 
@@ -162,7 +162,7 @@ public class Basket_by_time extends LinearOpMode {
         }
         // Will Strafe in some direction
         runtime.reset();
-        Strafe_Left();
+        Strafe_Right();
         while (opModeIsActive()&& (runtime.seconds() < 0.5)){
                 telemetry.addData("Path 1 Strafe ", "Leg 2",runtime.seconds());
                 telemetry.update();
@@ -170,8 +170,11 @@ public class Basket_by_time extends LinearOpMode {
         runtime.reset();
         // Turn for 0.2 seconds
 
-        Left_turn();
-        while (opModeIsActive()&& (runtime.seconds() < 1.4)){
+        wheelFL.setPower(-FORWARD_SPEED);
+        wheelFR.setPower(-Backward_Speed);
+        wheelBR.setPower(-FORWARD_SPEED);
+        wheelBL.setPower(-Backward_Speed);
+        while (opModeIsActive()&& (runtime.seconds() < 1.6)){
             telemetry.addData("Path 1 Turn ", "Leg 3",runtime.seconds());
         }
 
@@ -201,7 +204,7 @@ public class Basket_by_time extends LinearOpMode {
         runtime.reset();
         Move_Backward();
 
-        while (opModeIsActive()&& (runtime.seconds() < 0.3)){
+        while (opModeIsActive()&& (runtime.seconds() < 0.15)){
             telemetry.addData("Path 1 Sprocket Scoring Postion ", "Leg 4",runtime.seconds());
         }
         runtime.reset();

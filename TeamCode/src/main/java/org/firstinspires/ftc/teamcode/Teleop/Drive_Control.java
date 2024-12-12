@@ -65,7 +65,7 @@ public class Drive_Control extends OpMode {
     // private static final int TARGET_RED_THRESHOLD = 100;  // Minimum red value for scoring color
     //  private static final int TARGET_BLUE_THRESHOLD = 100; // Minimum blue value for scoring color
 
-    // wifi pass petAxoltol
+    // wifi pass Petaxoltol
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -113,13 +113,14 @@ public class Drive_Control extends OpMode {
         viper.setTargetPositionTolerance(50);
         viper.setTargetPosition(50);
         viper.setDirection(DcMotorSimple.Direction.REVERSE);
-
+        viper.setVelocity(10000);
 
         //Sprocket Encoder
         Rocket.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         Rocket.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         Rocket.setDirection(DcMotorSimple.Direction.FORWARD);
         Rocket.setTargetPosition(0);
+
 
         //Wheel Direction
         wheelFL.setDirection(DcMotorSimple.Direction.FORWARD);//FORWARD
@@ -232,18 +233,19 @@ public class Drive_Control extends OpMode {
         if ((gamepad2.y) && (armLevel < armLevelPosition.length - 1) && (getRuntime() - previousRunTime >= inputDelayInSeconds)) {
             RotationalClaw.setPosition(.68);
             armLevel = 3;
-            viper.setVelocity(2000);
+            viper.setVelocity(10000);
 
         } else if ((gamepad2.a) && (armLevel > 0) && (getRuntime() - previousRunTime >= inputDelayInSeconds)) {
 
             armLevel = 0;
             RotationalClaw.setPosition(.68);
-            viper.setVelocity(2000);
+            viper.setVelocity(10000);
+
 
 
         } else if (gamepad2.b) {
             armLevel = 2;
-            viper.setVelocity(2000);
+            viper.setVelocity(10000);
             RotationalClaw.setPosition(.68);
         }
 
@@ -251,7 +253,7 @@ public class Drive_Control extends OpMode {
         //sets to driving level
         if (gamepad2.x) {
             armLevel = 1;
-        viper.setVelocity(2000);
+            viper.setVelocity(10000);
         RotationalClaw.setPosition(.68);
 
         }
@@ -264,6 +266,7 @@ public class Drive_Control extends OpMode {
         }
         viper.setTargetPosition(armLevelPosition[armLevel]);
         viper.setTargetPositionTolerance(armLevelPosition[armLevel]);
+        viper.setVelocity(10000);
     }
 
     // Method to control the rocket motor mechanism
@@ -292,14 +295,14 @@ public class Drive_Control extends OpMode {
 
         }
         else if (gamepad2.dpad_right){
-            Rocket.setTargetPosition(210);
+            Rocket.setTargetPosition(225);
             Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             RotationalClaw.setPosition(0.6);
 
         }
 
 
-        Rocket.setVelocity(600);
+        Rocket.setVelocity(2000);
     }
 
     // Method to control the claw grip mechanism

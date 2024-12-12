@@ -1,22 +1,15 @@
 package org.firstinspires.ftc.teamcode.Teleop;
-import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-
-
-
-
-import java.util.Arrays;
-@TeleOp(name="drivercontrol", group="Axolotls")
+@TeleOp(name="drivercontrolaxoltl10", group="Axoltl")
 //@Disabled  This way it will run on the robot
 public class Drive_Control_New extends OpMode {
     // Declare OpMode members.
@@ -40,10 +33,11 @@ public class Drive_Control_New extends OpMode {
     private DcMotorEx wheelBR; // Back right wheel
     private DcMotorEx viper; //Vertical lift mechanism
     private DcMotorEx Rocket; // Motor for rotate the Vertical lift
-
+    private Servo HangRight;
+    private Servo HangLeft;
     //Servos
-    private CRServo intake; // intake
-    private Servo wrist; // wrist
+    private Servo RotationalClaw; // Second CLaw
+    private Servo Claw; // Primary Claw
 
 
     //Sensors
@@ -56,42 +50,10 @@ public class Drive_Control_New extends OpMode {
     final double TRIGGER_THRESHOLD = 0.75;
     private double previousRunTime;
     private double inputDelayInSeconds = .5;
-    private int[] armLevelPosition = {0, 2350, 3000};
+    private int[] armLevelPosition = {0, 1600, 2500, 3250,};
     private int[] SprocketLevelPosition = {0, 200, 750, 1100};
     private int SprocketLevel;
     private int armLevel;
-
-
-    final double ARM_TICKS_PER_DEGREE =
-            28 // number of encoder ticks per rotation of the bare motor
-                    * 250047.0 / 4913.0 // This is the exact gear ratio of the 50.9:1 Yellow Jacket gearbox
-                    * 100.0 / 20.0 // This is the external gear reduction, a 20T pinion gear that drives a 100T hub-mount gear
-                    * 1 / 360.0; // we want ticks per degree, not per rotation
-
-    final double ARM_COLLAPSED_INTO_ROBOT = 0;
-    final double ARM_COLLECT = 250 * ARM_TICKS_PER_DEGREE;
-    final double ARM_CLEAR_BARRIER = 230 * ARM_TICKS_PER_DEGREE;
-    final double ARM_SCORE_SPECIMEN = 160 * ARM_TICKS_PER_DEGREE;
-    final double ARM_SCORE_SAMPLE_IN_LOW = 160 * ARM_TICKS_PER_DEGREE;
-    final double ARM_ATTACH_HANGING_HOOK = 120 * ARM_TICKS_PER_DEGREE;
-    final double ARM_WINCH_ROBOT = 15 * ARM_TICKS_PER_DEGREE;
-
-    /* Variables to store the speed the intake servo should be set at to intake, and deposit game elements. */
-    final double INTAKE_COLLECT = -1.0;
-    final double INTAKE_OFF = 0.0;
-    final double INTAKE_DEPOSIT = 0.5;
-
-    /* Variables to store the positions that the wrist should be set to when folding in, or folding out. */
-    final double WRIST_FOLDED_IN = 0.8333;
-    final double WRIST_FOLDED_OUT = 0.5;
-
-    /* A number in degrees that the triggers can adjust the arm position by */
-    final double FUDGE_FACTOR = 15 * ARM_TICKS_PER_DEGREE;
-
-    /* Variables that are used to set the arm to a specific position */
-    double armPosition = (int) ARM_COLLAPSED_INTO_ROBOT;
-    double armPositionFudgeFactor;
-
     //private int blueValue = colorSensor.blue();
     // private int redValue = colorSensor.red();
     // private int greenValue = colorSensor.green();
@@ -100,6 +62,8 @@ public class Drive_Control_New extends OpMode {
     // private static final int YELLOW_BLUE_THRESHOLD = 100; // Maximum blue value for yellow
     // private static final int TARGET_RED_THRESHOLD = 100;  // Minimum red value for scoring color
     //  private static final int TARGET_BLUE_THRESHOLD = 100; // Minimum blue value for scoring color
+
+    // wifi pass Petaxoltol
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -125,8 +89,12 @@ public class Drive_Control_New extends OpMode {
 
 
         //------------SERVOS////
-        intake = hardwareMap.get(CRServo.class, "intake");
-        wrist = hardwareMap.get(Servo.class, "wrist");
+        Claw = hardwareMap.get(Servo.class, "claw");
+        RotationalClaw = hardwareMap.get(Servo.class, "rotateClaw");
+        HangRight = hardwareMap.get(Servo.class, "hangRight");
+        HangLeft = hardwareMap.get(Servo.class, "hangLeft");
+
+
         //Motor Encoders
         //Wheels
 
@@ -139,21 +107,22 @@ public class Drive_Control_New extends OpMode {
         // Viper Encoder
         viper.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         viper.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        viper.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        viper.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         viper.setTargetPositionTolerance(50);
         viper.setTargetPosition(50);
         viper.setDirection(DcMotorSimple.Direction.REVERSE);
+        viper.setVelocity(10000);
 
         //Sprocket Encoder
         Rocket.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        Rocket.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        Rocket.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        Rocket.setDirection(DcMotorSimple.Direction.FORWARD);
         Rocket.setTargetPosition(0);
 
 
-        // Rocket.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         //Wheel Direction
-        wheelFL.setDirection(DcMotorSimple.Direction.FORWARD);//REVERSE
-        wheelFR.setDirection(DcMotorSimple.Direction.REVERSE);//FORWARD
+        wheelFL.setDirection(DcMotorSimple.Direction.FORWARD);//FORWARD
+        wheelFR.setDirection(DcMotorSimple.Direction.REVERSE);//REVERSE
         wheelBL.setDirection(DcMotorSimple.Direction.FORWARD);//FORWARD
         wheelBR.setDirection(DcMotorSimple.Direction.REVERSE);//REVERSE
 
@@ -192,12 +161,15 @@ public class Drive_Control_New extends OpMode {
     public void loop() {
         // These methods will continuously run in the teleop loop
         precisionControl();
-        drivingControl();
+        SecondHang();
         Verticallift();
         // DectectYellow();
+        ClawGrip();
+        drive();
         RocketBoom();
-        IntakeCommands();
-        //Bucket();
+        ClawRotation();
+        Score();
+        PickUp();
         //  SampleShoot();
 
 
@@ -218,9 +190,6 @@ public class Drive_Control_New extends OpMode {
         //   telemetry.addData("Blue", blueValue);
         telemetry.addData("Rocket Level", SprocketLevelPosition[SprocketLevel]);
         telemetry.addData("Rocket Position", Rocket.getCurrentPosition());
-        telemetry.addData("Rocket Velocity", Rocket.getVelocity());
-        telemetry.addData("Rocket is at target", !Rocket.isBusy());
-
         telemetry.update();
     }
 
@@ -239,135 +208,179 @@ public class Drive_Control_New extends OpMode {
         }
     }
 
-    // Driving control for mecanum wheels
-    public void drivingControl() {
-        double r = Math.hypot(-gamepad1.right_stick_x, -gamepad1.left_stick_x);  // Calculate magnitude of joystick input
-        double robotAngle = Math.atan2(-gamepad1.right_stick_x, -gamepad1.left_stick_x) - Math.PI / 4;  // Calculate robot's angle
-        double rightX = -gamepad1.left_stick_y;  // Move Forward and Move Backwards
-        rotation += 1 * rightX;
 
-        // Calculate power for each wheel based on joystick inputs and rotation
-        final double v1 = r * Math.cos(robotAngle) - rightX;
-        final double v2 = r * Math.sin(robotAngle) + rightX;
-        final double v3 = r * Math.sin(robotAngle) - rightX;
-        final double v4 = r * Math.cos(robotAngle) + rightX;
+    public void drive() {
+        double x = -gamepad1.left_stick_x;
+        double y = gamepad1.left_stick_y;
+        double rotation = -gamepad1.right_stick_x;
+        double FL = (y + x + rotation) * speedMod;
+        double FR = (y - x - rotation) * speedMod;
+        double BL = (y - x + rotation) * speedMod;
+        double BR = (y + x - rotation) * speedMod;
 
-        // Set power to each wheel, adjusting with speed modifier
-        wheelFL.setPower(v1 * speedMod);
-        wheelFR.setPower(-v2 * speedMod);
-        wheelBL.setPower(v3 * speedMod);
-        wheelBR.setPower(-v4 * speedMod);
+        wheelFL.setPower(FL);
+        wheelFR.setPower(FR);
+        wheelBL.setPower(BL);
+        wheelBR.setPower(BR);
+
+
     }
 
 
     //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     // Method to control the vertical lift mechanism
     public void Verticallift() {
-        if (gamepad2.y) {
+        if ((gamepad2.y) && (armLevel < armLevelPosition.length - 1) && (getRuntime() - previousRunTime >= inputDelayInSeconds)) {
+            RotationalClaw.setPosition(.68);
+            armLevel = 3;
+            viper.setVelocity(10000);
 
-            armLevel = 1;
+        } else if ((gamepad2.a) && (armLevel > 0) && (getRuntime() - previousRunTime >= inputDelayInSeconds)) {
+
+            armLevel = 0;
+            RotationalClaw.setPosition(.68);
+            viper.setVelocity(10000);
+
+
+
+        } else if (gamepad2.b) {
+            armLevel = 2;
+            viper.setVelocity(10000);
+            RotationalClaw.setPosition(.68);
         }
 
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         //sets to driving level
         if (gamepad2.x) {
-            armLevel = 0;
+            armLevel = 1;
+            viper.setVelocity(10000);
+            RotationalClaw.setPosition(.68);
+
         }
 
-        viper.setVelocity(1000);
-        if (armLevel == 1) {
-            viper.setVelocity(1000);
-            //if statement to set speed only going down
-        }
+
+
 
         if (getRuntime() - previousRunTime >= inputDelayInSeconds + .25) {
 
         }
         viper.setTargetPosition(armLevelPosition[armLevel]);
         viper.setTargetPositionTolerance(armLevelPosition[armLevel]);
+        viper.setVelocity(10000);
     }
 
     // Method to control the rocket motor mechanism
     public void RocketBoom() {
-        Rocket.setPower(-0.2);
+        // Check if the dpad_up button on gamepad2 is pressed
         if (gamepad2.dpad_up) {
-            Rocket.setTargetPosition(20);
+            // Scoring Postion
+            Rocket.setTargetPosition(970);
             Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-
-        } else if (gamepad2.dpad_down) {
-            //  Rocket.setTargetPosition(0);
-            Rocket.setTargetPosition(10);
+        } else if (gamepad2.dpad_left) {
+            // Hang Postion
+            Rocket.setTargetPosition(760);
             Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        } else {
+        } else if (gamepad2.share) {
+            // Pick Up postion
+            Rocket.setTargetPosition(245);
+            Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            RotationalClaw.setPosition(0.6);
+        }
+// Check if the dpad_down button on gamepad2 is pressed
+        else if (gamepad2.dpad_down) {
+            // Rest Postion
             Rocket.setTargetPosition(0);
+            Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            RotationalClaw.setPosition(0.68);
+
+        }
+        else if (gamepad2.dpad_right){
+            Rocket.setTargetPosition(225);
+            Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            RotationalClaw.setPosition(0.6);
+
         }
 
+
+        Rocket.setVelocity(2000);
+    }
+
+    public void PickUp(){
+        if(gamepad1.dpad_left){
+            Rocket.setTargetPosition(225);
+            RotationalClaw.setPosition(0.43);
+            armLevel = 1;
+
+
+        }
+    }
+
+    public  void Score(){
+        if(gamepad1.dpad_up) {
+            Rocket.setTargetPosition(970);
+            RotationalClaw.setPosition(1);
+            armLevel = 3;
+        }
+    }
+
+    // Method to control the claw grip mechanism
+    public void ClawGrip() {
+        // Check if the left bumper on gamepad2 is pressed
+        if (gamepad2.left_trigger > 0) {
+            // Set the claw servo to move forward
+            Claw.setPosition(1);// Opens the CLaw
+        }
+        // Check if the right bumper on gamepad2 is pressed
+        else if (gamepad2.right_trigger > 0) {
+            // Set the claw servo to move backward
+            Claw.setPosition(0.65); // Close the Claw
+        }
+        // If neither bumper is pressed, set the claw to stationary position
 
     }
 
-    public void IntakeCommands() {
+    public void SecondHang() {
+        //Going Down
+        if (gamepad1.dpad_up) {
+            HangRight.setPosition(0.7); // Correct Postion
+            HangLeft.setPosition(0.57);
+        }
+        // Going Up
+        else if (gamepad1.dpad_down) {
+            HangRight.setPosition(0); // Correct Postion
+            HangLeft.setPosition(1);
 
-        if (gamepad1.a) {
-            intake.setPower(INTAKE_COLLECT);
-        } else if (gamepad1.x) {
-            intake.setPower(INTAKE_OFF);
-        } else if (gamepad1.b) {
-            intake.setPower(INTAKE_DEPOSIT);
+        }
+
+    }
+
+    public void ClawRotation() {
+        if (gamepad2.left_bumper) {
+            RotationalClaw.setPosition(1);
+        }
+        // Score postion
+        else if (gamepad2.right_bumper) {
+            RotationalClaw.setPosition(0.43);
         }
     }
-    public void ScoringCommands2() {
 
-            if(gamepad1.right_bumper){
-                /* This is the intaking/collecting arm position */
-                armPosition = ARM_COLLECT;
-                wrist.setPosition(WRIST_FOLDED_OUT);
-                intake.setPower(INTAKE_COLLECT);
-            }
+    // Method to control the claw rotation mechanism
 
-            else if (gamepad1.left_bumper){
-                    /* This is about 20° up from the collecting position to clear the barrier
-                    Note here that we don't set the wrist position or the intake power when we
-                    select this "mode", this means that the intake and wrist will continue what
-                    they were doing before we clicked left bumper. */
-                armPosition = ARM_CLEAR_BARRIER;
-            }
-
-            else if (gamepad1.y){
-                /* This is the correct height to score the sample in the LOW BASKET */
-                armPosition = ARM_SCORE_SAMPLE_IN_LOW;
-            }
-
-            else if (gamepad1.dpad_left) {
-                    /* This turns off the intake, folds in the wrist, and moves the arm
-                    back to folded inside the robot. This is also the starting configuration */
-                armPosition = ARM_COLLAPSED_INTO_ROBOT;
-                intake.setPower(INTAKE_OFF);
-                wrist.setPosition(WRIST_FOLDED_IN);
-            }
-
-            else if (gamepad1.dpad_right){
-                /* This is the correct height to score SPECIMEN on the HIGH CHAMBER */
-                armPosition = ARM_SCORE_SPECIMEN;
-                wrist.setPosition(WRIST_FOLDED_IN);
-            }
-
-            else if (gamepad1.dpad_up){
-                /* This sets the arm to vertical to hook onto the LOW RUNG for hanging */
-                armPosition = ARM_ATTACH_HANGING_HOOK;
-                intake.setPower(INTAKE_OFF);
-                wrist.setPosition(WRIST_FOLDED_IN);
-            }
-
-            else if (gamepad1.dpad_down){
-                /* this moves the arm down to lift the robot up once it has been hooked */
-                armPosition = ARM_WINCH_ROBOT;
-                intake.setPower(INTAKE_OFF);
-                wrist.setPosition(WRIST_FOLDED_IN);
-            }
-
-
-        }
 
 }
+
+
+
+
+
+/*
+ * Code to run ONCE after the driver hits STOP
+ */
+
+
+/*
+ * Code to run ONCE after the driver hits STOP
+ */
+
+
+//@Override
