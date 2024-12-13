@@ -312,34 +312,24 @@ public class Drive_Control_New extends OpMode {
     }
 
     public void PickUp(){
+        Rocket.setVelocity(1500);
+        viper.setVelocity(5000);
         if(gamepad1.dpad_left){
-
-            if(armLevel == 3){
-
-            }
-            Rocket.setVelocity(1500);
-            viper.setVelocity(5000);
             RotationalClaw.setPosition(0.68);
             Rocket.setTargetPosition(225);
-
             Claw.setPosition(1);
-            timer.reset();
-            while (timer.milliseconds() < 200 ){
-                telemetry.addData("Status" , "Waiting...");
-                telemetry.update();
+
+            if(Rocket.getTargetPosition() >= 225){
+                armLevel = 1;
+                viper.setTargetPosition(armLevelPosition[armLevel]);
+                viper.setTargetPositionTolerance(armLevelPosition[armLevel]);
             }
-            armLevel = 1;
-            timer.reset();
-            while (timer.milliseconds() < 1000 ){
-                telemetry.addData("Status" , "Waiting...");
-                telemetry.update();
+            if (viper.getTargetPosition() >= 1600){
+                RotationalClaw.setPosition(1);
             }
-            RotationalClaw.setPosition(1);
 
 
-            Claw.setPosition(1);
-            viper.setTargetPosition(armLevelPosition[armLevel]);
-            viper.setTargetPositionTolerance(armLevelPosition[armLevel]);
+
 
 
         }
@@ -350,39 +340,38 @@ public class Drive_Control_New extends OpMode {
         Rocket.setVelocity(1000);
         viper.setVelocity(5000);
         if(gamepad1.dpad_up) {
-
             Rocket.setTargetPosition(970);
             RotationalClaw.setPosition(0.68);
-            timer.reset();
-            while (timer.milliseconds() < 1500 ){
-                telemetry.addData("Status" , "Waiting...");
-                telemetry.update();
+
+            if (Rocket.getTargetPosition() >= 970){
+                RotationalClaw.setPosition(0.43);
+                armLevel = 3;
+                viper.setTargetPosition(armLevelPosition[armLevel]);
+                viper.setTargetPositionTolerance(armLevelPosition[armLevel]);
+
             }
 
 
-            RotationalClaw.setPosition(0.43);
-            armLevel = 3;
 
         }
-        viper.setTargetPosition(armLevelPosition[armLevel]);
-        viper.setTargetPositionTolerance(armLevelPosition[armLevel]);
+
     }
 
     public  void Reset() {
         Rocket.setVelocity(1000);
         viper.setVelocity(5000);
+
         if (gamepad1.dpad_down) {
-            armLevel = 0;
             Claw.setPosition(1);
             RotationalClaw.setPosition(.68);
+            armLevel = 0;
             viper.setTargetPosition(armLevelPosition[armLevel]);
             viper.setTargetPositionTolerance(armLevelPosition[armLevel]);
-            timer.reset();
-            while (timer.milliseconds() < 1000 ){
-                telemetry.addData("Status" , "Waiting...");
-                telemetry.update();
+
+            if(viper.getTargetPosition() == 0){
+                Rocket.setTargetPosition(0);
             }
-            Rocket.setTargetPosition(0);
+
 
 
 
