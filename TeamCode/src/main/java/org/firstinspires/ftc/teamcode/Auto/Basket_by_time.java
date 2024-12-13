@@ -33,11 +33,11 @@ public class Basket_by_time extends LinearOpMode {
     static final double Backward_Speed = 0.5;
 
     public  void Right_Turn (){
-        wheelFL.setPower(0.5);
-        wheelFR.setPower(-0.5);
+        wheelFL.setPower(0.2);
+        wheelFR.setPower(-0.2);
 
-        wheelBL.setPower(0.5);
-        wheelFR.setPower(-0.5);
+        wheelBL.setPower(0.2);
+        wheelBR.setPower(-0.2);
 
     }
     public  void Left_turn(){
@@ -170,10 +170,7 @@ public class Basket_by_time extends LinearOpMode {
         runtime.reset();
         // Turn for 0.2 seconds
 
-        wheelFL.setPower(-FORWARD_SPEED);
-        wheelFR.setPower(-Backward_Speed);
-        wheelBR.setPower(-FORWARD_SPEED);
-        wheelBL.setPower(-Backward_Speed);
+        Right_Turn();
         while (opModeIsActive()&& (runtime.seconds() < 1.6)){
             telemetry.addData("Path 1 Turn ", "Leg 3",runtime.seconds());
         }
@@ -239,10 +236,16 @@ public class Basket_by_time extends LinearOpMode {
         runtime.reset();
         
 
-        Rocket.setTargetPosition(0);
+        Rocket.setTargetPosition(225);
         Claw.setPosition(1);
         while (opModeIsActive()&& (runtime.seconds() < 0.5)) {
-            telemetry.addData("Path 1 Sprocket Rest Postion ", "Leg 8", runtime.seconds());
+            telemetry.addData("Path 1 Sprocket Pickup Postion ", "Leg 8", runtime.seconds());
+        }
+        runtime.reset();
+        // Step two
+        Left_turn();
+        while (opModeIsActive()&& (runtime.seconds() < 0.2)) {
+            telemetry.addData("Path 2 Sprocket Pickup Postion ", "Leg 8", runtime.seconds());
         }
 
 
