@@ -130,6 +130,12 @@ public class Drive_Control_New extends OpMode {
         wheelBL.setDirection(DcMotorSimple.Direction.FORWARD);//FORWARD
         wheelBR.setDirection(DcMotorSimple.Direction.REVERSE);//REVERSE
 
+        // To Stop
+        wheelFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        wheelFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        wheelBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        wheelBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         //Sensors
         //colorSensor = hardwareMap.get(ColorSensor.class, "colorSensor");
 
@@ -319,12 +325,12 @@ public class Drive_Control_New extends OpMode {
             Rocket.setTargetPosition(225);
             Claw.setPosition(1);
 
-            if(Rocket.getTargetPosition() >= 225){
+            if(Rocket.getTargetPosition() >= 210 || Rocket.getTargetPosition() == 225){
                 armLevel = 1;
                 viper.setTargetPosition(armLevelPosition[armLevel]);
                 viper.setTargetPositionTolerance(armLevelPosition[armLevel]);
             }
-            if (viper.getTargetPosition() >= 1600){
+            if (viper.getTargetPosition() >= 1600 || viper.getTargetPosition() == 1600){
                 RotationalClaw.setPosition(1);
             }
 
@@ -343,7 +349,7 @@ public class Drive_Control_New extends OpMode {
             Rocket.setTargetPosition(970);
             RotationalClaw.setPosition(0.68);
 
-            if (Rocket.getTargetPosition() >= 970){
+            if (Rocket.getTargetPosition() >= 960 || Rocket.getTargetPosition() == 970){
                 RotationalClaw.setPosition(0.43);
                 armLevel = 3;
                 viper.setTargetPosition(armLevelPosition[armLevel]);
@@ -382,7 +388,7 @@ public class Drive_Control_New extends OpMode {
     // Method to control the claw grip mechanism
     public void ClawGrip() {
         // Check if the left bumper on gamepad2 is pressed
-        if (gamepad1.left_trigger > 0) {
+        if (gamepad1.left_trigger > 0 ) {
             // Set the claw servo to move forward
             Claw.setPosition(1);// Opens the CLaw
         }

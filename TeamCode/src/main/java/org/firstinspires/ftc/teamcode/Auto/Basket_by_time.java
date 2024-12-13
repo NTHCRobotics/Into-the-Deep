@@ -111,7 +111,7 @@ public class Basket_by_time extends LinearOpMode {
         viper.setTargetPositionTolerance(50);
         viper.setTargetPosition(50);
         viper.setDirection(DcMotorSimple.Direction.REVERSE);
-        viper.setVelocity(10000);
+        viper.setVelocity(9000);
         viper.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         //Sprocket Encoder
@@ -120,7 +120,7 @@ public class Basket_by_time extends LinearOpMode {
         Rocket.setDirection(DcMotorSimple.Direction.FORWARD);
         Rocket.setTargetPosition(0);
         Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        Rocket.setVelocity(2000);
+        Rocket.setVelocity(1000);
 
 
 
@@ -188,21 +188,21 @@ public class Basket_by_time extends LinearOpMode {
         }
         runtime.reset();
         RotationalClaw.setPosition(.88);
-        while (opModeIsActive()&& (runtime.seconds() < 2)){
-            telemetry.addData("Path 1 Viper Scoring Postion ", "Leg 5",runtime.seconds());
+        while (opModeIsActive()&& (runtime.seconds() < 0.5)){
+            telemetry.addData("Path 1 Rotate Claw  ", "Leg 5",runtime.seconds());
 
         }
 
         viper.setTargetPosition(3250);
         while (opModeIsActive()&& (runtime.seconds() < 5)){
-            telemetry.addData("Path 1 Viper Scoring Postion ", "Leg 5",runtime.seconds());
+            telemetry.addData("Path 1 Viper Scoring Postion ", "Leg 6",runtime.seconds());
 
         }
         runtime.reset();
         Move_Backward();
 
         while (opModeIsActive()&& (runtime.seconds() < 0.15)){
-            telemetry.addData("Path 1 Sprocket Scoring Postion ", "Leg 4",runtime.seconds());
+            telemetry.addData("Path 1 Move Back ", "Leg 7",runtime.seconds());
         }
         runtime.reset();
         wheelBL.setPower(0);
@@ -210,7 +210,7 @@ public class Basket_by_time extends LinearOpMode {
         wheelFR.setPower(0);
         wheelFL.setPower(0);
         while (opModeIsActive()&& (runtime.seconds() < 0.2)){
-            telemetry.addData("Path 1 Sprocket Scoring Postion ", "Leg 4",runtime.seconds());
+            telemetry.addData("Path 1 Wheel To Rest ", "Leg 8",runtime.seconds());
         }
 
 
@@ -220,18 +220,18 @@ public class Basket_by_time extends LinearOpMode {
         RotationalClaw.setPosition(0.5);
 
         while (opModeIsActive()&& (runtime.seconds() < 1.5)) {
-            telemetry.addData("Claw Command ", "Leg 6", runtime.seconds());
+            telemetry.addData("Claw Command ", "Leg 9", runtime.seconds());
         }
         Claw.setPosition(1);
         runtime.reset();
         while (opModeIsActive()&& (runtime.seconds() < 1.5)) {
-            telemetry.addData("Claw Command ", "Leg 6", runtime.seconds());
+            telemetry.addData("Claw Command ", "Leg 10", runtime.seconds());
         }
         runtime.reset();
         RotationalClaw.setPosition(0.68);
         viper.setTargetPosition(0);
         while (opModeIsActive()&& (runtime.seconds() < 1.2)) {
-            telemetry.addData("Path 1 Viper Rest", "Leg 7", runtime.seconds());
+            telemetry.addData("Path 1 Viper Rest", "Leg 11", runtime.seconds());
         }
         runtime.reset();
         
@@ -239,14 +239,24 @@ public class Basket_by_time extends LinearOpMode {
         Rocket.setTargetPosition(225);
         Claw.setPosition(1);
         while (opModeIsActive()&& (runtime.seconds() < 0.5)) {
-            telemetry.addData("Path 1 Sprocket Pickup Postion ", "Leg 8", runtime.seconds());
+            telemetry.addData("Path 1 Sprocket Pickup Postion ", "Leg 12", runtime.seconds());
         }
         runtime.reset();
         // Step two
+
+        Move_Forward();
+        while (opModeIsActive()&& (runtime.seconds() < 0.4)) {
+            telemetry.addData("Path 2 Move Forward ", "Leg 1", runtime.seconds());
+        }
+        Wheel_Stop();
+        while (opModeIsActive()&& (runtime.seconds() < 0.2)) {
+            telemetry.addData("Path 2 Wheel Stop ", "Leg 2", runtime.seconds());
+        }
         Left_turn();
         while (opModeIsActive()&& (runtime.seconds() < 0.2)) {
-            telemetry.addData("Path 2 Sprocket Pickup Postion ", "Leg 8", runtime.seconds());
+            telemetry.addData("Path 2 Left Turn ", "Leg 3", runtime.seconds());
         }
+
 
 
 
