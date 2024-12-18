@@ -51,9 +51,11 @@ public class Drive_Control_New extends OpMode {
     private double previousRunTime;
     private double inputDelayInSeconds = .5;
     private int[] armLevelPosition = {0, 1600, 2500, 3245,};
+
+    private int armLevel;
     private int[] SprocketLevelPosition = {0, 200, 750, 1100};
     private int SprocketLevel;
-    private int armLevel;
+
 
     private ElapsedTime timer = new ElapsedTime();
 

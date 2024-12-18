@@ -20,6 +20,10 @@ public class Autoxolotl extends LinearOpMode
     // Extras
     private final ElapsedTime runtime = new ElapsedTime();  // Timer, I just copy pasted, don't ask questions
     private double speedMod;
+    private int[] viperSlideTargets = {0, 1600,2500,3245};
+
+    private  int[] sprocketTargets  = {0,245 , 760 , 970};
+
 
     //Motors
     private DcMotorEx wheelFL; // Front left wheel
@@ -32,6 +36,9 @@ public class Autoxolotl extends LinearOpMode
     //Servos
     private Servo claw; // Opening and closing of the claw
     private Servo rotateClaw; // Rotates the claw up and down
+
+
+
 
 
     @Override // Init?? I think?
@@ -95,8 +102,10 @@ public class Autoxolotl extends LinearOpMode
         // This moves forward, then bla bla bla...
          */
 
-        moveForward(2, 0.5);
-
+        moveForward(0.5, -0.5);
+         rotate(0.2,0.5);
+        moveSprocket(2,3);
+         moveViper(2,2);
 
 
     }
@@ -126,6 +135,22 @@ public class Autoxolotl extends LinearOpMode
         stopAndLock();
     }
 
+    public void Positionviper(double seconds, int viperTarget)
+    {
+
+        viper.setTargetPosition(viperSlideTargets[viperTarget]);
+        viperwait(seconds);
+
+    }
+
+    public void PostionSprocket(double seconds, int sproketTarget){
+        rocket.setTargetPosition(sprocketTargets[sproketTarget]);
+        sprocketwait(seconds);
+    }
+
+
+
+
     public void wait(double seconds) // Waits the amount of seconds specified
     {
         runtime.reset();
@@ -134,7 +159,41 @@ public class Autoxolotl extends LinearOpMode
             // Nothing?
         }
         runtime.reset();
+
+
     }
+
+    public void viperwait(double seconds) // Waits the amount of seconds specified
+    {
+        runtime.reset();
+        while (opModeIsActive() && (runtime.seconds() < seconds) && viper.isBusy() )
+        {
+            // Nothing?
+        }
+        runtime.reset();
+
+
+    }
+
+    public void sprocketwait(double seconds) // Waits the amount of seconds specified
+    {
+        runtime.reset();
+        while (opModeIsActive() && (runtime.seconds() < seconds) || rocket.isBusy())
+        {
+            // Nothing?
+        }
+        runtime.reset();
+
+
+    }
+
+
+
+
+
+
+
+
 
     public void moveForward(double seconds, double power)
     {
@@ -151,10 +210,17 @@ public class Autoxolotl extends LinearOpMode
         moveByJoystick(seconds, power, 0, 0);
     }
 
-    public void Viper(double seconds, double TargetPostion, int ArmLevel)
+    public void moveViper(double seconds, int viperTarget)
     {
-
+        Positionviper(seconds , viperTarget);
     }
+
+
+
+    public void moveSprocket(double seconds, int  sproketTarget){
+        PostionSprocket(seconds, sproketTarget);
+    }
+
     public void stopAndLock() // Stops and gives breaks to all wheels
     {
         // Stops all wheels
