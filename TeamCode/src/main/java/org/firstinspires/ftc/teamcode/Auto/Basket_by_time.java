@@ -244,18 +244,32 @@ public class Basket_by_time extends LinearOpMode {
         runtime.reset();
         // Step two
 
-        Move_Forward();
-        while (opModeIsActive()&& (runtime.seconds() < 0.4)) {
-            telemetry.addData("Path 2 Move Forward ", "Leg 1", runtime.seconds());
-        }
-        Wheel_Stop();
+        Right_Turn();
         while (opModeIsActive()&& (runtime.seconds() < 0.2)) {
-            telemetry.addData("Path 2 Wheel Stop ", "Leg 2", runtime.seconds());
+            telemetry.addData("Path 2 Left Turn ", "Leg 1", runtime.seconds());
         }
-        Left_turn();
+        runtime.reset();
+        RotationalClaw.setPosition(1);
+        Claw.setPosition(1);
         while (opModeIsActive()&& (runtime.seconds() < 0.2)) {
-            telemetry.addData("Path 2 Left Turn ", "Leg 3", runtime.seconds());
+            telemetry.addData("Path 2 CLaw Command ", "Leg 1", runtime.seconds());
         }
+        runtime.reset();
+        viper.setTargetPosition(3250);
+        while (opModeIsActive()&& (runtime.seconds() < 3)) {
+            telemetry.addData("Path 2 Viper Extend ", "Leg 2`", runtime.seconds());
+        }
+
+        runtime.reset();
+        Claw.setPosition(0.65);
+        while (opModeIsActive()&& (runtime.seconds() < 0.2)) {
+
+            telemetry.addData("Claw", "Leg 3", runtime.seconds());
+        }
+
+
+
+
 
 
 

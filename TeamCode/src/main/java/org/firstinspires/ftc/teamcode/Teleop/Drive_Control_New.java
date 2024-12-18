@@ -320,7 +320,22 @@ public class Drive_Control_New extends OpMode {
     public void PickUp(){
         Rocket.setVelocity(1500);
         viper.setVelocity(5000);
+
+        double x = -gamepad1.left_stick_x;
+        double y = gamepad1.left_stick_y;
+        double rotation = -gamepad1.right_stick_x;
+        double FL = (y + x + rotation) * speedMod;
+        double FR = (y - x - rotation) * speedMod;
+        double BL = (y - x + rotation) * speedMod;
+        double BR = (y + x - rotation) * speedMod;
+
+        wheelFL.setPower(FL);
+        wheelFR.setPower(FR);
+        wheelBL.setPower(BL);
+        wheelBR.setPower(BR);
         if(gamepad1.dpad_left){
+
+
             RotationalClaw.setPosition(0.68);
             Rocket.setTargetPosition(225);
             Claw.setPosition(1);
@@ -345,7 +360,24 @@ public class Drive_Control_New extends OpMode {
     public  void Score(){
         Rocket.setVelocity(1000);
         viper.setVelocity(5000);
+        double x = -gamepad1.left_stick_x;
+        double y = gamepad1.left_stick_y;
+        double rotation = -gamepad1.right_stick_x;
+        double FL = (y + x + rotation) * speedMod;
+        double FR = (y - x - rotation) * speedMod;
+        double BL = (y - x + rotation) * speedMod;
+        double BR = (y + x - rotation) * speedMod;
+
+        wheelFL.setPower(FL);
+        wheelFR.setPower(FR);
+        wheelBL.setPower(BL);
+        wheelBR.setPower(BR);
+
         if(gamepad1.dpad_up) {
+
+
+
+
             Rocket.setTargetPosition(970);
             RotationalClaw.setPosition(0.68);
 
@@ -366,6 +398,18 @@ public class Drive_Control_New extends OpMode {
     public  void Reset() {
         Rocket.setVelocity(1000);
         viper.setVelocity(5000);
+        double x = -gamepad1.left_stick_x;
+        double y = gamepad1.left_stick_y;
+        double rotation = -gamepad1.right_stick_x;
+        double FL = (y + x + rotation) * speedMod;
+        double FR = (y - x - rotation) * speedMod;
+        double BL = (y - x + rotation) * speedMod;
+        double BR = (y + x - rotation) * speedMod;
+
+        wheelFL.setPower(FL);
+        wheelFR.setPower(FR);
+        wheelBL.setPower(BL);
+        wheelBR.setPower(BR);
 
         if (gamepad1.dpad_down) {
             Claw.setPosition(1);

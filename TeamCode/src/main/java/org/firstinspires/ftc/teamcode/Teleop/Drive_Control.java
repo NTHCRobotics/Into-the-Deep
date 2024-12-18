@@ -65,7 +65,7 @@ public class Drive_Control extends OpMode {
     // private static final int TARGET_RED_THRESHOLD = 100;  // Minimum red value for scoring color
     //  private static final int TARGET_BLUE_THRESHOLD = 100; // Minimum blue value for scoring color
 
-    // wifi pass Petaxoltol
+    // wifi pass Petaxolotl
 
     /*
      * Code to run ONCE when the driver hits INIT
