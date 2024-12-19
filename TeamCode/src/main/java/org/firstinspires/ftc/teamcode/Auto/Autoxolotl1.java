@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.acmerobotics.dashboard.config.Config;
 
-@Autonomous(name="Autoxolotl", group="Omarxolotl")
+@Autonomous(name="Autoxolotl23", group="Omarxolotl")
 
 @Config
 public class Autoxolotl1 extends LinearOpMode
@@ -24,6 +24,8 @@ public class Autoxolotl1 extends LinearOpMode
     private int[] viperSlideTargets = {0, 1600, 2500, 3245};
 
     private  int[] sprocketTargets  = {0, 245 , 760 , 970};
+
+    private int viperlevel ;
 
 
     //Motors
@@ -153,10 +155,10 @@ public class Autoxolotl1 extends LinearOpMode
 
 //        claw.setPosition(0.65);
         moveByJoystick(1.4, 0.2, 0.46, 0);
-//        rotate(0.8, 0.86);
-//        rotateClaw.setPosition(0.57);
-//        moveSprocket(3);
-//        moveViper(2);
+        rotate(0.8, 0.86);
+          rotateClaw.setPosition(0.57);
+          moveSprocket(3);
+       moveViper(2);
 
 
 
@@ -183,7 +185,7 @@ public class Autoxolotl1 extends LinearOpMode
         int newBL = (int) Math.round(BL * 2000);
         int newBR = (int) Math.round(BR * 2000);
 
-        wheelFL.setTargetPosition(-2000);
+        wheelFL.setTargetPosition(newFL);
         wheelFR.setTargetPosition(newFR);
         wheelFR.setTargetPosition(newBL);
         wheelFR.setTargetPosition(newBR);

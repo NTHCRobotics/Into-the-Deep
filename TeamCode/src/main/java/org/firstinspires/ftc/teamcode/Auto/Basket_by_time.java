@@ -156,7 +156,7 @@ public class Basket_by_time extends LinearOpMode {
         Claw.setPosition(0.7);
        Move_Backward();
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 1.3)) {
+        while (opModeIsActive() && (runtime.seconds() < 0.3)) {
             telemetry.addData("Path 1", "Leg 1: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }

@@ -464,7 +464,7 @@ public class Drive_Control_New extends OpMode {
 
     public void ClawRotation() {
         if (gamepad1.left_bumper) {
-            RotationalClaw.setPosition(1);
+            RotationalClaw.setPosition(0.7);
         }
         // Score postion
         else if (gamepad1.right_bumper) {

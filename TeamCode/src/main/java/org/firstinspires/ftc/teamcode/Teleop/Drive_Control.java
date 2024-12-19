@@ -113,7 +113,7 @@ public class Drive_Control extends OpMode {
         viper.setTargetPositionTolerance(50);
         viper.setTargetPosition(50);
         viper.setDirection(DcMotorSimple.Direction.REVERSE);
-        viper.setVelocity(10000);
+        viper.setVelocity(7000);
 
         //Sprocket Encoder
         Rocket.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -233,13 +233,13 @@ public class Drive_Control extends OpMode {
         if ((gamepad2.y) && (armLevel < armLevelPosition.length - 1) && (getRuntime() - previousRunTime >= inputDelayInSeconds)) {
             RotationalClaw.setPosition(.68);
             armLevel = 3;
-            viper.setVelocity(10000);
+
 
         } else if ((gamepad2.a) && (armLevel > 0) && (getRuntime() - previousRunTime >= inputDelayInSeconds)) {
 
             armLevel = 0;
             RotationalClaw.setPosition(.68);
-            viper.setVelocity(10000);
+
 
 
 
@@ -253,7 +253,7 @@ public class Drive_Control extends OpMode {
         //sets to driving level
         if (gamepad2.x) {
             armLevel = 1;
-            viper.setVelocity(10000);
+
         RotationalClaw.setPosition(.68);
 
         }
@@ -266,7 +266,7 @@ public class Drive_Control extends OpMode {
         }
         viper.setTargetPosition(armLevelPosition[armLevel]);
         viper.setTargetPositionTolerance(armLevelPosition[armLevel]);
-        viper.setVelocity(10000);
+
     }
 
     // Method to control the rocket motor mechanism
@@ -302,7 +302,7 @@ public class Drive_Control extends OpMode {
         }
 
 
-        Rocket.setVelocity(2000);
+        Rocket.setVelocity(1200);
     }
 
     // Method to control the claw grip mechanism
@@ -338,7 +338,7 @@ public class Drive_Control extends OpMode {
 
     public void ClawRotation() {
         if (gamepad2.left_bumper) {
-            RotationalClaw.setPosition(1);
+            RotationalClaw.setPosition(0.8);
         }
         // Score postion
         else if (gamepad2.right_bumper) {

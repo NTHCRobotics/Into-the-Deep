@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.acmerobotics.dashboard.config.Config;
 
-@Autonomous(name="Autoxolotl", group="Omarxolotl")
+@Autonomous(name="Autoxolotltest", group="Omarxolotl")
 
 @Config
 public class Autoxolotl extends LinearOpMode
@@ -84,6 +84,13 @@ public class Autoxolotl extends LinearOpMode
         viper.setTargetPosition(50);
         viper.setDirection(DcMotorSimple.Direction.REVERSE);
 
+        rocket.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rocket.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rocket.setDirection(DcMotorSimple.Direction.FORWARD);
+        rocket.setTargetPosition(0);
+        rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rocket.setVelocity(600);
+
 
 
         // No idea, copy pasted
@@ -103,9 +110,14 @@ public class Autoxolotl extends LinearOpMode
          */
 
         moveForward(0.5, -0.5);
-         rotate(0.2,0.5);
-        moveSprocket(2,3);
-         moveViper(2,2);
+        strafe(0.2,-0.5);
+        rotate(0.3, -0.5);
+        rotateClaw.setPosition(0.7);
+        moveSprocket(3, 1);
+        positionViper(2, 3);
+
+
+
 
 
     }
@@ -135,17 +147,17 @@ public class Autoxolotl extends LinearOpMode
         stopAndLock();
     }
 
-    public void Positionviper(double seconds, int viperTarget)
+    public void positionViper(int viperTarget, double seconds)
     {
 
         viper.setTargetPosition(viperSlideTargets[viperTarget]);
-        viperwait(seconds);
+        viperWait(seconds);
 
     }
 
-    public void PostionSprocket(double seconds, int sproketTarget){
+    public void positionSprocket(int sproketTarget , double seconds){
         rocket.setTargetPosition(sprocketTargets[sproketTarget]);
-        sprocketwait(seconds);
+        sprocketWait(seconds);
     }
 
 
@@ -163,10 +175,10 @@ public class Autoxolotl extends LinearOpMode
 
     }
 
-    public void viperwait(double seconds) // Waits the amount of seconds specified
+    public void viperWait(double seconds) // Waits the amount of seconds specified
     {
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < seconds) || viper.isBusy() )
+        while (opModeIsActive() && (runtime.seconds() < seconds) ||viper.isBusy())
         {
             // Nothing?
         }
@@ -175,10 +187,10 @@ public class Autoxolotl extends LinearOpMode
 
     }
 
-    public void sprocketwait(double seconds) // Waits the amount of seconds specified
+    public void sprocketWait(double seconds) // Waits the amount of seconds specified
     {
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < seconds) || rocket.isBusy())
+        while (opModeIsActive() && (runtime.seconds() < seconds) ||rocket.isBusy())
         {
             // Nothing?
         }
@@ -210,15 +222,15 @@ public class Autoxolotl extends LinearOpMode
         moveByJoystick(seconds, power, 0, 0);
     }
 
-    public void moveViper(double seconds, int viperTarget)
+    public void moveViper(int  viperTarget , double seconds)
     {
-        Positionviper(seconds , viperTarget);
+        positionViper(viperTarget , seconds);
     }
 
 
 
-    public void moveSprocket(double seconds, int  sproketTarget){
-        PostionSprocket(seconds, sproketTarget);
+    public void moveSprocket(int  sproketTarget , double seconds) {
+        positionSprocket(sproketTarget , seconds);
     }
 
     public void stopAndLock() // Stops and gives breaks to all wheels
