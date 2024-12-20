@@ -36,6 +36,12 @@ public class Autoxolotl1 extends LinearOpMode
     private DcMotorEx viper; //Vertical lift mechanism
     private DcMotorEx rocket; // Motor for rotate the Vertical lift
 
+    // Wheel Ticks
+    private int newFL = 0;
+    private int newFR = 0;
+    private int newBL = 0;
+    private int newBR = 0;
+
     //Servos
     private Servo claw; // Opening and closing of the claw
     private Servo rotateClaw; // Rotates the claw up and down
@@ -82,28 +88,29 @@ public class Autoxolotl1 extends LinearOpMode
         wheelBL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         wheelBR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        wheelFL.setTargetPositionTolerance(20);
-        wheelFR.setTargetPositionTolerance(20);
-        wheelBL.setTargetPositionTolerance(20);
-        wheelBR.setTargetPositionTolerance(20);
+        wheelFL.setTargetPositionTolerance(100);
+        wheelFR.setTargetPositionTolerance(100);
+        wheelBL.setTargetPositionTolerance(100);
+        wheelBR.setTargetPositionTolerance(100);
 
 
-        wheelFL.setTargetPosition(20);
-        wheelFR.setTargetPosition(20);
-        wheelBL.setTargetPosition(20);
-        wheelBR.setTargetPosition(20);
+        wheelFL.setTargetPosition(0);
+        wheelFR.setTargetPosition(0);
+        wheelBL.setTargetPosition(0);
+        wheelBR.setTargetPosition(0);
 
-        wheelFL.setDirection(DcMotorSimple.Direction.REVERSE);
-        wheelFR.setDirection(DcMotorSimple.Direction.REVERSE);
-        wheelBL.setDirection(DcMotorSimple.Direction.REVERSE);
-        wheelBR.setDirection(DcMotorSimple.Direction.REVERSE);
+        wheelFL.setDirection(DcMotorSimple.Direction.FORWARD);
+        wheelFR.setDirection(DcMotorSimple.Direction.FORWARD);
+        wheelBL.setDirection(DcMotorSimple.Direction.FORWARD);
+        wheelBR.setDirection(DcMotorSimple.Direction.FORWARD);
 
 
 
-        wheelFL.setVelocity(2000);
-        wheelFR.setVelocity(2000);
-        wheelBL.setVelocity(2000);
-        wheelBR.setVelocity(2000);
+        wheelFL.setPower(0.8);
+        wheelFR.setPower(0.8);
+        wheelBL.setPower(0.8);
+        wheelBR.setPower(0.8);
+
 
 
 
@@ -143,6 +150,9 @@ public class Autoxolotl1 extends LinearOpMode
         wheelBL.setDirection(DcMotorSimple.Direction.FORWARD);//FORWARD
         wheelBR.setDirection(DcMotorSimple.Direction.REVERSE);//REVERSE
 
+
+
+
         waitForStart(); // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Ready to run");    //
         telemetry.update();
@@ -154,11 +164,15 @@ public class Autoxolotl1 extends LinearOpMode
          */
 
 //        claw.setPosition(0.65);
-        moveByJoystick(1.4, 0.2, 0.46, 0);
-        rotate(0.8, 0.86);
-          rotateClaw.setPosition(0.57);
-          moveSprocket(3);
-       moveViper(2);
+     //   moveByJoystick(1.4, 0, 0, 0 , 1200);
+//        moveForward(1.2,0.5,;
+        moveByJoystick(0.2,0,-1,0,500);
+        moveByJoystick(2, -0.5, 0, 0, 2000);
+
+     //   rotate(0.8, 0.86 ,20) ;
+        //  rotateClaw.setPosition(0.57);
+         // moveSprocket(3);
+       //moveViper(2);
 
 
 
@@ -168,7 +182,7 @@ public class Autoxolotl1 extends LinearOpMode
     // FUNCTIONS DEFINED HERE
      */
 
-    public void moveByJoystick(double seconds, double leftX, double leftY, double rightX) // Moves the robot by simulating a joystick
+    public void moveByJoystick(double seconds, double leftX, double leftY, double rightX ,double wheelTarget) // Moves the robot by simulating a joystick
     {
         // Just check out https://gm0.org/en/latest/docs/software/tutorials/mecanum-drive.html for explanation
         double x = -leftX;
@@ -179,24 +193,31 @@ public class Autoxolotl1 extends LinearOpMode
         double BL = (y - x + rotation);
         double BR = (y + x - rotation);
 
+        int TFL = (int) wheelTarget;
+        int TFR = (int) wheelTarget;
+        int TBR = (int) wheelTarget;
+        int TBL = (int) wheelTarget;
 
-        int newFL = (int) Math.round(FL * 2000);
-        int newFR = (int) Math.round(FR * 2000);
-        int newBL = (int) Math.round(BL * 2000);
-        int newBR = (int) Math.round(BR * 2000);
+
+        newFL = (int) Math.round(newFL + FL * wheelTarget);
+        newFR = (int) Math.round(newFR + (FR * wheelTarget));
+        newBL = (int) Math.round(newBL + BL * wheelTarget);
+        newBR = (int) Math.round(newBR + BR * wheelTarget);
+
+//        wheelFL.setTargetPosition(TFL);
+////        wheelFR.setTargetPosition(TFR);
+////        wheelBL.setTargetPosition(TBL);
+////        wheelBR.setTargetPosition(TBR);
 
         wheelFL.setTargetPosition(newFL);
         wheelFR.setTargetPosition(newFR);
-        wheelFR.setTargetPosition(newBL);
-        wheelFR.setTargetPosition(newBR);
+        wheelBL.setTargetPosition(newBL);
+        wheelBR.setTargetPosition(newBR);
 
         telemetry.addData("New Wheel FR", newFR);
         telemetry.update();
 
-        wheelFL.setPower(FL);
-        wheelFR.setPower(FR);
-        wheelBL.setPower(BL);
-        wheelBR.setPower(BR);
+
 
 //        wheelFL.setPower(0.8);
 //        wheelFR.setPower(0.8);
@@ -204,13 +225,18 @@ public class Autoxolotl1 extends LinearOpMode
 //        wheelBR.setPower(0.8);
 
 
-
+runtime.reset();
         while (wheelFL.isBusy() || wheelFR.isBusy() || wheelBL.isBusy() || wheelBR.isBusy())
         {
             // Wait till finished
+            runtime.reset();
         }
         stopAndLock();
+        runtime.reset();
     }
+
+
+
 
     public void positionViper(int viperTarget)
     {
@@ -272,19 +298,19 @@ public class Autoxolotl1 extends LinearOpMode
 
 
 
-    public void moveForward(double seconds, double power)
+    public void moveForward(double seconds, double power , double wheelTarget)
     {
-        moveByJoystick(seconds, 0, power, 0);
+        moveByJoystick(seconds, 0, power, 0 , wheelTarget);
     }
 
-    public void rotate(double seconds, double power)
+    public void rotate(double seconds, double power, double wheelTarget)
     {
-        moveByJoystick(seconds, 0, 0, power);
+        moveByJoystick(seconds, 0, 0, power, wheelTarget );
     }
 
-    public void strafe(double seconds, double power)
+    public void strafe(double seconds, double power , double forwardwheelTarget , double negativewheelTarget)
     {
-        moveByJoystick(seconds, power, 0, 0);
+      //  moveByStrafe(seconds, power, 0, 0 , forwardwheelTarget , negativewheelTarget); ;
     }
 
     public void moveViper(int viperTarget)

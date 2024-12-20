@@ -112,7 +112,7 @@ public class Autoxolotl extends LinearOpMode
         moveForward(0.5, -0.5);
         strafe(0.2,-0.5);
         rotate(0.3, -0.5);
-        rotateClaw.setPosition(0.7);
+        rotateClaw.setPosition(0.75);
         moveSprocket(3, 1);
         positionViper(2, 3);
 

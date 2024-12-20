@@ -57,7 +57,7 @@ public class One_Controler extends OpMode {
     final double TRIGGER_THRESHOLD = 0.75;
     private double previousRunTime;
     private double inputDelayInSeconds = .5;
-    private int[] armLevelPosition = {0, 1000, 1600, 2550,};
+    private int[] armLevelPosition = {0, 1600, 2500, 3250,};
     private int[] SprocketLevelPosition = {0, 200, 750, 1100};
     private int SprocketLevel;
     private int armLevel;
@@ -262,7 +262,7 @@ public class One_Controler extends OpMode {
         if (gamepad1.x) {
             armLevel = 1;
             viper.setVelocity(2000);
-            RotationalClaw.setPosition(.68);
+            RotationalClaw.setPosition(.58);
 
         }
 
