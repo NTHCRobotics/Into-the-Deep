@@ -130,7 +130,7 @@ public class Autoxolotl1 extends LinearOpMode
         viper.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         viper.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         viper.setTargetPositionTolerance(50);
-        viper.setTargetPosition(50);
+        viper.setTargetPosition(0);
         viper.setDirection(DcMotorSimple.Direction.REVERSE);
         viper.setVelocity(2000);
         viper.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -166,8 +166,24 @@ public class Autoxolotl1 extends LinearOpMode
 //        claw.setPosition(0.65);
      //   moveByJoystick(1.4, 0, 0, 0 , 1200);
 //        moveForward(1.2,0.5,;
-        moveByJoystick(0.2,0,-1,0,500);
-        moveByJoystick(2, -0.5, 0, 0, 2000);
+
+
+
+        telemetry.addData("FL is busy", wheelFL.isBusy());
+        telemetry.addData("FR is busy", wheelFR.isBusy());
+        telemetry.addData("BL is busy", wheelBL.isBusy());
+        telemetry.addData("BR is busy", wheelBR.isBusy());
+        telemetry.addData("BL is at target", wheelBL.getTargetPosition());
+        telemetry.addData("FL is at target", wheelFL.getTargetPosition());
+        telemetry.addData("FR is at target", wheelFR.getTargetPosition());
+        telemetry.addData("BR is at target", wheelBR.getTargetPosition());
+
+
+        telemetry.update();
+        moveByJoystick(1,0,-1,0,1500);
+       // reset();
+        moveByJoystick(1,0,1,0,500);
+      // moveByJoystick(2, -0.5, 0, 0, -2000);
 
      //   rotate(0.8, 0.86 ,20) ;
         //  rotateClaw.setPosition(0.57);
@@ -214,9 +230,15 @@ public class Autoxolotl1 extends LinearOpMode
         wheelBL.setTargetPosition(newBL);
         wheelBR.setTargetPosition(newBR);
 
-        telemetry.addData("New Wheel FR", newFR);
+        telemetry.addData("FL is busy", wheelFL.isBusy());
+        telemetry.addData("FR is busy", wheelFR.isBusy());
+        telemetry.addData("BL is busy", wheelBL.isBusy());
+        telemetry.addData("BR is busy", wheelBR.isBusy());
+        telemetry.addData("BL is at target", wheelBL.getTargetPosition());
+        telemetry.addData("FL is at target", wheelFL.getTargetPosition());
+        telemetry.addData("FR is at target", wheelFR.getTargetPosition());
+        telemetry.addData("BR is at target", wheelBR.getTargetPosition());
         telemetry.update();
-
 
 
 //        wheelFL.setPower(0.8);
@@ -225,20 +247,20 @@ public class Autoxolotl1 extends LinearOpMode
 //        wheelBR.setPower(0.8);
 
 
-runtime.reset();
-        while (wheelFL.isBusy() || wheelFR.isBusy() || wheelBL.isBusy() || wheelBR.isBusy())
-        {
-            // Wait till finished
-            runtime.reset();
-        }
-        stopAndLock();
         runtime.reset();
+        while ((wheelFL.isBusy() || wheelFR.isBusy() || wheelBL.isBusy() || wheelBR.isBusy()) && runtime.seconds() < seconds) {
+            // Debugging telemetry can go here
+        }
+        if (runtime.seconds() >= seconds) {
+            telemetry.addData("Timeout", "Motors did not reach target in time");
+            telemetry.update();
+        }
+
     }
 
 
 
-
-    public void positionViper(int viperTarget)
+        public void positionViper(int viperTarget)
     {
 
         viper.setTargetPosition(viperSlideTargets[viperTarget]);
@@ -289,6 +311,11 @@ runtime.reset();
 
 
     }
+    public  void reset(){
+        wheelFL.setTargetPosition(0); wheelFR.setTargetPosition(0);
+        wheelBL.setTargetPosition(0); wheelBR.setTargetPosition(0);
+    }
+
 
 
 
