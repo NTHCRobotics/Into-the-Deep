@@ -116,7 +116,7 @@ public class Drive_Control_New extends OpMode {
         viper.setTargetPositionTolerance(50);
         viper.setTargetPosition(50);
         viper.setDirection(DcMotorSimple.Direction.REVERSE);
-        viper.setVelocity(10000);
+        viper.setVelocity(5000);
 
         //Sprocket Encoder
         Rocket.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);

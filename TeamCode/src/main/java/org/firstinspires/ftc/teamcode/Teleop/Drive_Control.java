@@ -112,7 +112,7 @@ public class Drive_Control extends OpMode {
         viper.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         viper.setTargetPositionTolerance(50);
         viper.setTargetPosition(50);
-        viper.setDirection(DcMotorSimple.Direction.REVERSE);
+        viper.setDirection(DcMotorSimple.Direction.FORWARD);
         viper.setVelocity(7000);
 
         //Sprocket Encoder
