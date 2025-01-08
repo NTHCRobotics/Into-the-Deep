@@ -1,11 +1,16 @@
 package org.firstinspires.ftc.teamcode.Auto;
 
+import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 //Inches used for all units unless otherwise specified
+@Autonomous(name="AutoxolotlByTicks", group="Omarxolotl")
+
+//@Config
 public class AutoxolotlByTicks extends LinearOpMode {
 
     private final double WHEEL_RADIUS = Math.PI * 3.78; //Wheel diameter is 3.78 inches, gobilda.com
