@@ -118,7 +118,7 @@ public class One_Controler extends OpMode {
         viper.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         viper.setTargetPositionTolerance(25);
         viper.setTargetPosition(0);
-        viper.setDirection(DcMotorSimple.Direction.REVERSE);
+        viper.setDirection(DcMotorSimple.Direction.FORWARD);
         viper.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 

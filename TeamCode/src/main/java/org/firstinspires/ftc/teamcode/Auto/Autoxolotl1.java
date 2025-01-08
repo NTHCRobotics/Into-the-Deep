@@ -178,70 +178,67 @@ public class Autoxolotl1 extends LinearOpMode
         telemetry.update();
         telemetry.update();
         // Pre Load Sample
-        moveByJoystick(1,0,-1,0,700);
-        moveByJoystick(0.5,-1,0,0,300);
-        moveSprocket(3);
-        moveByJoystick(0.5,0,0,-1,400);
-        moveByJoystick(0.2,0,1,0,100);
-        rotateClaw.setPosition(0.68);
-        moveViper(3);
-        rotateClaw.setPosition(0.43);
-        claw.setPosition(1);
-        rotateClaw.setPosition(.68);
-        moveViper(0);
-        moveSprocket(1);
-        // First Sample
-     moveByJoystick(0.5,0,0,-1,550);
-     moveViper(2);
-     rotateClaw.setPosition(0.7);
-     claw.setPosition(0.65);
-     moveViper(0);
-     moveByJoystick(0.5,0,0,1,550);
-     moveSprocket(3);
-     rotateClaw.setPosition(0.68);
-     moveViper(3);
-     rotateClaw.setPosition(0.43);
-     claw.setPosition(1);
-     rotateClaw.setPosition(.68);
-     moveViper(0);
-     moveSprocket(1);
-     //Second Sample
-        moveByJoystick(0.4,0,0,-1,750);
-        moveViper(2);
-        rotateClaw.setPosition(0.7);
-        claw.setPosition(0.65);
-        moveViper(0);
-        moveByJoystick(0.4,0,0,1,750);
-        moveSprocket(3);
-        rotateClaw.setPosition(0.68);
-        moveViper(3);
-        rotateClaw.setPosition(0.43);
-        claw.setPosition(1);
-        rotateClaw.setPosition(.68);
-        moveViper(0);
-        moveSprocket(1);
+            moveByJoystick(0.1,-1,0,0,200);
+            moveByJoystick(0.5,0,-1,0,700);
+            moveByJoystick(0.5,-1,0,0,300);
+            moveSprocket(3);
+            moveByJoystick(0.5,0,0,-1,400);
+            moveByJoystick(0.2,0,1,0,100);
+            rotateClaw.setPosition(0.68);
+            moveViper(3);
+            rotateClaw.setPosition(0.43);
+            claw.setPosition(1);
+            rotateClaw.setPosition(.68);
+            moveViper(0);
+            moveSprocket(1);
+
+        //First Sample
+            moveByJoystick(0.5,0,0,-1,550);
+            moveViper(2);
+            rotateClaw.setPosition(0.7);
+            claw.setPosition(0.65);
+            moveViper(0);
+            moveByJoystick(0.5,0,0,1,550);
+            moveSprocket(3);
+            rotateClaw.setPosition(0.68);
+            moveViper(3);
+            rotateClaw.setPosition(0.43);
+            claw.setPosition(1);
+            rotateClaw.setPosition(.68);
+            moveViper(0);
+            moveSprocket(1);
+        //Second Sample
+            moveByJoystick(0.4,0,0,-1,750);
+            moveViper(2);
+            rotateClaw.setPosition(0.7);
+            claw.setPosition(0.65);
+            moveViper(0);
+            moveByJoystick(0.4,0,0,1,750);
+            moveSprocket(3);
+            rotateClaw.setPosition(0.68);
+            moveViper(3);
+            rotateClaw.setPosition(0.43);
+            claw.setPosition(1);
+            rotateClaw.setPosition(.68);
+            moveViper(0);
+            moveSprocket(1);
 
         //Thrid Sample
-        moveByJoystick(1,0,0,-1 ,900);
-        moveViper(2);
-        rotateClaw.setPosition(0.7);
-        claw.setPosition(0.65);
-        moveViper(0);
-        moveByJoystick(0.4,0,0,1,900);
-        moveSprocket(3);
-        rotateClaw.setPosition(0.68);
-        moveViper(3);
-        rotateClaw.setPosition(0.43);
-        claw.setPosition(1);
-        rotateClaw.setPosition(.68);
-        moveViper(0);
-        moveSprocket(1);
-        // moveByJoystick(2, -0.5, 0, 0, -2000);
+            moveByJoystick(1,0,0,-1 ,900);
+            moveViper(2);
+            rotateClaw.setPosition(0.7);
+            claw.setPosition(0.65);
+            moveViper(0);
+            moveByJoystick(0.4,0,0,1,900);
+            moveSprocket(3);
+            rotateClaw.setPosition(0.68);
+            moveViper(3);
+            rotateClaw.setPosition(0.43);
+            claw.setPosition(1);
+            rotateClaw.setPosition(.68);
+            moveViper(0);
+            moveSprocket(1);
 
-        //   rotate(0.8, 0.86 ,20) ;
-        //  rotateClaw.setPosition(0.57);
-        // moveSprocket(3);
-        //moveViper(2);
 
 
 
