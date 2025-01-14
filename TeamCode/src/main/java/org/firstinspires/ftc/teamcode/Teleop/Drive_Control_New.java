@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name="drivercontrolaxoltl", group="Axoltl")
+@TeleOp(name="drivercontroloneperson", group="Axoltl")
 //@Disabled  This way it will run on the robot
 public class Drive_Control_New extends OpMode {
     // Declare OpMode members.
@@ -31,7 +31,7 @@ public class Drive_Control_New extends OpMode {
     private DcMotorEx wheelFR; // Front right wheel
     private DcMotorEx wheelBL; // Back left wheel
     private DcMotorEx wheelBR; // Back right wheel
-    private DcMotorEx viper; //Vertical lift mechanism
+    private DcMotorEx Viper; //Vertical lift mechanism
     private DcMotorEx Rocket; // Motor for rotate the Vertical lift
     private Servo HangRight;
     private Servo HangLeft;
@@ -43,6 +43,13 @@ public class Drive_Control_New extends OpMode {
     //Sensors
     private ColorSensor colorSensor; // Color sensor for detecting objects/colors
 
+    // I don't know what I'm doing, but these two variables are for parallelCounter
+    private double[] myPrevRuntime = {0, 0, 0, 0};
+    private boolean[] hasDone = {false, false, false, false};
+    private boolean[] hasPressed = {false, false, false, false};
+
+
+    // Here is where my dilly dallying ends
 
     private double speedMod;
     private final boolean rumbleLevel = true;
@@ -50,25 +57,15 @@ public class Drive_Control_New extends OpMode {
     final double TRIGGER_THRESHOLD = 0.75;
     private double previousRunTime;
     private double inputDelayInSeconds = .5;
-    private int[] armLevelPosition = {0, 1600, 2500, 3245,};
-
-    private int armLevel;
+    private int[] armLevelPosition = {0, 1600, 2500, 3250,};
     private int[] SprocketLevelPosition = {0, 200, 750, 1100};
     private int SprocketLevel;
+    private int armLevel;
+    private int test = 0;
 
 
-    private ElapsedTime timer = new ElapsedTime();
 
-    //private int blueValue = colorSensor.blue();
-    // private int redValue = colorSensor.red();
-    // private int greenValue = colorSensor.green();
-    //  private static final int YELLOW_RED_THRESHOLD = 200;  // Minimum red value for yellow
-    // private static final int YELLOW_GREEN_THRESHOLD = 200; // Minimum green value for yellow
-    // private static final int YELLOW_BLUE_THRESHOLD = 100; // Maximum blue value for yellow
-    // private static final int TARGET_RED_THRESHOLD = 100;  // Minimum red value for scoring color
-    //  private static final int TARGET_BLUE_THRESHOLD = 100; // Minimum blue value for scoring color
-
-    // wifi pass Petaxoltol
+    // wifi pass petAxoltol
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -89,15 +86,15 @@ public class Drive_Control_New extends OpMode {
         wheelBR = hardwareMap.get(DcMotorEx.class, "wheelBR");
 
 
-        viper = hardwareMap.get(DcMotorEx.class, "viper");
+        Viper = hardwareMap.get(DcMotorEx.class, "viper");
         Rocket = hardwareMap.get(DcMotorEx.class, "rocket");
 
 
         //------------SERVOS////
         Claw = hardwareMap.get(Servo.class, "claw");
         RotationalClaw = hardwareMap.get(Servo.class, "rotateClaw");
-        HangRight = hardwareMap.get(Servo.class, "hangRight");
-        HangLeft = hardwareMap.get(Servo.class, "hangLeft");
+        //  HangRight = hardwareMap.get(Servo.class, "hangRight");
+        //HangLeft = hardwareMap.get(Servo.class, "hangLeft");
 
 
         //Motor Encoders
@@ -110,13 +107,14 @@ public class Drive_Control_New extends OpMode {
         wheelBR.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
         // Viper Encoder
-        viper.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        viper.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        viper.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        viper.setTargetPositionTolerance(50);
-        viper.setTargetPosition(50);
-        viper.setDirection(DcMotorSimple.Direction.REVERSE);
-        viper.setVelocity(5000);
+        Viper.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        Viper.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        Viper.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        Viper.setTargetPositionTolerance(25);
+        Viper.setTargetPosition(0);
+        Viper.setDirection(DcMotorSimple.Direction.FORWARD);
+        Viper.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
 
         //Sprocket Encoder
         Rocket.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -124,19 +122,11 @@ public class Drive_Control_New extends OpMode {
         Rocket.setDirection(DcMotorSimple.Direction.FORWARD);
         Rocket.setTargetPosition(0);
 
-
-
         //Wheel Direction
         wheelFL.setDirection(DcMotorSimple.Direction.FORWARD);//FORWARD
         wheelFR.setDirection(DcMotorSimple.Direction.REVERSE);//REVERSE
         wheelBL.setDirection(DcMotorSimple.Direction.FORWARD);//FORWARD
         wheelBR.setDirection(DcMotorSimple.Direction.REVERSE);//REVERSE
-
-        // To Stop
-        wheelFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        wheelFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        wheelBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        wheelBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         //Sensors
         //colorSensor = hardwareMap.get(ColorSensor.class, "colorSensor");
@@ -173,55 +163,54 @@ public class Drive_Control_New extends OpMode {
     public void loop() {
         // These methods will continuously run in the teleop loop
         precisionControl();
-        SecondHang();
         Verticallift();
-        // DectectYellow();
         ClawGrip();
         drive();
         RocketBoom();
-        ClawRotation();
-        Score();
-        PickUp();
-        Reset();
+        parallelRocket(50, 0);
+        ClawPickUp();
+        ClawScoreCommand();
+        SystemPickUp();
+        SystemRest();
+        SystemScore();
         //  SampleShoot();
 
 
         // Display telemetry data for debugging and tracking
         telemetry.addData("Left Trigger Position", gamepad1.left_trigger);
+
+
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         //Arm Data
-        telemetry.addData("velocity", viper.getVelocity());
-        telemetry.addData("slidePosition", viper.getCurrentPosition());
-        telemetry.addData("is at target", !viper.isBusy());
+        telemetry.addData("velocity", Viper.getVelocity());
+        telemetry.addData("slidePosition", Viper.getCurrentPosition());
+        telemetry.addData("is at target", !Viper.isBusy());
         telemetry.addData("Target Slide Position", armLevelPosition[armLevel]);
-        telemetry.addData("Slide Position", viper.getCurrentPosition());
-        telemetry.addData("Velocity", viper.getVelocity());
-        telemetry.addData("is at target", !viper.isBusy());
-        telemetry.addData("Tolerance: ", viper.getTargetPositionTolerance());
+        telemetry.addData("Slide Position", Viper.getCurrentPosition());
+        telemetry.addData("Velocity", Viper.getVelocity());
+        telemetry.addData("is at target", !Viper.isBusy());
+        telemetry.addData("Tolerance: ", Viper.getTargetPositionTolerance());
         //  telemetry.addData("Red", redValue);
         //   telemetry.addData("Green", greenValue);
         //   telemetry.addData("Blue", blueValue);
         telemetry.addData("Rocket Level", SprocketLevelPosition[SprocketLevel]);
         telemetry.addData("Rocket Position", Rocket.getCurrentPosition());
-        telemetry.addData("Rocket Velocity", Rocket.getVelocity());
+        telemetry.addData("Test", test);
+        telemetry.addData("Has Pressed", hasPressed);
+        telemetry.addData("Has Done", hasDone);
+        telemetry.addData("Prev Runtime", myPrevRuntime);
+
+
         telemetry.update();
     }
 
 
     // Adjust speed for precision control based on trigger inputs
     public void precisionControl() {
-        if (gamepad1.share) {
-            speedMod = .25;
-            gamepad1.rumble(1, 1, 200);  // Rumble feedback for precision mode
-        } else if (gamepad1.options) {
-            speedMod = 0.5;
-            gamepad1.rumble(1, 1, 200);  // Rumble feedback for medium speed mode
-        } else {
-            speedMod = 1;
-            gamepad1.stopRumble();  // Stop rumble if neither trigger is pressed
-        }
-    }
+        speedMod = 1 - gamepad1.left_trigger * .8;
+        gamepad1.rumble(gamepad1.left_trigger, gamepad1.left_trigger, 200); // Rumble feedback for precision mode
 
+    }
 
     public void drive() {
         double x = -gamepad1.left_stick_x;
@@ -244,208 +233,121 @@ public class Drive_Control_New extends OpMode {
     //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     // Method to control the vertical lift mechanism
     public void Verticallift() {
-        if ((gamepad1.y) && (armLevel < armLevelPosition.length - 1) && (getRuntime() - previousRunTime >= inputDelayInSeconds)) {
-            RotationalClaw.setPosition(.68);
-            armLevel = 3;
-            viper.setVelocity(10000);
-
-        } else if ((gamepad1.a) && (armLevel > 0) && (getRuntime() - previousRunTime >= inputDelayInSeconds)) {
-
-            armLevel = 0;
-            RotationalClaw.setPosition(.68);
-            viper.setVelocity(10000);
-
-
-
-        } else if (gamepad1.b) {
+        if (gamepad1.b) {
             armLevel = 2;
-            viper.setVelocity(10000);
+            Viper.setVelocity(2000);
             RotationalClaw.setPosition(.68);
         }
 
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         //sets to driving level
-        if (gamepad1.x) {
-            armLevel = 1;
-            viper.setVelocity(10000);
-            RotationalClaw.setPosition(.68);
-
-        }
-
 
 
 
         if (getRuntime() - previousRunTime >= inputDelayInSeconds + .25) {
 
         }
-        viper.setTargetPosition(armLevelPosition[armLevel]);
-        viper.setTargetPositionTolerance(armLevelPosition[armLevel]);
-        viper.setVelocity(10000);
+        Viper.setTargetPosition(armLevelPosition[armLevel]);
+        Viper.setTargetPositionTolerance(armLevelPosition[armLevel]);
     }
 
     // Method to control the rocket motor mechanism
     public void RocketBoom() {
-        // Check if the dpad_up button on gamepad2 is pressed
-        if (gamepad2.dpad_up) {
+        if (gamepad1.dpad_up) {
             // Scoring Postion
             Rocket.setTargetPosition(970);
             Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        } else if (gamepad2.dpad_left) {
+        } else if (gamepad1.dpad_left) {
             // Hang Postion
             Rocket.setTargetPosition(760);
             Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        } else if (gamepad2.share) {
+        } else if (gamepad1.dpad_right) {
             // Pick Up postion
             Rocket.setTargetPosition(245);
             Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             RotationalClaw.setPosition(0.6);
         }
 // Check if the dpad_down button on gamepad2 is pressed
-        else if (gamepad2.dpad_down) {
-            // Rest Postion
-            Rocket.setTargetPosition(0);
-            Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            RotationalClaw.setPosition(0.68);
+//        else if (gamepad1.dpad_down) {
+//            // Rest Postion
+//            Rocket.setTargetPosition(0);
+//            Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//            RotationalClaw.setPosition(0.68);
 
-        }
-        else if (gamepad2.dpad_right){
-            Rocket.setTargetPosition(225);
-            Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            RotationalClaw.setPosition(0.6);
+//        }
+        //else if (gamepad1.dpad_right) {
+            //Rocket.setTargetPosition(210);
+            //Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            //RotationalClaw.setPosition(0.6);
 
-        }
-
-
-        Rocket.setVelocity(2000);
-    }
-
-    public void PickUp(){
-        Rocket.setVelocity(1500);
-        viper.setVelocity(5000);
-
-        double x = -gamepad1.left_stick_x;
-        double y = gamepad1.left_stick_y;
-        double rotation = -gamepad1.right_stick_x;
-        double FL = (y + x + rotation) * speedMod;
-        double FR = (y - x - rotation) * speedMod;
-        double BL = (y - x + rotation) * speedMod;
-        double BR = (y + x - rotation) * speedMod;
-
-        wheelFL.setPower(FL);
-        wheelFR.setPower(FR);
-        wheelBL.setPower(BL);
-        wheelBR.setPower(BR);
-        if(gamepad1.dpad_left){
+//        }
 
 
-            RotationalClaw.setPosition(0.68);
-            Rocket.setTargetPosition(225);
-            Claw.setPosition(1);
-
-            if(Rocket.getTargetPosition() >= 210 || Rocket.getTargetPosition() == 225){
-                armLevel = 1;
-                viper.setTargetPosition(armLevelPosition[armLevel]);
-                viper.setTargetPositionTolerance(armLevelPosition[armLevel]);
-            }
-            if (viper.getTargetPosition() >= 1600 || viper.getTargetPosition() == 1600){
-                RotationalClaw.setPosition(1);
-            }
-
-
-
-
-
-        }
-
-    }
-
-    public  void Score(){
-        Rocket.setVelocity(1000);
-        viper.setVelocity(5000);
-        double x = -gamepad1.left_stick_x;
-        double y = gamepad1.left_stick_y;
-        double rotation = -gamepad1.right_stick_x;
-        double FL = (y + x + rotation) * speedMod;
-        double FR = (y - x - rotation) * speedMod;
-        double BL = (y - x + rotation) * speedMod;
-        double BR = (y + x - rotation) * speedMod;
-
-        wheelFL.setPower(FL);
-        wheelFR.setPower(FR);
-        wheelBL.setPower(BL);
-        wheelBR.setPower(BR);
-
-        if(gamepad1.dpad_up) {
-
-
-
-
-            Rocket.setTargetPosition(970);
-            RotationalClaw.setPosition(0.68);
-
-            if (Rocket.getTargetPosition() >= 960 || Rocket.getTargetPosition() == 970){
-                RotationalClaw.setPosition(0.43);
-                armLevel = 3;
-                viper.setTargetPosition(armLevelPosition[armLevel]);
-                viper.setTargetPositionTolerance(armLevelPosition[armLevel]);
-
-            }
-
-
-
-        }
-
-    }
-
-    public  void Reset() {
-        Rocket.setVelocity(1000);
-        viper.setVelocity(5000);
-        double x = -gamepad1.left_stick_x;
-        double y = gamepad1.left_stick_y;
-        double rotation = -gamepad1.right_stick_x;
-        double FL = (y + x + rotation) * speedMod;
-        double FR = (y - x - rotation) * speedMod;
-        double BL = (y - x + rotation) * speedMod;
-        double BR = (y + x - rotation) * speedMod;
-
-        wheelFL.setPower(FL);
-        wheelFR.setPower(FR);
-        wheelBL.setPower(BL);
-        wheelBR.setPower(BR);
-
-        if (gamepad1.dpad_down) {
-            Claw.setPosition(1);
-            RotationalClaw.setPosition(.68);
-            armLevel = 0;
-            viper.setTargetPosition(armLevelPosition[armLevel]);
-            viper.setTargetPositionTolerance(armLevelPosition[armLevel]);
-
-            if(viper.getTargetPosition() == 0){
-                Rocket.setTargetPosition(0);
-            }
-
-
-
-
-        }
-
+        Rocket.setVelocity(600);
     }
 
     // Method to control the claw grip mechanism
     public void ClawGrip() {
         // Check if the left bumper on gamepad2 is pressed
-        if (gamepad1.left_trigger > 0 ) {
-            // Set the claw servo to move forward
-            Claw.setPosition(1);// Opens the CLaw
-        }
-        // Check if the right bumper on gamepad2 is pressed
-        else if (gamepad1.right_trigger > 0) {
-            // Set the claw servo to move backward
-            Claw.setPosition(0.65); // Close the Claw
-        }
-        // If neither bumper is pressed, set the claw to stationary position
+
+            if (gamepad1.right_trigger > 0 ) {
+                Claw.setPosition(1);
+            }
+            // Score postion
+            else if (gamepad1.touchpad) {
+                Claw.setPosition(0.65); // Before: 55
+            }
 
     }
+    public  void ClawPickUp(){
+        if ( gamepad1.right_bumper){
+            RotationalClaw.setPosition(.75);
+            Claw.setPosition(0.65);
+
+        }
+    }
+    public void ClawScoreCommand(){
+        if (gamepad1.left_bumper){
+            RotationalClaw.setPosition(.9);
+            Claw.setPosition(0.65);
+        }
+    }
+
+    public void SystemScore(){
+        if (gamepad1.y){
+            Rocket.setTargetPosition(970);
+            RotationalClaw.setPosition(0.6);
+            armLevel = 3;
+
+        }
+        Viper.setTargetPosition(armLevelPosition[armLevel]);
+        Viper.setTargetPositionTolerance(armLevelPosition[armLevel]);
+
+    }
+    public void SystemRest(){
+        if (gamepad1.a){
+            Rocket.setTargetPosition(0);
+            RotationalClaw.setPosition(0.6);
+            armLevel = 0;
+
+        }
+        Viper.setTargetPosition(armLevelPosition[armLevel]);
+        Viper.setTargetPositionTolerance(armLevelPosition[armLevel]);
+
+    }
+    public  void SystemPickUp(){
+        if (gamepad1.x){
+            Rocket.setTargetPosition(240);
+            armLevel = 1;
+
+        }
+        Viper.setTargetPosition(armLevelPosition[armLevel]);
+        Viper.setTargetPositionTolerance(armLevelPosition[armLevel]);
+        }
+
+
+
+
 
     public void SecondHang() {
         //Going Down
@@ -462,33 +364,60 @@ public class Drive_Control_New extends OpMode {
 
     }
 
-    public void ClawRotation() {
-        if (gamepad1.left_bumper) {
-            RotationalClaw.setPosition(0.7);
+
+
+    public void baseParallel(double seconds, int id) // Uses previous runtime and runtime to make a parallel timer, variables are in array bc we need multiple
+    // ID is incrememntal for arrays, seconds is how much waiting
+    {
+        if (true) // Put the controls that you want to have pressed for timer to start here
+        {
+            hasPressed[id] = true;
         }
-        // Score postion
-        else if (gamepad1.right_bumper) {
-            RotationalClaw.setPosition(0.43);
+
+        if (hasPressed[id]) {
+            if (!hasDone[id]) {
+                myPrevRuntime[id] = getRuntime();
+                hasDone[id] = true;
+            }
+
+
+            if (getRuntime() >= seconds + myPrevRuntime[id]) {
+                test = 1;
+                hasPressed[id] = false;
+                myPrevRuntime[id] = 0;
+                hasDone[id] = false;
+
+            }
+
+        }
+
+
+    }
+
+    public void parallelRocket(int position, int id) // Parallell waiting for sprocket
+    {
+        if (gamepad1.dpad_down) {
+            hasPressed[id] = true;
+        }
+
+
+        if (hasPressed[id]) {
+            if (!hasDone[id]) {
+                myPrevRuntime[id] = Viper.getCurrentPosition();
+                hasDone[id] = true;
+                armLevel = 0;
+            }
+
+
+            if (Viper.getCurrentPosition() <= position) {
+                Rocket.setTargetPosition(0);
+                hasPressed[id] = false;
+                myPrevRuntime[id] = 0;
+                hasDone[id] = false;
+
+            }
+
         }
     }
 
-    // Method to control the claw rotation mechanism
-
-
 }
-
-
-
-
-
-/*
- * Code to run ONCE after the driver hits STOP
- */
-
-
-/*
- * Code to run ONCE after the driver hits STOP
- */
-
-
-//@Override

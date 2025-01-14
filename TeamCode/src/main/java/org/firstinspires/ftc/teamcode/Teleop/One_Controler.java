@@ -380,7 +380,7 @@ public class One_Controler extends OpMode {
 
     }
 
-    public void parallelRocket(int position, int id) // Parallell waiting for sprocket
+       public void parallelRocket(int position, int id) // Parallell waiting for sprocket
     {
         if (gamepad1.dpad_down) {
             hasPressed[id] = true;
