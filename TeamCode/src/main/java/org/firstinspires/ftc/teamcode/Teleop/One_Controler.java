@@ -57,7 +57,7 @@ public class One_Controler extends OpMode {
     final double TRIGGER_THRESHOLD = 0.75;
     private double previousRunTime;
     private double inputDelayInSeconds = .5;
-    private int[] armLevelPosition = {0, 1600, 2500, 3250,};
+    private int[] armLevelPosition = {0, 1600, 2500, 3200,};
     private int[] SprocketLevelPosition = {0, 200, 750, 1100};
     private int SprocketLevel;
     private int armLevel;
@@ -341,7 +341,7 @@ public class One_Controler extends OpMode {
 
     public void ClawRotation() {
         if (gamepad1.right_trigger > 0) {
-            if (gamepad1.left_bumper) {
+
                 RotationalClaw.setPosition(0.75);
             }
             // Score postion
@@ -349,7 +349,7 @@ public class One_Controler extends OpMode {
                 RotationalClaw.setPosition(0.57);
             }
         }
-    }
+
 
     public void baseParallel(double seconds, int id) // Uses previous runtime and runtime to make a parallel timer, variables are in array bc we need multiple
                                                      // ID is incrememntal for arrays, seconds is how much waiting

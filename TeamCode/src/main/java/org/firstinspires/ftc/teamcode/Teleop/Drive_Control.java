@@ -52,7 +52,7 @@ public class Drive_Control extends OpMode {
     final double TRIGGER_THRESHOLD = 0.75;
     private double previousRunTime;
     private double inputDelayInSeconds = .5;
-    private int[] armLevelPosition = {0, 1600, 2500, 3250,};
+    private int[] armLevelPosition = {0, 1600, 2500, 3230};
     private int[] SprocketLevelPosition = {0, 200, 750, 1100};
     private int SprocketLevel;
     private int armLevel;
@@ -113,7 +113,7 @@ public class Drive_Control extends OpMode {
         viper.setTargetPositionTolerance(50);
         viper.setTargetPosition(50);
         viper.setDirection(DcMotorSimple.Direction.FORWARD);
-        viper.setVelocity(7000);
+        viper.setVelocity(10000);
 
         //Sprocket Encoder
         Rocket.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -231,14 +231,14 @@ public class Drive_Control extends OpMode {
     // Method to control the vertical lift mechanism
     public void Verticallift() {
         if ((gamepad2.y) && (armLevel < armLevelPosition.length - 1) && (getRuntime() - previousRunTime >= inputDelayInSeconds)) {
-            RotationalClaw.setPosition(.68);
+            RotationalClaw.setPosition(.87);
             armLevel = 3;
 
 
         } else if ((gamepad2.a) && (armLevel > 0) && (getRuntime() - previousRunTime >= inputDelayInSeconds)) {
 
             armLevel = 0;
-            RotationalClaw.setPosition(.68);
+            RotationalClaw.setPosition(.87);
 
 
 
@@ -246,7 +246,7 @@ public class Drive_Control extends OpMode {
         } else if (gamepad2.b) {
             armLevel = 2;
             viper.setVelocity(10000);
-            RotationalClaw.setPosition(.68);
+            RotationalClaw.setPosition(.87);
         }
 
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -254,7 +254,7 @@ public class Drive_Control extends OpMode {
         if (gamepad2.x) {
             armLevel = 1;
 
-        RotationalClaw.setPosition(.68);
+        RotationalClaw.setPosition(.87);
 
         }
 
@@ -284,20 +284,21 @@ public class Drive_Control extends OpMode {
             // Pick Up postion
             Rocket.setTargetPosition(245);
             Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            RotationalClaw.setPosition(0.6);
+
         }
 // Check if the dpad_down button on gamepad2 is pressed
         else if (gamepad2.dpad_down) {
             // Rest Postion
+            RotationalClaw.setPosition(0.93);
             Rocket.setTargetPosition(0);
             Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            RotationalClaw.setPosition(0.68);
+
 
         }
         else if (gamepad2.dpad_right){
             Rocket.setTargetPosition(225);
             Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            RotationalClaw.setPosition(0.6);
+            RotationalClaw.setPosition(0.85);
 
         }
 
@@ -337,12 +338,15 @@ public class Drive_Control extends OpMode {
     }
 
     public void ClawRotation() {
+        // score
         if (gamepad2.left_bumper) {
-            RotationalClaw.setPosition(0.8);
+            RotationalClaw.setPosition(0.97)
+            ;
         }
-        // Score postion
+        // pickup
         else if (gamepad2.right_bumper) {
-            RotationalClaw.setPosition(0.43);
+            RotationalClaw.setPosition(.85
+            );
         }
     }
 
