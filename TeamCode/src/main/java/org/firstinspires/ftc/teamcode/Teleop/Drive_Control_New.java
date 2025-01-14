@@ -290,25 +290,25 @@ public class Drive_Control_New extends OpMode {
     public void ClawGrip() {
         // Check if the left bumper on gamepad2 is pressed
 
-            if (gamepad1.right_trigger > 0 ) {
+            if (gamepad2.right_trigger > 0 ) {
                 Claw.setPosition(1);
             }
             // Score postion
-            else if (gamepad1.touchpad) {
+            else if (gamepad2.left_trigger > 0) {
                 Claw.setPosition(0.65); // Before: 55
             }
 
     }
     public  void ClawPickUp(){
         if ( gamepad1.right_bumper){
-            RotationalClaw.setPosition(.75);
+            RotationalClaw.setPosition(0);
             Claw.setPosition(0.65);
 
         }
     }
     public void ClawScoreCommand(){
         if (gamepad1.left_bumper){
-            RotationalClaw.setPosition(.9);
+            RotationalClaw.setPosition(.92);
             Claw.setPosition(0.65);
         }
     }
@@ -339,6 +339,7 @@ public class Drive_Control_New extends OpMode {
         if (gamepad1.x){
             Rocket.setTargetPosition(240);
             armLevel = 1;
+            RotationalClaw.setPosition(0.6) ;
 
         }
         Viper.setTargetPosition(armLevelPosition[armLevel]);
@@ -396,7 +397,7 @@ public class Drive_Control_New extends OpMode {
 
     public void parallelRocket(int position, int id) // Parallell waiting for sprocket
     {
-        if (gamepad1.dpad_down) {
+        if (gamepad1.dpad_down || gamepad1.a) {
             hasPressed[id] = true;
         }
 
