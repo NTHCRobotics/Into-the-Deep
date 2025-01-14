@@ -21,9 +21,9 @@ public class Autoxolotl1 extends LinearOpMode
     private int[] wheelTicks = {0, 0, 0, 0}; // FL = 0, FR = 1, BL = 2, BR = 3
     private final ElapsedTime runtime = new ElapsedTime();  // Timer, I just copy pasted, don't ask questions
     private double speedMod;
-    private int[] viperSlideTargets = {0, 1600, 2500, 3245,5000};
+    private int[] viperSlideTargets = {0, 1600, 1970,1930, 3180};
 
-    private  int[] sprocketTargets  = {0, 245 , 760 , 970};
+    private  int[] sprocketTargets  = {0, 255 , 760 , 990};
 
     private int viperlevel ;
 
@@ -142,7 +142,7 @@ public class Autoxolotl1 extends LinearOpMode
         rocket.setDirection(DcMotorSimple.Direction.FORWARD);
         rocket.setTargetPosition(0);
         rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rocket.setVelocity(600);
+        rocket.setVelocity(1200);
 
 
         // No idea, copy pasted
@@ -178,66 +178,56 @@ public class Autoxolotl1 extends LinearOpMode
         telemetry.update();
         telemetry.update();
         // Pre Load Sample
-            moveByJoystick(0.1,-1,0,0,200);
-            moveByJoystick(0.5,0,-1,0,700);
-            moveByJoystick(0.5,-1,0,0,300);
+
+              setClaw(0.6,0.4);
+             setRotateClaw(0.80, 0.6);
+            moveByJoystick(0.5,0,-1,0,520);
+            moveByJoystick(0.5,-1,0,0,540);
             moveSprocket(3);
-            moveByJoystick(0.5,0,0,-1,400);
-            moveByJoystick(0.2,0,1,0,100);
-            rotateClaw.setPosition(0.68);
-            moveViper(3);
-            rotateClaw.setPosition(0.43);
-            claw.setPosition(1);
-            rotateClaw.setPosition(.68);
+            moveByJoystick(0.5,0,0,-1,390);
+            moveViper(4);
+            setRotateClaw(0.97 , 0.4);
+            setClaw(1, 0.4);
+           setRotateClaw(0.85 ,0.4);
             moveViper(0);
             moveSprocket(1);
 
         //First Sample
-            moveByJoystick(0.5,0,0,-1,550);
+
+            moveByJoystick(0.5,0,0,-1,580);
             moveViper(2);
-            rotateClaw.setPosition(0.7);
-            claw.setPosition(0.65);
+            setRotateClaw(0.85, 0.6);
+            setClaw(0.65, 0.2);
+
             moveViper(0);
-            moveByJoystick(0.5,0,0,1,550);
+            moveByJoystick(0.5,0,0,1,580);
             moveSprocket(3);
-            rotateClaw.setPosition(0.68);
-            moveViper(3);
-            rotateClaw.setPosition(0.43);
-            claw.setPosition(1);
-            rotateClaw.setPosition(.68);
+            setRotateClaw(0.87,0.6);
+            moveViper(4);
+            setRotateClaw(0.97 , 0.4);
+            setClaw(1,0.2);
+            setRotateClaw(0.85, 0.4);
             moveViper(0);
             moveSprocket(1);
+            moveSprocket(1);
         //Second Sample
-            moveByJoystick(0.4,0,0,-1,750);
-            moveViper(2);
-            rotateClaw.setPosition(0.7);
-            claw.setPosition(0.65);
-            moveViper(0);
-            moveByJoystick(0.4,0,0,1,750);
-            moveSprocket(3);
-            rotateClaw.setPosition(0.68);
+            moveByJoystick(0.6,0,0,-1,790);
             moveViper(3);
-            rotateClaw.setPosition(0.43);
-            claw.setPosition(1);
-            rotateClaw.setPosition(.68);
+            setRotateClaw(0.85, 0.4);
+            setClaw(0.65,0.4);
+            moveViper(0);
+            moveByJoystick(0.6,0,0,1,850);
+            moveSprocket(3);
+            setRotateClaw(0.87,0.4);
+            moveViper(4);
+            setRotateClaw(0.97,0.4);
+            setClaw(1,0.2);
+            setRotateClaw(0.87, 0.4);
             moveViper(0);
             moveSprocket(1);
 
         //Thrid Sample
-            moveByJoystick(1,0,0,-1 ,900);
-            moveViper(2);
-            rotateClaw.setPosition(0.7);
-            claw.setPosition(0.65);
-            moveViper(0);
-            moveByJoystick(0.4,0,0,1,900);
-            moveSprocket(3);
-            rotateClaw.setPosition(0.68);
-            moveViper(3);
-            rotateClaw.setPosition(0.43);
-            claw.setPosition(1);
-            rotateClaw.setPosition(.68);
-            moveViper(0);
-            moveSprocket(1);
+
 
 
 
@@ -315,6 +305,28 @@ public class Autoxolotl1 extends LinearOpMode
 
         viper.setTargetPosition(viperSlideTargets[viperTarget]);
         viperWait();
+
+    }
+
+    public void setClaw(double clawTarget , double seconds){
+        claw.setPosition(clawTarget);
+        runtime.reset();
+        while (opModeIsActive() && (runtime.seconds() < seconds))
+        {
+            // Nothing?
+        }
+        runtime.reset();
+
+    }
+
+    public void setRotateClaw(double rotateClawTarget , double seconds){
+        rotateClaw.setPosition(rotateClawTarget);
+        runtime.reset();
+        while (opModeIsActive() && (runtime.seconds() < seconds))
+        {
+            // Nothing?
+        }
+        runtime.reset();
 
     }
 
