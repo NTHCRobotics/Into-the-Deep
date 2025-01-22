@@ -31,7 +31,8 @@ public class Drive_Control_New extends OpMode {
     private DcMotorEx wheelFR; // Front right wheel
     private DcMotorEx wheelBL; // Back left wheel
     private DcMotorEx wheelBR; // Back right wheel
-    private DcMotorEx Viper; //Vertical lift mechanism
+    private DcMotorEx SwyftSlideJr;
+    private DcMotorEx SwyftSlide;
     private DcMotorEx Rocket; // Motor for rotate the Vertical lift
     private Servo HangRight;
     private Servo HangLeft;
@@ -86,7 +87,8 @@ public class Drive_Control_New extends OpMode {
         wheelBR = hardwareMap.get(DcMotorEx.class, "wheelBR");
 
 
-        Viper = hardwareMap.get(DcMotorEx.class, "viper");
+        SwyftSlide = hardwareMap.get(DcMotorEx.class, "SwyftSlide");
+        SwyftSlideJr = hardwareMap.get(DcMotorEx.class, "SwyftSlideJr");
         Rocket = hardwareMap.get(DcMotorEx.class, "rocket");
 
 
@@ -106,14 +108,25 @@ public class Drive_Control_New extends OpMode {
         wheelBL.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         wheelBR.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
-        // Viper Encoder
-        Viper.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        Viper.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        Viper.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        Viper.setTargetPositionTolerance(25);
-        Viper.setTargetPosition(0);
-        Viper.setDirection(DcMotorSimple.Direction.FORWARD);
-        Viper.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //SwyftSlide Encoder
+
+        SwyftSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        SwyftSlide.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        SwyftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        SwyftSlide.setTargetPositionTolerance(50);
+        SwyftSlide.setTargetPosition(50);
+        SwyftSlide.setDirection(DcMotorSimple.Direction.FORWARD);
+        SwyftSlide.setVelocity(10000);
+
+        // SwyftSlideJr Encoder
+
+        SwyftSlideJr.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        SwyftSlideJr.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        SwyftSlideJr.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        SwyftSlideJr.setTargetPositionTolerance(50);
+        SwyftSlideJr.setTargetPosition(50);
+        SwyftSlideJr.setDirection(DcMotorSimple.Direction.REVERSE);
+        SwyftSlideJr.setVelocity(10000);
 
 
         //Sprocket Encoder
@@ -181,15 +194,18 @@ public class Drive_Control_New extends OpMode {
 
 
         telemetry.addData("Status", "Run Time: " + runtime.toString());
-        //Arm Data
-        telemetry.addData("velocity", Viper.getVelocity());
-        telemetry.addData("slidePosition", Viper.getCurrentPosition());
-        telemetry.addData("is at target", !Viper.isBusy());
-        telemetry.addData("Target Slide Position", armLevelPosition[armLevel]);
-        telemetry.addData("Slide Position", Viper.getCurrentPosition());
-        telemetry.addData("Velocity", Viper.getVelocity());
-        telemetry.addData("is at target", !Viper.isBusy());
-        telemetry.addData("Tolerance: ", Viper.getTargetPositionTolerance());
+        //SwyftSlide Data
+        telemetry.addData("velocity", SwyftSlide.getVelocity());
+        telemetry.addData("is at target", !SwyftSlide.isBusy());
+        telemetry.addData("Target Slide Position SwyftSlide", armLevelPosition[armLevel]);
+        telemetry.addData("Slide Position", SwyftSlide.getCurrentPosition());
+
+        //SwyftSlideJr Data
+
+        telemetry.addData("velocity", SwyftSlideJr.getVelocity());
+        telemetry.addData("is at target", !SwyftSlideJr.isBusy());
+        telemetry.addData("Target Slide Position SwyftSlideJr", armLevelPosition[armLevel]);
+        telemetry.addData("Slide Position", SwyftSlideJr.getCurrentPosition());
         //  telemetry.addData("Red", redValue);
         //   telemetry.addData("Green", greenValue);
         //   telemetry.addData("Blue", blueValue);
@@ -235,7 +251,7 @@ public class Drive_Control_New extends OpMode {
     public void Verticallift() {
         if (gamepad1.b) {
             armLevel = 2;
-            Viper.setVelocity(2000);
+
             RotationalClaw.setPosition(.68);
         }
 
@@ -247,8 +263,11 @@ public class Drive_Control_New extends OpMode {
         if (getRuntime() - previousRunTime >= inputDelayInSeconds + .25) {
 
         }
-        Viper.setTargetPosition(armLevelPosition[armLevel]);
-        Viper.setTargetPositionTolerance(armLevelPosition[armLevel]);
+        SwyftSlide.setTargetPosition(armLevelPosition[armLevel]);
+        SwyftSlide.setTargetPositionTolerance(armLevelPosition[armLevel]);
+
+        SwyftSlideJr.setTargetPosition(armLevelPosition[armLevel]);
+        SwyftSlideJr.setTargetPositionTolerance(armLevelPosition[armLevel]);
     }
 
     // Method to control the rocket motor mechanism
@@ -320,8 +339,11 @@ public class Drive_Control_New extends OpMode {
             armLevel = 3;
 
         }
-        Viper.setTargetPosition(armLevelPosition[armLevel]);
-        Viper.setTargetPositionTolerance(armLevelPosition[armLevel]);
+        SwyftSlide.setTargetPosition(armLevelPosition[armLevel]);
+        SwyftSlide.setTargetPositionTolerance(armLevelPosition[armLevel]);
+
+        SwyftSlideJr.setTargetPosition(armLevelPosition[armLevel]);
+        SwyftSlideJr.setTargetPositionTolerance(armLevelPosition[armLevel]);
 
     }
     public void SystemRest(){
@@ -331,8 +353,11 @@ public class Drive_Control_New extends OpMode {
             armLevel = 0;
 
         }
-        Viper.setTargetPosition(armLevelPosition[armLevel]);
-        Viper.setTargetPositionTolerance(armLevelPosition[armLevel]);
+        SwyftSlide.setTargetPosition(armLevelPosition[armLevel]);
+        SwyftSlide.setTargetPositionTolerance(armLevelPosition[armLevel]);
+
+        SwyftSlideJr.setTargetPosition(armLevelPosition[armLevel]);
+        SwyftSlideJr.setTargetPositionTolerance(armLevelPosition[armLevel]);
 
     }
     public  void SystemPickUp(){
@@ -342,8 +367,11 @@ public class Drive_Control_New extends OpMode {
             RotationalClaw.setPosition(0.6) ;
 
         }
-        Viper.setTargetPosition(armLevelPosition[armLevel]);
-        Viper.setTargetPositionTolerance(armLevelPosition[armLevel]);
+        SwyftSlide.setTargetPosition(armLevelPosition[armLevel]);
+        SwyftSlide.setTargetPositionTolerance(armLevelPosition[armLevel]);
+
+        SwyftSlideJr.setTargetPosition(armLevelPosition[armLevel]);
+        SwyftSlideJr.setTargetPositionTolerance(armLevelPosition[armLevel]);
         }
 
 
@@ -404,13 +432,15 @@ public class Drive_Control_New extends OpMode {
 
         if (hasPressed[id]) {
             if (!hasDone[id]) {
-                myPrevRuntime[id] = Viper.getCurrentPosition();
+                myPrevRuntime[id] = SwyftSlide.getCurrentPosition();
+                myPrevRuntime[id] = SwyftSlideJr.getCurrentPosition();
+
                 hasDone[id] = true;
                 armLevel = 0;
             }
 
 
-            if (Viper.getCurrentPosition() <= position) {
+            if (SwyftSlide.getCurrentPosition() <= position && SwyftSlideJr.getCurrentPosition() <= position) {
                 Rocket.setTargetPosition(0);
                 hasPressed[id] = false;
                 myPrevRuntime[id] = 0;

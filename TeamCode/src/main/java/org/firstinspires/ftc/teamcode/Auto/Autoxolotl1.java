@@ -33,7 +33,8 @@ public class Autoxolotl1 extends LinearOpMode
     private DcMotorEx wheelFR; // Front right wheel
     private DcMotorEx wheelBL; // Back left wheel
     private DcMotorEx wheelBR; // Back right wheel
-    private DcMotorEx viper; //Vertical lift mechanism
+    private DcMotorEx SwyftSlideJr;
+    private DcMotorEx SwyftSlide;
     private DcMotorEx rocket; // Motor for rotate the Vertical lift
 
     // Wheel Ticks
@@ -64,7 +65,8 @@ public class Autoxolotl1 extends LinearOpMode
         wheelBR = hardwareMap.get(DcMotorEx.class, "wheelBR");
 
 
-        viper = hardwareMap.get(DcMotorEx.class, "viper");
+        SwyftSlide = hardwareMap.get(DcMotorEx.class, "SwyftSlide");
+        SwyftSlideJr = hardwareMap.get(DcMotorEx.class, "SwyftSlideJr");
         rocket = hardwareMap.get(DcMotorEx.class, "rocket");
 
 
@@ -124,16 +126,23 @@ public class Autoxolotl1 extends LinearOpMode
 
 
 
+        SwyftSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        SwyftSlide.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        SwyftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        SwyftSlide.setTargetPositionTolerance(50);
+        SwyftSlide.setTargetPosition(50);
+        SwyftSlide.setDirection(DcMotorSimple.Direction.FORWARD);
+        SwyftSlide.setVelocity(10000);
 
-        //No idea, copy pasted
-        viper.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        viper.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        viper.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        viper.setTargetPositionTolerance(50);
-        viper.setTargetPosition(50);
-        viper.setDirection(DcMotorSimple.Direction.FORWARD);
-        viper.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        viper.setVelocity(5000);
+        // SwyftSlideJr Encoder
+
+        SwyftSlideJr.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        SwyftSlideJr.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        SwyftSlideJr.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        SwyftSlideJr.setTargetPositionTolerance(50);
+        SwyftSlideJr.setTargetPosition(50);
+        SwyftSlideJr.setDirection(DcMotorSimple.Direction.REVERSE);
+        SwyftSlideJr.setVelocity(10000);
 
 
         // Sprocket Stuff
@@ -185,45 +194,45 @@ public class Autoxolotl1 extends LinearOpMode
             moveByJoystick(0.5,-1,0,0,540);
             moveSprocket(3);
             moveByJoystick(0.5,0,0,-1,390);
-            moveViper(4);
+            moveSwyftSlides(4);
             setRotateClaw(0.97 , 0.4);
             setClaw(1, 0.4);
            setRotateClaw(0.85 ,0.4);
-            moveViper(0);
+            moveSwyftSlides(0);
             moveSprocket(1);
 
         //First Sample
 
             moveByJoystick(0.5,0,0,-1,580);
-            moveViper(2);
+            moveSwyftSlides(2);
             setRotateClaw(0.85, 0.6);
             setClaw(0.65, 0.2);
 
-            moveViper(0);
+            moveSwyftSlides(0);
             moveByJoystick(0.5,0,0,1,580);
             moveSprocket(3);
             setRotateClaw(0.87,0.6);
-            moveViper(4);
+            moveSwyftSlides(4);
             setRotateClaw(0.97 , 0.4);
             setClaw(1,0.2);
             setRotateClaw(0.85, 0.4);
-            moveViper(0);
+            moveSwyftSlides(0);
             moveSprocket(1);
             moveSprocket(1);
         //Second Sample
             moveByJoystick(0.6,0,0,-1,790);
-            moveViper(3);
+            moveSwyftSlides(3);
             setRotateClaw(0.85, 0.4);
             setClaw(0.65,0.4);
-            moveViper(0);
+            moveSwyftSlides(0);
             moveByJoystick(0.6,0,0,1,850);
             moveSprocket(3);
             setRotateClaw(0.87,0.4);
-            moveViper(4);
+            moveSwyftSlides(4);
             setRotateClaw(0.97,0.4);
             setClaw(1,0.2);
             setRotateClaw(0.87, 0.4);
-            moveViper(0);
+            moveSwyftSlides(0);
             moveSprocket(1);
 
         //Thrid Sample
@@ -300,10 +309,11 @@ public class Autoxolotl1 extends LinearOpMode
 
 
 
-    public void positionViper(int viperTarget)
+    public void positionSwyftSlides(int SwyftSlidesTarget)
     {
 
-        viper.setTargetPosition(viperSlideTargets[viperTarget]);
+        SwyftSlide.setTargetPosition(viperSlideTargets[SwyftSlidesTarget]);
+        SwyftSlideJr.setTargetPosition(viperSlideTargets[SwyftSlidesTarget]);
         viperWait();
 
     }
@@ -353,7 +363,7 @@ public class Autoxolotl1 extends LinearOpMode
     public void viperWait() // Waits the amount of seconds specified
     {
         runtime.reset();
-        while (viper.isBusy())
+        while (SwyftSlide.isBusy() && SwyftSlideJr.isBusy())
         {
             // Nothing?
         }
@@ -402,9 +412,9 @@ public class Autoxolotl1 extends LinearOpMode
         //  moveByStrafe(seconds, power, 0, 0 , forwardwheelTarget , negativewheelTarget); ;
     }
 
-    public void moveViper(int viperTarget)
+    public void moveSwyftSlides(int SwyftSlideTarget)
     {
-        positionViper(viperTarget);
+        positionSwyftSlides(SwyftSlideTarget);
     }
 
 
