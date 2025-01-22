@@ -54,7 +54,7 @@ public class Drive_Control extends OpMode {
     final double TRIGGER_THRESHOLD = 0.75;
     private double previousRunTime;
     private double inputDelayInSeconds = .5;
-    private int[] armLevelPosition = {0, 1600, 2500, 3230};
+    private int[] armLevelPosition = {0, 1300, 1900, 2700,};
     private int[] SprocketLevelPosition = {0, 200, 750, 1100};
     private int SprocketLevel;
     private int armLevel;
@@ -117,7 +117,7 @@ public class Drive_Control extends OpMode {
         SwyftSlide.setTargetPositionTolerance(50);
         SwyftSlide.setTargetPosition(50);
         SwyftSlide.setDirection(DcMotorSimple.Direction.FORWARD);
-        SwyftSlide.setVelocity(10000);
+        SwyftSlide.setVelocity(100);
 
         // SwyftSlideJr Encoder
 
@@ -127,7 +127,7 @@ public class Drive_Control extends OpMode {
         SwyftSlideJr.setTargetPositionTolerance(50);
         SwyftSlideJr.setTargetPosition(50);
         SwyftSlideJr.setDirection(DcMotorSimple.Direction.REVERSE);
-        SwyftSlideJr.setVelocity(10000);
+        SwyftSlideJr.setVelocity(100);
 
 
         //Sprocket Encoder
