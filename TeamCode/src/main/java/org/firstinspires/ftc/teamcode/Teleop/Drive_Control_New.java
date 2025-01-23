@@ -471,7 +471,7 @@ public class Drive_Control_New extends OpMode {
             }
 
 
-            if (Rocket.getCurrentPosition() <= position) {
+            if (Rocket.getCurrentPosition() >= position) {
                 armLevel = 3;
                 hasPressed[id] = false;
                 myPrevRuntime[id] = 0;
