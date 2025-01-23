@@ -58,12 +58,11 @@ public class Drive_Control_New extends OpMode {
     final double TRIGGER_THRESHOLD = 0.75;
     private double previousRunTime;
     private double inputDelayInSeconds = .5;
-    private int[] armLevelPosition = {0, 1600, 2500, 3250,};
+    private int[] armLevelPosition = {0, 1300, 1900, 2690};
     private int[] SprocketLevelPosition = {0, 200, 750, 1100};
     private int SprocketLevel;
     private int armLevel;
     private int test = 0;
-
 
 
     // wifi pass petAxoltol
@@ -116,7 +115,7 @@ public class Drive_Control_New extends OpMode {
         SwyftSlide.setTargetPositionTolerance(50);
         SwyftSlide.setTargetPosition(50);
         SwyftSlide.setDirection(DcMotorSimple.Direction.FORWARD);
-        SwyftSlide.setVelocity(10000);
+        SwyftSlide.setVelocity(2000);
 
         // SwyftSlideJr Encoder
 
@@ -126,13 +125,14 @@ public class Drive_Control_New extends OpMode {
         SwyftSlideJr.setTargetPositionTolerance(50);
         SwyftSlideJr.setTargetPosition(50);
         SwyftSlideJr.setDirection(DcMotorSimple.Direction.REVERSE);
-        SwyftSlideJr.setVelocity(10000);
+        SwyftSlideJr.setVelocity(2000);
 
 
         //Sprocket Encoder
         Rocket.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         Rocket.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        Rocket.setDirection(DcMotorSimple.Direction.FORWARD);
+        Rocket.setDirection(DcMotorSimple.Direction.REVERSE);
+        Rocket.setVelocity(1500);
         Rocket.setTargetPosition(0);
 
         //Wheel Direction
@@ -184,8 +184,9 @@ public class Drive_Control_New extends OpMode {
         ClawPickUp();
         ClawScoreCommand();
         SystemPickUp();
-        SystemRest();
-        SystemScore();
+        //SystemRest();
+        parallelScore(700, 1);
+//        SystemScore();
         //  SampleShoot();
 
 
@@ -254,10 +255,14 @@ public class Drive_Control_New extends OpMode {
 
             RotationalClaw.setPosition(.68);
         }
+        if (gamepad1.share){
+            armLevel = 3;
+
+        }
+
 
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         //sets to driving level
-
 
 
         if (getRuntime() - previousRunTime >= inputDelayInSeconds + .25) {
@@ -274,15 +279,15 @@ public class Drive_Control_New extends OpMode {
     public void RocketBoom() {
         if (gamepad1.dpad_up) {
             // Scoring Postion
-            Rocket.setTargetPosition(970);
+            Rocket.setTargetPosition(700);
             Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         } else if (gamepad1.dpad_left) {
             // Hang Postion
-            Rocket.setTargetPosition(760);
+            Rocket.setTargetPosition(560);
             Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         } else if (gamepad1.dpad_right) {
             // Pick Up postion
-            Rocket.setTargetPosition(245);
+            Rocket.setTargetPosition(45);
             Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             RotationalClaw.setPosition(0.6);
         }
@@ -295,46 +300,48 @@ public class Drive_Control_New extends OpMode {
 
 //        }
         //else if (gamepad1.dpad_right) {
-            //Rocket.setTargetPosition(210);
-            //Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            //RotationalClaw.setPosition(0.6);
+        //Rocket.setTargetPosition(210);
+        //Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //RotationalClaw.setPosition(0.6);
 
 //        }
 
 
-        Rocket.setVelocity(600);
+
     }
 
     // Method to control the claw grip mechanism
     public void ClawGrip() {
         // Check if the left bumper on gamepad2 is pressed
 
-            if (gamepad2.right_trigger > 0 ) {
-                Claw.setPosition(1);
-            }
-            // Score postion
-            else if (gamepad2.left_trigger > 0) {
-                Claw.setPosition(0.65); // Before: 55
-            }
+        if (gamepad1.left_trigger > 0) {
+            Claw.setPosition(1);
+        }
+        // Score postion
+        else if (gamepad1.right_trigger > 0) {
+            Claw.setPosition(0.65); // Before: 55
+        }
 
     }
-    public  void ClawPickUp(){
-        if ( gamepad1.right_bumper){
+
+    public void ClawPickUp() {
+        if (gamepad1.right_bumper) {
             RotationalClaw.setPosition(0);
-            Claw.setPosition(0.65);
+            Claw.setPosition(1);
 
         }
     }
-    public void ClawScoreCommand(){
-        if (gamepad1.left_bumper){
+
+    public void ClawScoreCommand() {
+        if (gamepad1.left_bumper) {
             RotationalClaw.setPosition(.92);
-            Claw.setPosition(0.65);
+            Claw.setPosition(1);
         }
     }
 
-    public void SystemScore(){
-        if (gamepad1.y){
-            Rocket.setTargetPosition(970);
+    public void SystemScore() {
+        if (gamepad1.y) {
+            Rocket.setTargetPosition(700);
             RotationalClaw.setPosition(0.6);
             armLevel = 3;
 
@@ -346,25 +353,27 @@ public class Drive_Control_New extends OpMode {
         SwyftSlideJr.setTargetPositionTolerance(armLevelPosition[armLevel]);
 
     }
-    public void SystemRest(){
-        if (gamepad1.a){
-            Rocket.setTargetPosition(0);
-            RotationalClaw.setPosition(0.6);
-            armLevel = 0;
 
-        }
-        SwyftSlide.setTargetPosition(armLevelPosition[armLevel]);
-        SwyftSlide.setTargetPositionTolerance(armLevelPosition[armLevel]);
+//    public void SystemRest() {
+//        if (gamepad1.a) {
+//            Rocket.setTargetPosition(0);
+//            RotationalClaw.setPosition(0.6);
+//            armLevel = 0;
+//
+//        }
+//        SwyftSlide.setTargetPosition(armLevelPosition[armLevel]);
+//        SwyftSlide.setTargetPositionTolerance(armLevelPosition[armLevel]);
+//
+//        SwyftSlideJr.setTargetPosition(armLevelPosition[armLevel]);
+//        SwyftSlideJr.setTargetPositionTolerance(armLevelPosition[armLevel]);
+//
+//    }
 
-        SwyftSlideJr.setTargetPosition(armLevelPosition[armLevel]);
-        SwyftSlideJr.setTargetPositionTolerance(armLevelPosition[armLevel]);
-
-    }
-    public  void SystemPickUp(){
-        if (gamepad1.x){
-            Rocket.setTargetPosition(240);
+    public void SystemPickUp() {
+        if (gamepad1.x) {
+            Rocket.setTargetPosition(45);
             armLevel = 1;
-            RotationalClaw.setPosition(0.6) ;
+            RotationalClaw.setPosition(0.6);
 
         }
         SwyftSlide.setTargetPosition(armLevelPosition[armLevel]);
@@ -372,10 +381,7 @@ public class Drive_Control_New extends OpMode {
 
         SwyftSlideJr.setTargetPosition(armLevelPosition[armLevel]);
         SwyftSlideJr.setTargetPositionTolerance(armLevelPosition[armLevel]);
-        }
-
-
-
+    }
 
 
     public void SecondHang() {
@@ -392,7 +398,6 @@ public class Drive_Control_New extends OpMode {
         }
 
     }
-
 
 
     public void baseParallel(double seconds, int id) // Uses previous runtime and runtime to make a parallel timer, variables are in array bc we need multiple
@@ -425,7 +430,7 @@ public class Drive_Control_New extends OpMode {
 
     public void parallelRocket(int position, int id) // Parallell waiting for sprocket
     {
-        if (gamepad1.dpad_down || gamepad1.a) {
+        if (gamepad1.a || gamepad1.dpad_down) {
             hasPressed[id] = true;
         }
 
@@ -447,8 +452,35 @@ public class Drive_Control_New extends OpMode {
                 hasDone[id] = false;
 
             }
-
         }
+
     }
 
+    public void parallelScore(int position, int id) // Parallell waiting for sprocket
+    {
+        if (gamepad1.y) {
+            hasPressed[id] = true;
+        }
+
+
+        if (hasPressed[id]) {
+            if (!hasDone[id]) {
+                myPrevRuntime[id] = Rocket.getCurrentPosition();
+                Rocket.setTargetPosition(700);
+                hasDone[id] = true;
+            }
+
+
+            if (Rocket.getCurrentPosition() <= position) {
+                armLevel = 3;
+                hasPressed[id] = false;
+                myPrevRuntime[id] = 0;
+                hasDone[id] = false;
+
+            }
+        }
+
+    }
 }
+
+

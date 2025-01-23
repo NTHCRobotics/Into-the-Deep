@@ -23,7 +23,7 @@ public class Autoxolotl1 extends LinearOpMode
     private double speedMod;
     private int[] viperSlideTargets = {0, 1600, 1970,1930, 3180};
 
-    private  int[] sprocketTargets  = {0, 255 , 760 , 990};
+    private  int[] sprocketTargets  = {0, 45 , 560 , 700};
 
     private int viperlevel ;
 
@@ -148,7 +148,7 @@ public class Autoxolotl1 extends LinearOpMode
         // Sprocket Stuff
         rocket.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rocket.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rocket.setDirection(DcMotorSimple.Direction.FORWARD);
+        rocket.setDirection(DcMotorSimple.Direction.REVERSE);
         rocket.setTargetPosition(0);
         rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rocket.setVelocity(1200);
