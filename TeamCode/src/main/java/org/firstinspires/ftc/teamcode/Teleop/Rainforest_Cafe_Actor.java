@@ -63,7 +63,7 @@ public class Rainforest_Cafe_Actor extends OpMode {
     private int SprocketLevel;
     private int armLevel;
     private int test = 0;
-    private final int SWYFT_VELOCITY = 2000;
+    private final int SWYFT_VELOCITY = 7500;
 
 
     // wifi pass petAxoltol
@@ -135,6 +135,7 @@ public class Rainforest_Cafe_Actor extends OpMode {
         //Sprocket Encoder
         Rocket.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         Rocket.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
         Rocket.setDirection(DcMotorSimple.Direction.REVERSE);
         Rocket.setVelocity(1500);
         Rocket.setTargetPosition(0);
@@ -189,6 +190,7 @@ public class Rainforest_Cafe_Actor extends OpMode {
         SystemPickUp();
         //SystemRest();
         parallelScore(700, 1);
+        parallelPickUp(55,2);
 //        SystemScore();
         //  SampleShoot();
 
@@ -229,25 +231,16 @@ public class Rainforest_Cafe_Actor extends OpMode {
     public void precisionControl() {
         if (gamepad1.left_stick_button)
         {
-            if (speedMod == 0.7)
-            {
-                speedMod = 1;
-                gamepad1.rumble(0, 0, 0)
+            speedMod = 0.7;
+            gamepad1.rumble(0.3, 0, 500);
             }
-            else
-                speedMod = 0.7;
-            gamepad1.rumble(0.5, 0.5, 200);
+        if (gamepad1.right_stick_button) {
+            speedMod = 0.3;
+
+            gamepad1.rumble(0.3, 0, 500);
         }
-        if (gamepad1.right_stick_button)
-        {
-            if (speedMod == 0.3)
-            {
-                speedMod = 1;
-                gamepad1.rumble(0, 0, 0);
-            }
-            else
-                speedMod = 0.3;
-            gamepad1.rumble(1,1,200)
+            else {
+            speedMod = 1;
         }
     }
 
@@ -336,22 +329,22 @@ public class Rainforest_Cafe_Actor extends OpMode {
 
     public void ClawGrip() {
         // Check if the left bumper on gamepad2 is pressed
-        if (gamepad1.left_bumper) {
+        if (gamepad1.left_trigger>0) {
                 Claw.setPosition(1);
         }
             // Score postion
-        else if (gamepad1.right_bumper) {
+        else if (gamepad1.right_trigger >0) {
                 Claw.setPosition(0.65); // Before: 55
         }
     }
 
     public void ClawRotation() {
 
-        if (gamepad1.right_trigger > 0) {
+        if (gamepad1.left_bumper) {
             RotationalClaw.setPosition(1);
         }
             // Score postion
-        if (gamepad1.left_trigger > 0) {
+        if (gamepad1.right_bumper) {
             RotationalClaw.setPosition(0);
         }
 
@@ -453,6 +446,7 @@ public class Rainforest_Cafe_Actor extends OpMode {
     {
         if (gamepad1.a || gamepad1.dpad_down) {
             hasPressed[id] = true;
+            RotationalClaw.setPosition(0);
         }
 
 
@@ -462,6 +456,7 @@ public class Rainforest_Cafe_Actor extends OpMode {
                 myPrevRuntime[id] = SwyftSlideJr.getCurrentPosition();
 
                 hasDone[id] = true;
+
                 armLevel = 0;
             }
 
@@ -481,6 +476,7 @@ public class Rainforest_Cafe_Actor extends OpMode {
     {
         if (gamepad1.y) {
             hasPressed[id] = true;
+            RotationalClaw.setPosition(0);
         }
 
 
@@ -502,6 +498,37 @@ public class Rainforest_Cafe_Actor extends OpMode {
         }
 
     }
+    public void parallelPickUp(int position, int id) // Parallell waiting for sprocket
+    {
+        if (gamepad1.x) {
+            hasPressed[id] = true;
+            RotationalClaw.setPosition(0);
+        }
+
+
+        if (hasPressed[id]) {
+            if (!hasDone[id]) {
+                myPrevRuntime[id] = SwyftSlide.getCurrentPosition();
+                myPrevRuntime[id] = SwyftSlideJr.getCurrentPosition();
+
+                hasDone[id] = true;
+
+                armLevel = 1;
+            }
+
+
+            if (SwyftSlide.getCurrentPosition() <= position && SwyftSlideJr.getCurrentPosition() <= position) {
+                Rocket.setTargetPosition(55);
+                hasPressed[id] = false;
+                myPrevRuntime[id] = 0;
+                hasDone[id] = false;
+
+            }
+
+        }
+
+    }
+
 }
 
 

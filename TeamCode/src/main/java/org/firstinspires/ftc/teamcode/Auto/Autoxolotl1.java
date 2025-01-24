@@ -21,9 +21,9 @@ public class Autoxolotl1 extends LinearOpMode
     private int[] wheelTicks = {0, 0, 0, 0}; // FL = 0, FR = 1, BL = 2, BR = 3
     private final ElapsedTime runtime = new ElapsedTime();  // Timer, I just copy pasted, don't ask questions
     private double speedMod;
-    private int[] viperSlideTargets = {0, 1600, 1970,1930, 3180};
+    private int[] viperSlideTargets = {0, 1600, 2070,1930, 2660};
 
-    private  int[] sprocketTargets  = {0, 45 , 560 , 700};
+    private  int[] sprocketTargets  = {0, 60 , 560 , 700};
 
     private int viperlevel ;
 
@@ -52,7 +52,8 @@ public class Autoxolotl1 extends LinearOpMode
 
 
     @Override // Init?? I think?
-    public void runOpMode() throws InterruptedException {
+    public void
+    runOpMode() throws InterruptedException {
          /*
         Hardware maps everything
         Hardware map assigns the variables a physical port, you must set the ports to the String in quotes by configuring the control hub
@@ -108,10 +109,10 @@ public class Autoxolotl1 extends LinearOpMode
 
 
 
-        wheelFL.setPower(0.6);
-        wheelFR.setPower(0.6);
-        wheelBL.setPower(0.6);
-        wheelBR.setPower(0.6);
+        wheelFL.setPower(0.8);
+        wheelFR.setPower(0.8);
+        wheelBL.setPower(0.8);
+        wheelBR.setPower(0.8);
 
 
 
@@ -188,55 +189,56 @@ public class Autoxolotl1 extends LinearOpMode
         telemetry.update();
         // Pre Load Sample
 
-              setClaw(0.6,0.4);
-             setRotateClaw(0.80, 0.6);
-            moveByJoystick(0.5,0,-1,0,520);
+              setClaw(0.6,0.3);
+             setRotateClaw(0, 0.2);
+            moveByJoystick(0.5,0,-1,0,540);
             moveByJoystick(0.5,-1,0,0,540);
             moveSprocket(3);
-            moveByJoystick(0.5,0,0,-1,390);
+            moveByJoystick(0.5,0,0,-1,600);
+
             moveSwyftSlides(4);
-            setRotateClaw(0.97 , 0.4);
+            moveByJoystick(0.2,0,-1,0,10);
+            setRotateClaw(1 , 0.2);
             setClaw(1, 0.4);
-           setRotateClaw(0.85 ,0.4);
+           setRotateClaw(0 ,0.2);
             moveSwyftSlides(0);
             moveSprocket(1);
 
         //First Sample
 
-            moveByJoystick(0.5,0,0,-1,580);
+            moveByJoystick(0.5,0,0,-1,340
+            );
             moveSwyftSlides(2);
-            setRotateClaw(0.85, 0.6);
-            setClaw(0.65, 0.2);
+            setClaw(0.65, 0.4);
 
             moveSwyftSlides(0);
-            moveByJoystick(0.5,0,0,1,580);
+            moveByJoystick(0.5,0,0,1,340);
             moveSprocket(3);
-            setRotateClaw(0.87,0.6);
             moveSwyftSlides(4);
-            setRotateClaw(0.97 , 0.4);
-            setClaw(1,0.2);
-            setRotateClaw(0.85, 0.4);
+            setRotateClaw(1 , 0.2);
+            setClaw(1,0.4);
+            setRotateClaw(0.5, 0.4);
             moveSwyftSlides(0);
             moveSprocket(1);
             moveSprocket(1);
         //Second Sample
-            moveByJoystick(0.6,0,0,-1,790);
+           moveByJoystick(0.6,0,0,-1,600);
             moveSwyftSlides(3);
-            setRotateClaw(0.85, 0.4);
-            setClaw(0.65,0.4);
+            setRotateClaw(0, 0.2);
+            setClaw(0.65,0.2);
             moveSwyftSlides(0);
-            moveByJoystick(0.6,0,0,1,850);
+            moveByJoystick(0.6,0,0,1,600);
             moveSprocket(3);
-            setRotateClaw(0.87,0.4);
+            setRotateClaw(0.5,0.2);
             moveSwyftSlides(4);
-            setRotateClaw(0.97,0.4);
+            setRotateClaw(1,0.2);
             setClaw(1,0.2);
-            setRotateClaw(0.87, 0.4);
+            setRotateClaw(0.5, 0.2);
             moveSwyftSlides(0);
             moveSprocket(1);
 
         //Thrid Sample
-
+        //700
 
 
 
