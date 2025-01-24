@@ -9,9 +9,9 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name="oneController", group="Axoltl")
+@TeleOp(name="ranforestCafeActor", group="Axoltl")
 //@Disabled  This way it will run on the robot
-public class One_Controler extends OpMode {
+public class Rainforest_Cafe_Actor extends OpMode {
     // Declare OpMode members.
     // Timer for tracking the runtime of the robot's operation.
     private final ElapsedTime runtime = new ElapsedTime();  //timer
@@ -31,8 +31,8 @@ public class One_Controler extends OpMode {
     private DcMotorEx wheelFR; // Front right wheel
     private DcMotorEx wheelBL; // Back left wheel
     private DcMotorEx wheelBR; // Back right wheel
-    private DcMotorEx SwyftSlide; //Vertical lift mechanism
-    private DcMotorEx SwyftSlideJr; //Vertical lift mechanism
+    private DcMotorEx SwyftSlideJr;
+    private DcMotorEx SwyftSlide;
     private DcMotorEx Rocket; // Motor for rotate the Vertical lift
     private Servo HangRight;
     private Servo HangLeft;
@@ -52,25 +52,19 @@ public class One_Controler extends OpMode {
 
     // Here is where my dilly dallying ends
 
-    private double speedMod;
+    private double speedMod = 1;
     private final boolean rumbleLevel = true;
     private double rotation = 0;
     final double TRIGGER_THRESHOLD = 0.75;
     private double previousRunTime;
     private double inputDelayInSeconds = .5;
-    private int[] armLevelPosition = {0, 1300, 1900, 2690,};
+    private int[] armLevelPosition = {0, 1300, 1900, 2660};
     private int[] SprocketLevelPosition = {0, 200, 750, 1100};
     private int SprocketLevel;
     private int armLevel;
     private int test = 0;
-    //private int blueValue = colorSensor.blue();
-    // private int redValue = colorSensor.red();
-    // private int greenValue = colorSensor.green();
-    //  private static final int YELLOW_RED_THRESHOLD = 200;  // Minimum red value for yellow
-    // private static final int YELLOW_GREEN_THRESHOLD = 200; // Minimum green value for yellow
-    // private static final int YELLOW_BLUE_THRESHOLD = 100; // Maximum blue value for yellow
-    // private static final int TARGET_RED_THRESHOLD = 100;  // Minimum red value for scoring color
-    //  private static final int TARGET_BLUE_THRESHOLD = 100; // Minimum blue value for scoring color
+    private final int SWYFT_VELOCITY = 2000;
+
 
     // wifi pass petAxoltol
 
@@ -91,6 +85,7 @@ public class One_Controler extends OpMode {
         wheelFR = hardwareMap.get(DcMotorEx.class, "wheelFR");
         wheelBL = hardwareMap.get(DcMotorEx.class, "wheelBL");
         wheelBR = hardwareMap.get(DcMotorEx.class, "wheelBR");
+
 
         SwyftSlide = hardwareMap.get(DcMotorEx.class, "SwyftSlide");
         SwyftSlideJr = hardwareMap.get(DcMotorEx.class, "SwyftSlideJr");
@@ -113,25 +108,27 @@ public class One_Controler extends OpMode {
         wheelBL.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         wheelBR.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
-        // SwyftSlide Encoder
-        SwyftSlide.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        //SwyftSlide Encoder
+
+        SwyftSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         SwyftSlide.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         SwyftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        SwyftSlide.setTargetPositionTolerance(25);
-        SwyftSlide.setTargetPosition(0);
+        SwyftSlide.setTargetPositionTolerance(50);
+        SwyftSlide.setTargetPosition(50);
         SwyftSlide.setDirection(DcMotorSimple.Direction.FORWARD);
+        SwyftSlide.setVelocity(SWYFT_VELOCITY);
         SwyftSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        SwyftSlide.setVelocity(2000);
 
+        // SwyftSlideJr Encoder
 
-        SwyftSlideJr.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        SwyftSlideJr.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         SwyftSlideJr.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         SwyftSlideJr.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        SwyftSlideJr.setTargetPositionTolerance(25);
-        SwyftSlideJr.setTargetPosition(0);
+        SwyftSlideJr.setTargetPositionTolerance(50);
+        SwyftSlideJr.setTargetPosition(50);
         SwyftSlideJr.setDirection(DcMotorSimple.Direction.REVERSE);
+        SwyftSlideJr.setVelocity(SWYFT_VELOCITY);
         SwyftSlideJr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        SwyftSlide.setVelocity(2000);
 
 
 
@@ -139,6 +136,7 @@ public class One_Controler extends OpMode {
         Rocket.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         Rocket.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         Rocket.setDirection(DcMotorSimple.Direction.REVERSE);
+        Rocket.setVelocity(1500);
         Rocket.setTargetPosition(0);
 
         //Wheel Direction
@@ -182,14 +180,16 @@ public class One_Controler extends OpMode {
     public void loop() {
         // These methods will continuously run in the teleop loop
         precisionControl();
-        //   SecondHang();
         Verticallift();
-        // DectectYellow();
         ClawGrip();
+        ClawRotation();
         drive();
         RocketBoom();
         parallelRocket(50, 0);
-        ClawRotation();
+        SystemPickUp();
+        //SystemRest();
+        parallelScore(700, 1);
+//        SystemScore();
         //  SampleShoot();
 
 
@@ -198,15 +198,18 @@ public class One_Controler extends OpMode {
 
 
         telemetry.addData("Status", "Run Time: " + runtime.toString());
-        //Arm Data
+        //SwyftSlide Data
         telemetry.addData("velocity", SwyftSlide.getVelocity());
-        telemetry.addData("slidePosition", SwyftSlide.getCurrentPosition());
         telemetry.addData("is at target", !SwyftSlide.isBusy());
-        telemetry.addData("Target Slide Position", armLevelPosition[armLevel]);
+        telemetry.addData("Target Slide Position SwyftSlide", armLevelPosition[armLevel]);
         telemetry.addData("Slide Position", SwyftSlide.getCurrentPosition());
-        telemetry.addData("Velocity", SwyftSlide.getVelocity());
-        telemetry.addData("is at target", !SwyftSlide.isBusy());
-        telemetry.addData("Tolerance: ", SwyftSlide.getTargetPositionTolerance());
+
+        //SwyftSlideJr Data
+
+        telemetry.addData("velocity", SwyftSlideJr.getVelocity());
+        telemetry.addData("is at target", !SwyftSlideJr.isBusy());
+        telemetry.addData("Target Slide Position SwyftSlideJr", armLevelPosition[armLevel]);
+        telemetry.addData("Slide Position", SwyftSlideJr.getCurrentPosition());
         //  telemetry.addData("Red", redValue);
         //   telemetry.addData("Green", greenValue);
         //   telemetry.addData("Blue", blueValue);
@@ -218,17 +221,34 @@ public class One_Controler extends OpMode {
         telemetry.addData("Prev Runtime", myPrevRuntime);
 
 
-
-
         telemetry.update();
     }
 
 
     // Adjust speed for precision control based on trigger inputs
     public void precisionControl() {
-        speedMod = 1 - gamepad1.left_trigger * .8;
-        gamepad1.rumble(gamepad1.left_trigger, gamepad1.left_trigger, 200); // Rumble feedback for precision mode
-
+        if (gamepad1.left_stick_button)
+        {
+            if (speedMod == 0.7)
+            {
+                speedMod = 1;
+                gamepad1.rumble(0, 0, 0)
+            }
+            else
+                speedMod = 0.7;
+            gamepad1.rumble(0.5, 0.5, 200);
+        }
+        if (gamepad1.right_stick_button)
+        {
+            if (speedMod == 0.3)
+            {
+                speedMod = 1;
+                gamepad1.rumble(0, 0, 0);
+            }
+            else
+                speedMod = 0.3;
+            gamepad1.rumble(1,1,200)
+        }
     }
 
     public void drive() {
@@ -252,28 +272,19 @@ public class One_Controler extends OpMode {
     //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     // Method to control the vertical lift mechanism
     public void Verticallift() {
-        if ((gamepad1.y) && (armLevel < armLevelPosition.length - 1) && (getRuntime() - previousRunTime >= inputDelayInSeconds)) {
-            RotationalClaw.setPosition(.68);
-            armLevel = 3;
-
-        } else if ((gamepad1.a) && (armLevel > 0) && (getRuntime() - previousRunTime >= inputDelayInSeconds)) {
-
-            armLevel = 0;
-            RotationalClaw.setPosition(.68);
-
-
-        } else if (gamepad1.b) {
+        if (gamepad1.b) {
             armLevel = 2;
+
             RotationalClaw.setPosition(.68);
         }
+        if (gamepad1.share){
+            armLevel = 3;
+
+        }
+
 
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         //sets to driving level
-        if (gamepad1.x) {
-            armLevel = 1;
-            RotationalClaw.setPosition(.58);
-
-        }
 
 
         if (getRuntime() - previousRunTime >= inputDelayInSeconds + .25) {
@@ -281,25 +292,24 @@ public class One_Controler extends OpMode {
         }
         SwyftSlide.setTargetPosition(armLevelPosition[armLevel]);
         SwyftSlide.setTargetPositionTolerance(armLevelPosition[armLevel]);
+
         SwyftSlideJr.setTargetPosition(armLevelPosition[armLevel]);
         SwyftSlideJr.setTargetPositionTolerance(armLevelPosition[armLevel]);
-
     }
 
     // Method to control the rocket motor mechanism
     public void RocketBoom() {
         if (gamepad1.dpad_up) {
             // Scoring Postion
-            Rocket.setTargetPosition(970);
+            Rocket.setTargetPosition(700);
             Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        }
-        else if (gamepad1.dpad_left) {
+        } else if (gamepad1.dpad_left) {
             // Hang Postion
-            Rocket.setTargetPosition(730);
+            Rocket.setTargetPosition(560);
             Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        } else if (gamepad1.share) {
+        } else if (gamepad1.dpad_right) {
             // Pick Up postion
-            Rocket.setTargetPosition(245);
+            Rocket.setTargetPosition(45);
             Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             RotationalClaw.setPosition(0.6);
         }
@@ -311,39 +321,98 @@ public class One_Controler extends OpMode {
 //            RotationalClaw.setPosition(0.68);
 
 //        }
-        else if (gamepad1.dpad_right) {
-            Rocket.setTargetPosition(210);
-            Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            RotationalClaw.setPosition(0.6);
+        //else if (gamepad1.dpad_right) {
+        //Rocket.setTargetPosition(210);
+        //Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //RotationalClaw.setPosition(0.6);
 
-        }
+//        }
 
 
-        Rocket.setVelocity(600);
+
     }
 
     // Method to control the claw grip mechanism
+
     public void ClawGrip() {
         // Check if the left bumper on gamepad2 is pressed
-        if (gamepad1.right_trigger == 0) {
-            if (gamepad1.left_bumper) {
+        if (gamepad1.left_bumper) {
                 Claw.setPosition(1);
-            }
+        }
             // Score postion
-            else if (gamepad1.right_bumper) {
+        else if (gamepad1.right_bumper) {
                 Claw.setPosition(0.65); // Before: 55
-            }
         }
     }
 
+    public void ClawRotation() {
+
+        if (gamepad1.right_trigger > 0) {
+            RotationalClaw.setPosition(1);
+        }
+            // Score postion
+        if (gamepad1.left_trigger > 0) {
+            RotationalClaw.setPosition(0);
+        }
+
+
+    }
+
+
+
+    public void SystemScore() {
+        if (gamepad1.y) {
+            Rocket.setTargetPosition(700);
+            RotationalClaw.setPosition(0.6);
+            armLevel = 3;
+
+        }
+        SwyftSlide.setTargetPosition(armLevelPosition[armLevel]);
+        SwyftSlide.setTargetPositionTolerance(armLevelPosition[armLevel]);
+
+        SwyftSlideJr.setTargetPosition(armLevelPosition[armLevel]);
+        SwyftSlideJr.setTargetPositionTolerance(armLevelPosition[armLevel]);
+
+    }
+
+//    public void SystemRest() {
+//        if (gamepad1.a) {
+//            Rocket.setTargetPosition(0);
+//            RotationalClaw.setPosition(0.6);
+//            armLevel = 0;
+//
+//        }
+//        SwyftSlide.setTargetPosition(armLevelPosition[armLevel]);
+//        SwyftSlide.setTargetPositionTolerance(armLevelPosition[armLevel]);
+//
+//        SwyftSlideJr.setTargetPosition(armLevelPosition[armLevel]);
+//        SwyftSlideJr.setTargetPositionTolerance(armLevelPosition[armLevel]);
+//
+//    }
+
+    public void SystemPickUp() {
+        if (gamepad1.x) {
+//            Rocket.setTargetPosition(45);
+            armLevel = 1;
+            RotationalClaw.setPosition(0.6);
+
+        }
+        SwyftSlide.setTargetPosition(armLevelPosition[armLevel]);
+        SwyftSlide.setTargetPositionTolerance(armLevelPosition[armLevel]);
+
+        SwyftSlideJr.setTargetPosition(armLevelPosition[armLevel]);
+        SwyftSlideJr.setTargetPositionTolerance(armLevelPosition[armLevel]);
+    }
+
+
     public void SecondHang() {
         //Going Down
-        if (gamepad1.dpad_up) {
+        if (gamepad2.dpad_up) {
             HangRight.setPosition(0.7); // Correct Postion
             HangLeft.setPosition(0.57);
         }
         // Going Up
-        else if (gamepad1.dpad_down) {
+        else if (gamepad2.dpad_down) {
             HangRight.setPosition(0); // Correct Postion
             HangLeft.setPosition(1);
 
@@ -351,20 +420,9 @@ public class One_Controler extends OpMode {
 
     }
 
-    public void ClawRotation() {
-        if (gamepad1.right_trigger > 0) {
-
-                RotationalClaw.setPosition(0.75);
-            }
-            // Score postion
-            else if (gamepad1.right_bumper) {
-                RotationalClaw.setPosition(0.57);
-            }
-        }
-
 
     public void baseParallel(double seconds, int id) // Uses previous runtime and runtime to make a parallel timer, variables are in array bc we need multiple
-                                                     // ID is incrememntal for arrays, seconds is how much waiting
+    // ID is incrememntal for arrays, seconds is how much waiting
     {
         if (true) // Put the controls that you want to have pressed for timer to start here
         {
@@ -389,12 +447,11 @@ public class One_Controler extends OpMode {
         }
 
 
-
     }
 
-       public void parallelRocket(int position, int id) // Parallell waiting for sprocket
+    public void parallelRocket(int position, int id) // Parallell waiting for sprocket
     {
-        if (gamepad1.dpad_down) {
+        if (gamepad1.a || gamepad1.dpad_down) {
             hasPressed[id] = true;
         }
 
@@ -402,20 +459,49 @@ public class One_Controler extends OpMode {
         if (hasPressed[id]) {
             if (!hasDone[id]) {
                 myPrevRuntime[id] = SwyftSlide.getCurrentPosition();
+                myPrevRuntime[id] = SwyftSlideJr.getCurrentPosition();
+
                 hasDone[id] = true;
                 armLevel = 0;
             }
 
 
-            if (SwyftSlide.getCurrentPosition() <= position) {
+            if (SwyftSlide.getCurrentPosition() <= position && SwyftSlideJr.getCurrentPosition() <= position) {
                 Rocket.setTargetPosition(0);
                 hasPressed[id] = false;
                 myPrevRuntime[id] = 0;
                 hasDone[id] = false;
 
             }
-
         }
+
     }
 
+    public void parallelScore(int position, int id) // Parallell waiting for sprocket
+    {
+        if (gamepad1.y) {
+            hasPressed[id] = true;
+        }
+
+
+        if (hasPressed[id]) {
+            if (!hasDone[id]) {
+                myPrevRuntime[id] = Rocket.getCurrentPosition();
+                Rocket.setTargetPosition(700);
+                hasDone[id] = true;
+            }
+
+
+            if (Rocket.getCurrentPosition() >= position) {
+                armLevel = 3;
+                hasPressed[id] = false;
+                myPrevRuntime[id] = 0;
+                hasDone[id] = false;
+
+            }
+        }
+
+    }
 }
+
+
