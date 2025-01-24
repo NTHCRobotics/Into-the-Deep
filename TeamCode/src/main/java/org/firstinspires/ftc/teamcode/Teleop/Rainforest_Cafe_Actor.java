@@ -334,14 +334,14 @@ public class Rainforest_Cafe_Actor extends OpMode {
         }
             // Score postion
         else if (gamepad1.right_trigger >0) {
-                Claw.setPosition(0.65); // Before: 55
+                Claw.setPosition(0.55); // Before: 55
         }
     }
 
     public void ClawRotation() {
 
         if (gamepad1.left_bumper) {
-            RotationalClaw.setPosition(0.8);
+            RotationalClaw.setPosition(0.5);
         }
             // Score postion
         if (gamepad1.right_bumper) {
