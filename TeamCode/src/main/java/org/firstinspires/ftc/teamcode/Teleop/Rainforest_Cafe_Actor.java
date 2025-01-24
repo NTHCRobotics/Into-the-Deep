@@ -341,7 +341,7 @@ public class Rainforest_Cafe_Actor extends OpMode {
     public void ClawRotation() {
 
         if (gamepad1.left_bumper) {
-            RotationalClaw.setPosition(0.5);
+            RotationalClaw.setPosition(0.65);
         }
             // Score postion
         if (gamepad1.right_bumper) {
