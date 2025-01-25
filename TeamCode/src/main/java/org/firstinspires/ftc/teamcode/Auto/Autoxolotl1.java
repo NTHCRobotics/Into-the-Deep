@@ -219,8 +219,14 @@ public class Autoxolotl1 extends LinearOpMode
             moveSwyftSlides(0);
             moveSprocket(1);
             moveSprocket(1);
+<<<<<<< Updated upstream
         //Second Sample
             moveByJoystick(0.6,0,0,-1,790);
+=======
+
+            /*//Second Sample
+           moveByJoystick(0.6,0,0,-1,590);
+>>>>>>> Stashed changes
             moveSwyftSlides(3);
             setRotateClaw(0.85, 0.4);
             setClaw(0.65,0.4);
@@ -233,7 +239,7 @@ public class Autoxolotl1 extends LinearOpMode
             setClaw(1,0.2);
             setRotateClaw(0.87, 0.4);
             moveSwyftSlides(0);
-            moveSprocket(1);
+            moveSprocket(1);*/
 
         //Thrid Sample
 
