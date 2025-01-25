@@ -59,13 +59,13 @@ public class Rainforest_Cafe_Actor extends OpMode {
     final double TRIGGER_THRESHOLD = 0.75;
     private double previousRunTime;
     private double inputDelayInSeconds = .5;
-    private int[] armLevelPosition = {0, 1300, 1900, 2540};
+    private int[] armLevelPosition = {0, 1300, 1900, 2800};
     private int[] SprocketLevelPosition = {0, 200, 750, 1100};
     private int SprocketLevel;
     private int armLevel;
     private int test = 0;
     private final int SWYFT_VELOCITY = 2000;
-    private final double SCORING_ROTATION = 0.75;
+    private final double SCORING_ROTATION = 0.35;
 
 
     // wifi pass petAxoltol
@@ -190,7 +190,7 @@ public class Rainforest_Cafe_Actor extends OpMode {
         parallelRocket(50, 0);
         SystemPickUp();
         //SystemRest();
-        parallelScore(750, 1);
+        parallelScore(700, 1);
 //        SystemScore();
         //  SampleShoot();
 
@@ -304,7 +304,7 @@ public class Rainforest_Cafe_Actor extends OpMode {
         if (gamepad1.dpad_up) {
             if (Rocket.getTargetPosition() == 700)
             {
-                RotationalClaw = SCORING_ROTATION;
+                RotationalClaw.setPosition(SCORING_ROTATION);
             }
             else {
                 // Scoring Postion
@@ -356,7 +356,7 @@ public class Rainforest_Cafe_Actor extends OpMode {
     public void ClawRotation() {
 
         if (gamepad1.left_bumper) {
-            RotationalClaw.setPosition(0.8);
+            RotationalClaw.setPosition(SCORING_ROTATION);
         }
             // Score postion
         if (gamepad1.right_bumper) {
@@ -448,6 +448,7 @@ public class Rainforest_Cafe_Actor extends OpMode {
     {
         if (gamepad1.a || gamepad1.dpad_down) {
             hasPressed[id] = true;
+            RotationalClaw.setPosition(0);
         }
 
 
@@ -476,13 +477,14 @@ public class Rainforest_Cafe_Actor extends OpMode {
     {
         if (gamepad1.y) {
             hasPressed[id] = true;
+            RotationalClaw.setPosition(0);
         }
 
 
         if (hasPressed[id]) {
             if (!hasDone[id]) {
                 myPrevRuntime[id] = Rocket.getCurrentPosition();
-                Rocket.setTargetPosition(750);
+                Rocket.setTargetPosition(700);
                 hasDone[id] = true;
             }
 
@@ -493,7 +495,9 @@ public class Rainforest_Cafe_Actor extends OpMode {
                 myPrevRuntime[id] = 0;
                 hasDone[id] = false;
 
+
             }
+
         }
 
     }

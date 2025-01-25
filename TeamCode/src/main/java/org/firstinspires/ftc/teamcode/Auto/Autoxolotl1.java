@@ -21,9 +21,9 @@ public class Autoxolotl1 extends LinearOpMode
     private int[] wheelTicks = {0, 0, 0, 0}; // FL = 0, FR = 1, BL = 2, BR = 3
     private final ElapsedTime runtime = new ElapsedTime();  // Timer, I just copy pasted, don't ask questions
     private double speedMod;
-    private int[] viperSlideTargets = {0, 1600, 1970,1930, 3180};
+    private int[] viperSlideTargets = {0, 1600, 1900,1910, 2800};
 
-    private  int[] sprocketTargets  = {0, 45 , 560 , 700};
+    private  int[] sprocketTargets  = {0, 42 , 560 , 700};
 
     private int viperlevel ;
 
@@ -130,9 +130,9 @@ public class Autoxolotl1 extends LinearOpMode
         SwyftSlide.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         SwyftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         SwyftSlide.setTargetPositionTolerance(50);
-        SwyftSlide.setTargetPosition(50);
+        SwyftSlide.setTargetPosition(0);
         SwyftSlide.setDirection(DcMotorSimple.Direction.FORWARD);
-        SwyftSlide.setVelocity(10000);
+        SwyftSlide.setVelocity(2000);
 
         // SwyftSlideJr Encoder
 
@@ -140,9 +140,9 @@ public class Autoxolotl1 extends LinearOpMode
         SwyftSlideJr.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         SwyftSlideJr.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         SwyftSlideJr.setTargetPositionTolerance(50);
-        SwyftSlideJr.setTargetPosition(50);
+        SwyftSlideJr.setTargetPosition(0);
         SwyftSlideJr.setDirection(DcMotorSimple.Direction.REVERSE);
-        SwyftSlideJr.setVelocity(10000);
+        SwyftSlideJr.setVelocity(2000);
 
 
         // Sprocket Stuff
@@ -189,50 +189,51 @@ public class Autoxolotl1 extends LinearOpMode
         // Pre Load Sample
 
         setClaw(0.6,0.4);
-        setRotateClaw(0, 0.6);
-            moveByJoystick(0.5,0,-1,0,520);
+        setRotateClaw(0.1, 0.6);
+            moveByJoystick(0.6,0,-1,0,520
+            );
             moveByJoystick(0.5,-1,0,0,540);
-            moveSprocket(3);
             moveByJoystick(0.5,0,0,-1,390);
+            moveByJoystick(0.3,0,-1,0,200);
+            moveSprocket(3);
             moveSwyftSlides(4);
-            setRotateClaw(0.35 , 0.4);
-            setClaw(1, 0.4);
+            setRotateClaw(0.35 , 0.6);
+            setClaw(1, 0.6);
             setRotateClaw(0 ,0.4);
             moveSwyftSlides(0);
             moveSprocket(1);
 
         //First Sample
 
-            moveByJoystick(0.5,0,0,-1,580);
+            moveByJoystick(0.5,0,0,-1,510);
             moveSwyftSlides(2);
-            setClaw(0.65, 0.2);
-
+            setClaw(0.65, 0.4);
+            setRotateClaw(0.1,0.2);
             moveSwyftSlides(0);
-            moveByJoystick(0.5,0,0,1,580);
+           moveByJoystick(0.5,0,0,1,500);
+           moveByJoystick(0.2,0,-1,0,100);
             moveSprocket(3);
-            setRotateClaw(0.35,0.4);
             moveSwyftSlides(4);
+            setRotateClaw(0.35,0.4);
             setClaw(1,0.2);
             setRotateClaw(0., 0.4);
             moveSwyftSlides(0);
             moveSprocket(1);
 
         //Second Sample
-            /*//Second Sample
-           moveByJoystick(0.6,0,0,-1,590);
+
+           moveByJoystick(0.6,0,0,-1,680);
             moveSwyftSlides(3);
-            setRotateClaw(0.85, 0.4);
-            setClaw(0.65,0.4);
+            setClaw(0.1,0.3);
             moveSwyftSlides(0);
-            moveByJoystick(0.6,0,0,1,850);
+            moveByJoystick(0.6,0,0,1,570);
             moveSprocket(3);
-            setRotateClaw(0.87,0.4);
             moveSwyftSlides(4);
-            setRotateClaw(0.97,0.4);
+            setRotateClaw(0.35,0.4);
             setClaw(1,0.2);
-            setRotateClaw(0.87, 0.4);
+            setRotateClaw(0, 0.4);
             moveSwyftSlides(0);
-            moveSprocket(1);*/
+            moveSprocket(1);
 
         //Thrid Sample
 
