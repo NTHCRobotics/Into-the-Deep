@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Teleop;
 
+import com.acmerobotics.dashboard.canvas.Rotation;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -64,6 +65,7 @@ public class Rainforest_Cafe_Actor extends OpMode {
     private int armLevel;
     private int test = 0;
     private final int SWYFT_VELOCITY = 2000;
+    private final double SCORING_ROTATION = 0.75;
 
 
     // wifi pass petAxoltol
@@ -300,9 +302,15 @@ public class Rainforest_Cafe_Actor extends OpMode {
     // Method to control the rocket motor mechanism
     public void RocketBoom() {
         if (gamepad1.dpad_up) {
-            // Scoring Postion
-            Rocket.setTargetPosition(700);
-            Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            if (Rocket.getTargetPosition() == 700)
+            {
+                RotationalClaw = SCORING_ROTATION;
+            }
+            else {
+                // Scoring Postion
+                Rocket.setTargetPosition(700);
+                Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            }
         } else if (gamepad1.dpad_left) {
             // Hang Postion
             Rocket.setTargetPosition(560);
