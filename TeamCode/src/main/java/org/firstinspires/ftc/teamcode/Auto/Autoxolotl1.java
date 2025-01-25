@@ -189,15 +189,15 @@ public class Autoxolotl1 extends LinearOpMode
         // Pre Load Sample
 
         setClaw(0.6,0.4);
-        setRotateClaw(0.80, 0.6);
+        setRotateClaw(0, 0.6);
             moveByJoystick(0.5,0,-1,0,520);
             moveByJoystick(0.5,-1,0,0,540);
             moveSprocket(3);
             moveByJoystick(0.5,0,0,-1,390);
             moveSwyftSlides(4);
-            setRotateClaw(0.97 , 0.4);
+            setRotateClaw(0.35 , 0.4);
             setClaw(1, 0.4);
-            setRotateClaw(0.85 ,0.4);
+            setRotateClaw(0 ,0.4);
             moveSwyftSlides(0);
             moveSprocket(1);
 
@@ -205,22 +205,21 @@ public class Autoxolotl1 extends LinearOpMode
 
             moveByJoystick(0.5,0,0,-1,580);
             moveSwyftSlides(2);
-            setRotateClaw(0.85, 0.6);
             setClaw(0.65, 0.2);
 
             moveSwyftSlides(0);
             moveByJoystick(0.5,0,0,1,580);
             moveSprocket(3);
-            setRotateClaw(0.87,0.6);
+            setRotateClaw(0.35,0.4);
             moveSwyftSlides(4);
-            setRotateClaw(0.97 , 0.4);
             setClaw(1,0.2);
-            setRotateClaw(0.85, 0.4);
+            setRotateClaw(0., 0.4);
             moveSwyftSlides(0);
             moveSprocket(1);
-            moveSprocket(1);
+
         //Second Sample
-            moveByJoystick(0.6,0,0,-1,790);
+            /*//Second Sample
+           moveByJoystick(0.6,0,0,-1,590);
             moveSwyftSlides(3);
             setRotateClaw(0.85, 0.4);
             setClaw(0.65,0.4);
@@ -233,7 +232,7 @@ public class Autoxolotl1 extends LinearOpMode
             setClaw(1,0.2);
             setRotateClaw(0.87, 0.4);
             moveSwyftSlides(0);
-            moveSprocket(1);
+            moveSprocket(1);*/
 
         //Thrid Sample
 
