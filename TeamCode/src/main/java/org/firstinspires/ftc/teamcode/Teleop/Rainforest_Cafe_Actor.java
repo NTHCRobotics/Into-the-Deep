@@ -58,7 +58,7 @@ public class Rainforest_Cafe_Actor extends OpMode {
     final double TRIGGER_THRESHOLD = 0.75;
     private double previousRunTime;
     private double inputDelayInSeconds = .5;
-    private int[] armLevelPosition = {0, 1300, 1900, 2660};
+    private int[] armLevelPosition = {0, 1300, 1900, 2540};
     private int[] SprocketLevelPosition = {0, 200, 750, 1100};
     private int SprocketLevel;
     private int armLevel;
@@ -188,7 +188,7 @@ public class Rainforest_Cafe_Actor extends OpMode {
         parallelRocket(50, 0);
         SystemPickUp();
         //SystemRest();
-        parallelScore(700, 1);
+        parallelScore(750, 1);
 //        SystemScore();
         //  SampleShoot();
 
@@ -336,22 +336,22 @@ public class Rainforest_Cafe_Actor extends OpMode {
 
     public void ClawGrip() {
         // Check if the left bumper on gamepad2 is pressed
-        if (gamepad1.left_bumper) {
+        if (gamepad1.right_trigger >0) {
                 Claw.setPosition(1);
         }
             // Score postion
-        else if (gamepad1.right_bumper) {
-                Claw.setPosition(0.7); // Before: 55
+        else if (gamepad1.left_trigger > 0) {
+                Claw.setPosition(0.65); // Before: 55
         }
     }
 
     public void ClawRotation() {
 
-        if (gamepad1.right_trigger > 0) {
-            RotationalClaw.setPosition(1);
+        if (gamepad1.left_bumper) {
+            RotationalClaw.setPosition(0.8);
         }
             // Score postion
-        if (gamepad1.left_trigger > 0) {
+        if (gamepad1.right_bumper) {
             RotationalClaw.setPosition(0);
         }
 
@@ -360,20 +360,7 @@ public class Rainforest_Cafe_Actor extends OpMode {
 
 
 
-    public void SystemScore() {
-        if (gamepad1.y) {
-            Rocket.setTargetPosition(700);
-            RotationalClaw.setPosition(0.6);
-            armLevel = 3;
 
-        }
-        SwyftSlide.setTargetPosition(armLevelPosition[armLevel]);
-        SwyftSlide.setTargetPositionTolerance(armLevelPosition[armLevel]);
-
-        SwyftSlideJr.setTargetPosition(armLevelPosition[armLevel]);
-        SwyftSlideJr.setTargetPositionTolerance(armLevelPosition[armLevel]);
-
-    }
 
 //    public void SystemRest() {
 //        if (gamepad1.a) {
@@ -487,7 +474,7 @@ public class Rainforest_Cafe_Actor extends OpMode {
         if (hasPressed[id]) {
             if (!hasDone[id]) {
                 myPrevRuntime[id] = Rocket.getCurrentPosition();
-                Rocket.setTargetPosition(700);
+                Rocket.setTargetPosition(750);
                 hasDone[id] = true;
             }
 
