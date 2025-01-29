@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.acmerobotics.dashboard.config.Config;
 
-@Autonomous(name="Net_by_time", group="Robot")
+@Autonomous(name="spooderman", group="Robot")
 
 @Config
 public class Net_By_Time extends LinearOpMode {
@@ -71,15 +71,15 @@ public class Net_By_Time extends LinearOpMode {
 
         // Step 1:  Drive forward for 3 seconds
 
-        Claw.setPosition(0.8);
-        RotationalClaw.setPosition(0.67);
-        Rocket.setTargetPosition(230);
+        Claw.setPosition(0.55);
+        RotationalClaw.setPosition(0.1);
+        Rocket.setTargetPosition(55);
         wheelFL.setPower(FORWARD_SPEED);
         wheelFR.setPower(FORWARD_SPEED);
         wheelBR.setPower(FORWARD_SPEED);
         wheelBL.setPower(FORWARD_SPEED);
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 1.3)) {
+        while (opModeIsActive() && (runtime.seconds() < 0.65)) {
             telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
@@ -94,7 +94,7 @@ public class Net_By_Time extends LinearOpMode {
         wheelBR.setPower(0);
         wheelFR.setPower(0);
         wheelFL.setPower(0);
-        Claw.setPosition(0.2);
+        Claw.setPosition(1);
 
 
         telemetry.addData("Path", "Complete");

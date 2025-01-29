@@ -40,6 +40,7 @@ public class Rainforest_Cafe_Actor extends OpMode {
     //Servos
     private Servo RotationalClaw; // Second CLaw
     private Servo Claw; // Primary Claw
+    private Servo rollClaw;
 
 
     //Sensors
@@ -65,7 +66,11 @@ public class Rainforest_Cafe_Actor extends OpMode {
     private int armLevel;
     private int test = 0;
     private final int SWYFT_VELOCITY = 2000;
-    private final double SCORING_ROTATION = 0.35;
+    private final double SCORING_ROTATION = 0.45;
+
+
+
+
 
 
     // wifi pass petAxoltol
@@ -97,6 +102,8 @@ public class Rainforest_Cafe_Actor extends OpMode {
         //------------SERVOS////
         Claw = hardwareMap.get(Servo.class, "claw");
         RotationalClaw = hardwareMap.get(Servo.class, "rotateClaw");
+        rollClaw = hardwareMap.get(Servo.class, "rollClaw");
+
         //  HangRight = hardwareMap.get(Servo.class, "hangRight");
         //HangLeft = hardwareMap.get(Servo.class, "hangLeft");
 
@@ -119,7 +126,7 @@ public class Rainforest_Cafe_Actor extends OpMode {
         SwyftSlide.setTargetPosition(50);
         SwyftSlide.setDirection(DcMotorSimple.Direction.FORWARD);
         SwyftSlide.setVelocity(SWYFT_VELOCITY);
-        SwyftSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        SwyftSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // SwyftSlideJr Encoder
 
@@ -131,7 +138,6 @@ public class Rainforest_Cafe_Actor extends OpMode {
         SwyftSlideJr.setDirection(DcMotorSimple.Direction.REVERSE);
         SwyftSlideJr.setVelocity(SWYFT_VELOCITY);
         SwyftSlideJr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
 
 
         //Sprocket Encoder
@@ -184,15 +190,15 @@ public class Rainforest_Cafe_Actor extends OpMode {
         precisionControl();
         Verticallift();
         ClawGrip();
-        ClawRotation();
+        ClawPitch();
+        rollClaw();
         drive();
         RocketBoom();
         parallelRocket(50, 0);
-        SystemPickUp();
-        //SystemRest();
+        parallelHang(560,3);
         parallelScore(700, 1);
-//        SystemScore();
-        //  SampleShoot();
+        parallelPickup(42, 2);
+
 
 
         // Display telemetry data for debugging and tracking
@@ -229,27 +235,21 @@ public class Rainforest_Cafe_Actor extends OpMode {
 
     // Adjust speed for precision control based on trigger inputs
     public void precisionControl() {
-        if (gamepad1.left_stick_button)
-        {
-            if (speedMod == 0.7)
-            {
+        if (gamepad1.left_stick_button) {
+            if (speedMod == 0.7) {
                 speedMod = 1;
                 gamepad1.rumble(0, 0, 0);
-            }
-            else
+            } else
                 speedMod = 0.7;
             gamepad1.rumble(0.5, 0.5, 200);
         }
-        if (gamepad1.right_stick_button)
-        {
-            if (speedMod == 0.3)
-            {
+        if (gamepad1.right_stick_button) {
+            if (speedMod == 0.3) {
                 speedMod = 1;
                 gamepad1.rumble(0, 0, 0);
-            }
-            else
+            } else
                 speedMod = 0.3;
-            gamepad1.rumble(1,1,200);
+            gamepad1.rumble(1, 1, 200);
         }
     }
 
@@ -279,7 +279,7 @@ public class Rainforest_Cafe_Actor extends OpMode {
 
             RotationalClaw.setPosition(.68);
         }
-        if (gamepad1.share){
+        if (gamepad1.share) {
             armLevel = 3;
 
         }
@@ -302,13 +302,11 @@ public class Rainforest_Cafe_Actor extends OpMode {
     // Method to control the rocket motor mechanism
     public void RocketBoom() {
         if (gamepad1.dpad_up) {
-            if (Rocket.getTargetPosition() == 700)
-            {
+            if (Rocket.getTargetPosition() == 700) {
                 RotationalClaw.setPosition(SCORING_ROTATION);
-            }
-            else {
+            } else {
                 // Scoring Postion
-                Rocket.setTargetPosition(700);
+               // Rocket.setTargetPosition(700);
                 Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             }
         } else if (gamepad1.dpad_left) {
@@ -317,7 +315,7 @@ public class Rainforest_Cafe_Actor extends OpMode {
             Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         } else if (gamepad1.dpad_right) {
             // Pick Up postion
-            Rocket.setTargetPosition(45);
+            Rocket.setTargetPosition(55);
             Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             RotationalClaw.setPosition(0.6);
         }
@@ -337,28 +335,27 @@ public class Rainforest_Cafe_Actor extends OpMode {
 //        }
 
 
-
     }
 
     // Method to control the claw grip mechanism
 
     public void ClawGrip() {
         // Check if the left bumper on gamepad2 is pressed
-        if (gamepad1.right_trigger >0) {
-                Claw.setPosition(1);
+        if (gamepad1.left_trigger > 0) {
+            Claw.setPosition(1);
         }
-            // Score postion
-        else if (gamepad1.left_trigger > 0) {
-                Claw.setPosition(0.65); // Before: 55
+        // Score postion
+        else if (gamepad1.right_trigger > 0) {
+            Claw.setPosition(0); // Before: 55
         }
     }
 
-    public void ClawRotation() {
+    public void ClawPitch() {
 
         if (gamepad1.left_bumper) {
             RotationalClaw.setPosition(SCORING_ROTATION);
         }
-            // Score postion
+        // Score postion
         if (gamepad1.right_bumper) {
             RotationalClaw.setPosition(0);
         }
@@ -366,8 +363,14 @@ public class Rainforest_Cafe_Actor extends OpMode {
 
     }
 
+    public void rollClaw(){
+       if(gamepad1.share){
+           rollClaw.setPosition(0.5);
+       }else if (gamepad1.options){
+           rollClaw.setPosition(1);
+       }
 
-
+    }
 
 
 //    public void SystemRest() {
@@ -385,8 +388,9 @@ public class Rainforest_Cafe_Actor extends OpMode {
 //
 //    }
 
+/*
     public void SystemPickUp() {
-        if (gamepad1.x) {
+        if (gamepad2.x) {
 //            Rocket.setTargetPosition(45);
             armLevel = 1;
             RotationalClaw.setPosition(0.6);
@@ -398,6 +402,7 @@ public class Rainforest_Cafe_Actor extends OpMode {
         SwyftSlideJr.setTargetPosition(armLevelPosition[armLevel]);
         SwyftSlideJr.setTargetPositionTolerance(armLevelPosition[armLevel]);
     }
+*/
 
 
     public void SecondHang() {
@@ -446,7 +451,7 @@ public class Rainforest_Cafe_Actor extends OpMode {
 
     public void parallelRocket(int position, int id) // Parallell waiting for sprocket
     {
-        if (gamepad1.a || gamepad1.dpad_down) {
+        if (gamepad2.dpad_down) {
             hasPressed[id] = true;
             RotationalClaw.setPosition(0);
         }
@@ -475,7 +480,7 @@ public class Rainforest_Cafe_Actor extends OpMode {
 
     public void parallelScore(int position, int id) // Parallell waiting for sprocket
     {
-        if (gamepad1.y) {
+        if (gamepad2.dpad_up) {
             hasPressed[id] = true;
             RotationalClaw.setPosition(0);
         }
@@ -496,11 +501,74 @@ public class Rainforest_Cafe_Actor extends OpMode {
                 hasDone[id] = false;
 
 
+
             }
+
 
         }
 
     }
+
+    public void parallelPickup(int position, int id) { // Parallell waiting for sprocket
+        {
+            if (gamepad2.dpad_right) {
+                hasPressed[id] = true;
+                RotationalClaw.setPosition(0);
+            }
+
+
+            if (hasPressed[id]) {
+                if (!hasDone[id]) {
+                    myPrevRuntime[id] = Rocket.getCurrentPosition();
+                    Rocket.setTargetPosition(42);
+                    hasDone[id] = true;
+                }
+
+
+                if (Rocket.getCurrentPosition() >= position) {
+                    armLevel = 1;
+                    hasPressed[id] = false;
+                    myPrevRuntime[id] = 0;
+                    hasDone[id] = false;
+
+
+                }
+
+
+            }
+        }
+    }
+    public void parallelHang(int position, int id) { // Parallell waiting for sprocket
+        {
+            if (gamepad2.dpad_left) {
+                hasPressed[id] = true;
+                RotationalClaw.setPosition(0.5);
+            }
+
+
+            if (hasPressed[id]) {
+                if (!hasDone[id]) {
+                    myPrevRuntime[id] = Rocket.getCurrentPosition();
+                    Rocket.setTargetPosition(560);
+                    hasDone[id] = true;
+                }
+
+
+                if (Rocket.getCurrentPosition() >= position) {
+                    armLevel = 2;
+                    hasPressed[id] = false;
+                    myPrevRuntime[id] = 0;
+                    hasDone[id] = false;
+
+
+                }
+
+
+            }
+        }
+    }
+
 }
+
 
 

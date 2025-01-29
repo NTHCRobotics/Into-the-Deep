@@ -14,18 +14,19 @@ import com.acmerobotics.dashboard.config.Config;
 @Autonomous(name="JeffTheLandShark", group="Omarxolotl")
 
 @Config
-public class Autoxolotl1 extends LinearOpMode
-{
+public class Autoxolotl1 extends LinearOpMode {
     //Setting Variables
     // Extras
     private int[] wheelTicks = {0, 0, 0, 0}; // FL = 0, FR = 1, BL = 2, BR = 3
     private final ElapsedTime runtime = new ElapsedTime();  // Timer, I just copy pasted, don't ask questions
     private double speedMod;
-    private int[] viperSlideTargets = {0, 1600, 1900,1910, 2800};
+    private int[] viperSlideTargets = {0, 1600, 1980, 1950, 2800};
 
-    private  int[] sprocketTargets  = {0, 42 , 560 , 700};
+    private int[] sprocketTargets = {0, 45, 560, 700};
 
-    private int viperlevel ;
+    private double CLawGrip = 0.45;
+
+    private int viperlevel;
 
 
     //Motors
@@ -47,8 +48,7 @@ public class Autoxolotl1 extends LinearOpMode
     private Servo claw; // Opening and closing of the claw
     private Servo rotateClaw; // Rotates the claw up and down
 
-
-
+    private Servo rollClaw;
 
 
     @Override // Init?? I think?
@@ -73,6 +73,7 @@ public class Autoxolotl1 extends LinearOpMode
         //------------SERVOS////
         claw = hardwareMap.get(Servo.class, "claw");
         rotateClaw = hardwareMap.get(Servo.class, "rotateClaw");
+        rollClaw = hardwareMap.get(Servo.class, "rollClaw");
 
         //Wheels
         wheelFL.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
@@ -107,15 +108,10 @@ public class Autoxolotl1 extends LinearOpMode
         wheelBR.setDirection(DcMotorSimple.Direction.FORWARD);
 
 
-
         wheelFL.setPower(0.6);
         wheelFR.setPower(0.6);
         wheelBL.setPower(0.6);
         wheelBR.setPower(0.6);
-
-
-
-
 
 
         // Lock Wheels
@@ -123,7 +119,6 @@ public class Autoxolotl1 extends LinearOpMode
         wheelFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         wheelBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         wheelBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
 
 
         SwyftSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -161,8 +156,6 @@ public class Autoxolotl1 extends LinearOpMode
         wheelBR.setDirection(DcMotorSimple.Direction.REVERSE);//REVERSE
 
 
-
-
         waitForStart(); // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Ready to run");    //
         telemetry.update();
@@ -174,9 +167,8 @@ public class Autoxolotl1 extends LinearOpMode
          */
 
 //        claw.setPosition(0.65);
-     //   moveByJoystick(1.4, 0, 0, 0 , 1200);
+        //   moveByJoystick(1.4, 0, 0, 0 , 1200);
 //        moveForward(1.2,0.5,;
-
 
 
         // left x ==  -1 is left stafre
@@ -188,57 +180,55 @@ public class Autoxolotl1 extends LinearOpMode
         telemetry.update();
         // Pre Load Sample
 
-        setClaw(0.6,0.4);
+        setClaw(0.45, 0.4);
         setRotateClaw(0.1, 0.6);
-            moveByJoystick(0.6,0,-1,0,520
-            );
-            moveByJoystick(0.5,-1,0,0,540);
-            moveByJoystick(0.5,0,0,-1,390);
-            moveByJoystick(0.3,0,-1,0,200);
-            moveSprocket(3);
-            moveSwyftSlides(4);
-            setRotateClaw(0.35 , 0.6);
-            setClaw(1, 0.6);
-            setRotateClaw(0 ,0.4);
-            moveSwyftSlides(0);
-            moveSprocket(1);
+        moveByJoystick(0.6, 0, -1, 0, 520
+        );
+        moveByJoystick(0.5, -1, 0, 0, 540);
+        moveByJoystick(0.5, 0, 0, -1, 450);
+        moveByJoystick(0.3, 0, -1, 0, 225);
+        moveSprocket(3);
+        moveSwyftSlides(4);
+        setRotateClaw(0.45, 1);
+        setClaw(1, 0.6);
+        setRotateClaw(0, 0.4);
+        moveSwyftSlides(0);
+        moveSprocket(1);
 
         //First Sample
 
-            moveByJoystick(0.5,0,0,-1,510);
-            moveSwyftSlides(2);
-            setClaw(0.65, 0.4);
-            setRotateClaw(0.1,0.2);
-            moveSwyftSlides(0);
-           moveByJoystick(0.5,0,0,1,500);
-           moveByJoystick(0.2,0,-1,0,100);
-            moveSprocket(3);
-            moveSwyftSlides(4);
-            setRotateClaw(0.35,0.4);
-            setClaw(1,0.2);
-            setRotateClaw(0., 0.4);
-            moveSwyftSlides(0);
-            moveSprocket(1);
+        moveByJoystick(0.5, 0, 0, -1, 527);
+        moveSwyftSlides(2);
+        setClaw(0.45, 0.4);
+        setRotateClaw(0.1, 0.2);
+        moveSwyftSlides(0);
+
+        moveByJoystick(0.5, 0, 0, 1, 527);
+        moveSprocket(3);
+        moveSwyftSlides(4);
+        setRotateClaw(0.45, 0.4);
+        setClaw(1, 0.2);
+        setRotateClaw(0., 0.4);
+        moveSwyftSlides(0);
+        moveSprocket(1);
 
         //Second Sample
 
-           moveByJoystick(0.6,0,0,-1,680);
-            moveSwyftSlides(3);
-            setClaw(0.1,0.3);
-            moveSwyftSlides(0);
-            moveByJoystick(0.6,0,0,1,570);
-            moveSprocket(3);
-            moveSwyftSlides(4);
-            setRotateClaw(0.35,0.4);
-            setClaw(1,0.2);
-            setRotateClaw(0, 0.4);
-            moveSwyftSlides(0);
-            moveSprocket(1);
+        moveByJoystick(0.6, 0, 0, -1, 760);
+
+        moveSwyftSlides(3);
+        setClaw(0.45, 0.3);
+        moveSwyftSlides(0);
+        moveByJoystick(0.6, 0, 0, 1, 570);
+        moveSprocket(3);
+        moveSwyftSlides(4);
+        setRotateClaw(0.45, 0.4);
+        setClaw(1, 0.2);
+        setRotateClaw(0, 0.4);
+        moveSwyftSlides(0);
+        moveSprocket(1);
 
         //Thrid Sample
-
-
-
 
 
     }
@@ -247,7 +237,7 @@ public class Autoxolotl1 extends LinearOpMode
     // FUNCTIONS DEFINED HERE
      */
 
-    public void moveByJoystick(double seconds, double leftX, double leftY, double rightX ,double wheelTarget) // Moves the robot by simulating a joystick
+    public void moveByJoystick(double seconds, double leftX, double leftY, double rightX, double wheelTarget) // Moves the robot by simulating a joystick
     {
         // Just check out https://gm0.org/en/latest/docs/software/tutorials/mecanum-drive.html for explanation
         double x = -leftX;
@@ -308,9 +298,7 @@ public class Autoxolotl1 extends LinearOpMode
     }
 
 
-
-    public void positionSwyftSlides(int SwyftSlidesTarget)
-    {
+    public void positionSwyftSlides(int SwyftSlidesTarget) {
 
         SwyftSlide.setTargetPosition(viperSlideTargets[SwyftSlidesTarget]);
         SwyftSlideJr.setTargetPosition(viperSlideTargets[SwyftSlidesTarget]);
@@ -318,41 +306,55 @@ public class Autoxolotl1 extends LinearOpMode
 
     }
 
-    public void setClaw(double clawTarget , double seconds){
+    public void setClaw(double clawTarget, double seconds) {
         claw.setPosition(clawTarget);
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < seconds))
-        {
+        while (opModeIsActive() && (runtime.seconds() < seconds)) {
             // Nothing?
         }
         runtime.reset();
 
     }
 
-    public void setRotateClaw(double rotateClawTarget , double seconds){
+    public void setRotateClaw(double rotateClawTarget, double seconds) {
         rotateClaw.setPosition(rotateClawTarget);
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < seconds))
-        {
+        while (opModeIsActive() && (runtime.seconds() < seconds)) {
             // Nothing?
         }
         runtime.reset();
 
     }
 
-    public void positionSprocket(int sproketTarget){
+    public void Pickup(double seconds) {
+        rotateClaw.setPosition(0);
+        rollClaw.setPosition(0);
+        claw.setPosition(0);
+
+    }
+
+    public void Score(double seconds) {
+        rollClaw.setPosition(1);
+        rotateClaw.setPosition(0.45);
+        claw.setPosition(1);
+    }
+
+    public void PreScore(double seconds) {
+        claw.setPosition(1);
+        rollClaw.setPosition(0.5);
+    }
+
+
+    public void positionSprocket(int sproketTarget) {
         rocket.setTargetPosition(sprocketTargets[sproketTarget]);
         sprocketWait();
     }
 
 
-
-
     public void wait(double seconds) // Waits the amount of seconds specified
     {
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < seconds))
-        {
+        while (opModeIsActive() && (runtime.seconds() < seconds)) {
             // Nothing?
         }
         runtime.reset();
@@ -363,8 +365,7 @@ public class Autoxolotl1 extends LinearOpMode
     public void viperWait() // Waits the amount of seconds specified
     {
         runtime.reset();
-        while (SwyftSlide.isBusy() && SwyftSlideJr.isBusy())
-        {
+        while (SwyftSlide.isBusy() && SwyftSlideJr.isBusy()) {
             // Nothing?
         }
         runtime.reset();
@@ -375,51 +376,40 @@ public class Autoxolotl1 extends LinearOpMode
     public void sprocketWait() // Waits the amount of seconds specified
     {
         runtime.reset();
-        while (rocket.isBusy())
-        {
+        while (rocket.isBusy()) {
             // Nothing?
         }
         runtime.reset();
 
 
     }
-    public  void reset(){
-        wheelFL.setTargetPosition(0); wheelFR.setTargetPosition(0);
-        wheelBL.setTargetPosition(0); wheelBR.setTargetPosition(0);
+
+    public void reset() {
+        wheelFL.setTargetPosition(0);
+        wheelFR.setTargetPosition(0);
+        wheelBL.setTargetPosition(0);
+        wheelBR.setTargetPosition(0);
     }
 
 
-
-
-
-
-
-
-
-
-    public void moveForward(double seconds, double power , double wheelTarget)
-    {
-        moveByJoystick(seconds, 0, power, 0 , wheelTarget);
+    public void moveForward(double seconds, double power, double wheelTarget) {
+        moveByJoystick(seconds, 0, power, 0, wheelTarget);
     }
 
-    public void rotate(double seconds, double power, double wheelTarget)
-    {
-        moveByJoystick(seconds, 0, 0, power, wheelTarget );
+    public void rotate(double seconds, double power, double wheelTarget) {
+        moveByJoystick(seconds, 0, 0, power, wheelTarget);
     }
 
-    public void strafe(double seconds, double power , double forwardwheelTarget , double negativewheelTarget)
-    {
+    public void strafe(double seconds, double power, double forwardwheelTarget, double negativewheelTarget) {
         //  moveByStrafe(seconds, power, 0, 0 , forwardwheelTarget , negativewheelTarget); ;
     }
 
-    public void moveSwyftSlides(int SwyftSlideTarget)
-    {
+    public void moveSwyftSlides(int SwyftSlideTarget) {
         positionSwyftSlides(SwyftSlideTarget);
     }
 
 
-
-    public void moveSprocket(int  sproketTarget){
+    public void moveSprocket(int sproketTarget) {
         positionSprocket(sproketTarget);
     }
 
@@ -445,4 +435,5 @@ public class Autoxolotl1 extends LinearOpMode
         wheelBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         wheelBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
     }
+
 }
