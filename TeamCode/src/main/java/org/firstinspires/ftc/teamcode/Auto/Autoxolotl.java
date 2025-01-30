@@ -47,6 +47,8 @@ public class Autoxolotl extends LinearOpMode
     private Servo claw; // Opening and closing of the claw
     private Servo rotateClaw; // Rotates the claw up and down
 
+    private Servo rollClaw;
+
 
 
 
@@ -73,6 +75,7 @@ public class Autoxolotl extends LinearOpMode
         //------------SERVOS////
         claw = hardwareMap.get(Servo.class, "claw");
         rotateClaw = hardwareMap.get(Servo.class, "rotateClaw");
+        rollClaw = hardwareMap.get(Servo.class, "rollClaw");
 
         //Wheels
         wheelFL.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
@@ -108,10 +111,10 @@ public class Autoxolotl extends LinearOpMode
 
 
 
-        wheelFL.setPower(0.6);
-        wheelFR.setPower(0.6);
-        wheelBL.setPower(0.6);
-        wheelBR.setPower(0.6);
+        wheelFL.setPower(0.8);
+        wheelFR.setPower(0.8);
+        wheelBL.setPower(0.8);
+        wheelBR.setPower(0.8);
 
 
 
@@ -188,18 +191,19 @@ public class Autoxolotl extends LinearOpMode
         telemetry.update();
         // Pre Load Specismen
         setClaw(0.55,0.1);
-        moveSprocket(560);
-        moveByJoystick(0.5,0,1,0,500);
+        moveByJoystick(0.5,0,1,0,1200);
+        moveSprocket(2);
         moveSwyftSlides(2);
         setClaw(1,0.1);
         moveSwyftSlides(0);
         moveSprocket(1);
         setRotateClaw(0,0.2);
         // First Sample
-        moveByJoystick(0.2,-1,0,0,200);
-        moveSwyftSlides(2);
-        setClaw(0.55,0.2);
-        moveByJoystick(0.3,0,-1,0,50);
+        moveByJoystick(0.5,-1,0,0,1900);
+        setClaw(0,0.2);
+        moveByJoystick(0.5,0,-1,0,  600);
+        moveByJoystick(0.5,0,0,1,400);
+        moveByJoystick(0.5,0,-1,0,350);
         moveSprocket(3);
         moveSwyftSlides(4);
         setRotateClaw(0.35,0.2);
