@@ -60,7 +60,7 @@ public class Rainforest_Cafe_Actor extends OpMode {
     final double TRIGGER_THRESHOLD = 0.75;
     private double previousRunTime;
     private double inputDelayInSeconds = .5;
-    private int[] armLevelPosition = {0, 1300, 1900, 2800};
+    private int[] armLevelPosition = {0, 1300, 1900, 2820};
     private int[] SprocketLevelPosition = {0, 200, 750, 1100};
     private int SprocketLevel;
     private int armLevel;
@@ -120,10 +120,10 @@ public class Rainforest_Cafe_Actor extends OpMode {
         //SwyftSlide Encoder
 
         SwyftSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        SwyftSlide.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+       SwyftSlide.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         SwyftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        SwyftSlide.setTargetPositionTolerance(50);
-        SwyftSlide.setTargetPosition(50);
+        //SwyftSlide.setTargetPositionTolerance(0);
+        SwyftSlide.setTargetPosition(0);
         SwyftSlide.setDirection(DcMotorSimple.Direction.FORWARD);
         SwyftSlide.setVelocity(SWYFT_VELOCITY);
 //        SwyftSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -133,19 +133,19 @@ public class Rainforest_Cafe_Actor extends OpMode {
         SwyftSlideJr.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         SwyftSlideJr.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         SwyftSlideJr.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        SwyftSlideJr.setTargetPositionTolerance(50);
-        SwyftSlideJr.setTargetPosition(50);
+       // SwyftSlideJr.setTargetPositionTolerance(0);
+        SwyftSlideJr.setTargetPosition(0);
         SwyftSlideJr.setDirection(DcMotorSimple.Direction.REVERSE);
         SwyftSlideJr.setVelocity(SWYFT_VELOCITY);
         SwyftSlideJr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
-        //Sprocket Encoder
+      /*  //Sprocket Encoder
         Rocket.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         Rocket.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         Rocket.setDirection(DcMotorSimple.Direction.REVERSE);
         Rocket.setVelocity(1500);
-        Rocket.setTargetPosition(0);
+        Rocket.setTargetPosition(0);*/
 
         //Wheel Direction
         wheelFL.setDirection(DcMotorSimple.Direction.FORWARD);//FORWARD
@@ -179,6 +179,13 @@ public class Rainforest_Cafe_Actor extends OpMode {
         // Reset runtime when play is pressed
         runtime.reset();
         previousRunTime = getRuntime();
+
+        //Sprocket Encoder
+        Rocket.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        Rocket.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        Rocket.setDirection(DcMotorSimple.Direction.REVERSE);
+        Rocket.setVelocity(1500);
+        Rocket.setTargetPosition(0);
     }
 
     /*
@@ -197,7 +204,7 @@ public class Rainforest_Cafe_Actor extends OpMode {
         parallelRocket(50, 0);
         parallelHang(560,3);
         parallelScore(700, 1);
-        parallelPickup(42, 2);
+        parallelPickup(100, 2);
 
 
 
@@ -520,7 +527,7 @@ public class Rainforest_Cafe_Actor extends OpMode {
             if (hasPressed[id]) {
                 if (!hasDone[id]) {
                     myPrevRuntime[id] = Rocket.getCurrentPosition();
-                    Rocket.setTargetPosition(42);
+                    Rocket.setTargetPosition(100);
                     hasDone[id] = true;
                 }
 

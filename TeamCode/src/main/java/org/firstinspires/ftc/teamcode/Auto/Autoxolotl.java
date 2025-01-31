@@ -191,37 +191,42 @@ public class Autoxolotl extends LinearOpMode
         telemetry.update();
         // Pre Load Specismen
         setClaw(0.55,0.1);
-        moveByJoystick(0.5,0,1,0,1200);
+        moveByJoystick(0.8,0,1,0,1000);
+
+
         moveSprocket(2);
         moveSwyftSlides(2);
-        setClaw(1,0.1);
+        setClaw(1,0.4);
         moveSwyftSlides(0);
-        moveSprocket(1);
+        moveSprocket(0);
         setRotateClaw(0,0.2);
         // First Sample
-        moveByJoystick(0.5,-1,0,0,1900);
-        setClaw(0,0.2);
+        moveByJoystick(0.6,-1,0,0,1900);
+     /*   setClaw(0,0.4);
+        wait(0.8);
         moveByJoystick(0.5,0,-1,0,  600);
-        moveByJoystick(0.5,0,0,1,400);
-        moveByJoystick(0.5,0,-1,0,350);
+        wait(0.6);
+        moveByJoystick(0.5,0,0,1,510);
+        wait(0.6);
+        moveByJoystick(0.6,0,-1,0,500);
         moveSprocket(3);
         moveSwyftSlides(4);
         setRotateClaw(0.35,0.2);
         setClaw(1,0.2);
         setRotateClaw(0,0.2);
         moveSwyftSlides(0);
-        moveSprocket(1);
-        // Second Sample
-        moveByJoystick(0.2,0,0,-1,680);
+        moveSprocket(1);*/
+       /* // Second Sample
+        moveByJoystick(0.4,0,0,-1,580);
         moveSwyftSlides(3);
         setClaw(0.55,0.2);
         moveSwyftSlides(0);
-        moveByJoystick(0.2,0,0,1,680);
+        moveByJoystick(0.4,0,0,1,580);
         moveSprocket(3);
         moveSwyftSlides(4);
         setRotateClaw(0.35,0.2);
         setClaw(1,0.2);
-        setRotateClaw(0,0.2);
+        setRotateClaw(0,0.2);*/
 
 
 
