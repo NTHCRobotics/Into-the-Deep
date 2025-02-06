@@ -349,7 +349,7 @@ public class Rainforest_Cafe_Actor extends OpMode {
     public void ClawGrip() {
         // Check if the left bumper on gamepad2 is pressed
         if (gamepad1.left_trigger > 0) {
-            Claw.setPosition(1);
+            Claw.setPosition(0.5);
         }
         // Score postion
         else if (gamepad1.right_trigger > 0) {
@@ -364,52 +364,32 @@ public class Rainforest_Cafe_Actor extends OpMode {
         }
         // Score postion
         if (gamepad1.right_bumper) {
-            RotationalClaw.setPosition(0);
+            RotationalClaw.setPosition(0.1);
         }
+        if (gamepad1.right_stick_button) {
 
+        RotationalClaw.setPosition(0.15
+        );
+
+    }
 
     }
 
     public void rollClaw(){
        if(gamepad1.share){
-           rollClaw.setPosition(0.5);
+           rollClaw.setPosition(0); //fliped pitch
        }else if (gamepad1.options){
            rollClaw.setPosition(1);
+       }
+       else if (gamepad1.touchpad){
+           rollClaw.setPosition(0.33);
        }
 
     }
 
 
-//    public void SystemRest() {
-//        if (gamepad1.a) {
-//            Rocket.setTargetPosition(0);
-//            RotationalClaw.setPosition(0.6);
-//            armLevel = 0;
-//
-//        }
-//        SwyftSlide.setTargetPosition(armLevelPosition[armLevel]);
-//        SwyftSlide.setTargetPositionTolerance(armLevelPosition[armLevel]);
-//
-//        SwyftSlideJr.setTargetPosition(armLevelPosition[armLevel]);
-//        SwyftSlideJr.setTargetPositionTolerance(armLevelPosition[armLevel]);
-//
-//    }
 
-/*
-    public void SystemPickUp() {
-        if (gamepad2.x) {
-//            Rocket.setTargetPosition(45);
-            armLevel = 1;
-            RotationalClaw.setPosition(0.6);
 
-        }
-        SwyftSlide.setTargetPosition(armLevelPosition[armLevel]);
-        SwyftSlide.setTargetPositionTolerance(armLevelPosition[armLevel]);
-
-        SwyftSlideJr.setTargetPosition(armLevelPosition[armLevel]);
-        SwyftSlideJr.setTargetPositionTolerance(armLevelPosition[armLevel]);
-    }
-*/
 
 
     public void SecondHang() {
@@ -458,9 +438,10 @@ public class Rainforest_Cafe_Actor extends OpMode {
 
     public void parallelRocket(int position, int id) // Parallell waiting for sprocket
     {
-        if (gamepad2.dpad_down) {
+        if (gamepad1.dpad_down) {
             hasPressed[id] = true;
-            RotationalClaw.setPosition(0);
+
+
         }
 
 
@@ -476,6 +457,9 @@ public class Rainforest_Cafe_Actor extends OpMode {
 
             if (SwyftSlide.getCurrentPosition() <= position && SwyftSlideJr.getCurrentPosition() <= position) {
                 Rocket.setTargetPosition(0);
+                RotationalClaw.setPosition(0.15);
+
+                rollClaw.setPosition(0.33);
                 hasPressed[id] = false;
                 myPrevRuntime[id] = 0;
                 hasDone[id] = false;
@@ -486,10 +470,12 @@ public class Rainforest_Cafe_Actor extends OpMode {
     }
 
     public void parallelScore(int position, int id) // Parallell waiting for sprocket
+            
     {
-        if (gamepad2.dpad_up) {
+        if (gamepad1.dpad_up) {
             hasPressed[id] = true;
-            RotationalClaw.setPosition(0);
+            RotationalClaw.setPosition(SCORING_ROTATION);
+            rollClaw.setPosition(1);
         }
 
 
@@ -503,17 +489,16 @@ public class Rainforest_Cafe_Actor extends OpMode {
 
             if (Rocket.getCurrentPosition() >= position) {
                 armLevel = 3;
+
                 hasPressed[id] = false;
                 myPrevRuntime[id] = 0;
                 hasDone[id] = false;
-
 
 
             }
 
 
         }
-
     }
 
     public void parallelPickup(int position, int id) { // Parallell waiting for sprocket
