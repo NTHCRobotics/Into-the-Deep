@@ -21,9 +21,9 @@ public class Autoxolotl extends LinearOpMode
     private int[] wheelTicks = {0, 0, 0, 0}; // FL = 0, FR = 1, BL = 2, BR = 3
     private final ElapsedTime runtime = new ElapsedTime();  // Timer, I just copy pasted, don't ask questions
     private double speedMod;
-    private int[] viperSlideTargets = {0, 1600, 1900,1910, 2800};
+    private int[] viperSlideTargets = {0, 1600, 870,2040, 2800,2120, 1900};
 
-    private  int[] sprocketTargets  = {0, 42 , 560 , 700};
+    private  int[] sprocketTargets  = {0, 70 , 350 , 750, 310,100};
 
     private int viperlevel ;
 
@@ -130,7 +130,7 @@ public class Autoxolotl extends LinearOpMode
 
 
         SwyftSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        SwyftSlide.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        //SwyftSlide.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         SwyftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         SwyftSlide.setTargetPositionTolerance(50);
         SwyftSlide.setTargetPosition(0);
@@ -140,7 +140,7 @@ public class Autoxolotl extends LinearOpMode
         // SwyftSlideJr Encoder
 
         SwyftSlideJr.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        SwyftSlideJr.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+      //  SwyftSlideJr.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         SwyftSlideJr.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         SwyftSlideJr.setTargetPositionTolerance(50);
         SwyftSlideJr.setTargetPosition(0);
@@ -190,45 +190,62 @@ public class Autoxolotl extends LinearOpMode
         telemetry.update();
         telemetry.update();
         // Pre Load Specismen
-        setClaw(0.55,0.1);
-        moveByJoystick(0.8,0,1,0,1000);
-
-
+        setClaw(0.0,0.3);
+       // setRollClaw(0,0.2);
+        moveByJoystick(0.4,0,1,0,750);
+       setRotateClaw(0.35,0.2);
         moveSprocket(2);
-        moveSwyftSlides(2);
-        setClaw(1,0.4);
+        moveSwyftSlides(5);
+        //moveSprocket(4);
+        moveSwyftSlides(6);
+        setRotateClaw(0.25,0.2);
+        setClaw(0.4,0.4);
         moveSwyftSlides(0);
-        moveSprocket(0);
-        setRotateClaw(0,0.2);
+        setRotateClaw(0.15,0.2);
+        moveSprocket(1);
         // First Sample
         moveByJoystick(0.6,-1,0,0,1900);
-     /*   setClaw(0,0.4);
-        wait(0.8);
-        moveByJoystick(0.5,0,-1,0,  600);
-        wait(0.6);
-        moveByJoystick(0.5,0,0,1,510);
-        wait(0.6);
-        moveByJoystick(0.6,0,-1,0,500);
-        moveSprocket(3);
-        moveSwyftSlides(4);
-        setRotateClaw(0.35,0.2);
-        setClaw(1,0.2);
-        setRotateClaw(0,0.2);
-        moveSwyftSlides(0);
-        moveSprocket(1);*/
-       /* // Second Sample
-        moveByJoystick(0.4,0,0,-1,580);
+        moveSwyftSlides(2);
+        setRotateClaw(0.10,0.3);
+       setClaw(0,0.4);
+       moveByJoystick(0.4,0,0,1,400);
+
+       moveByJoystick(0.4,0,-1,0,550);
+       moveByJoystick(0.2,1,0,0,270);
+       moveSprocket(3);
+       moveByJoystick(0.3,0,-1,0,180);
+       setRollClaw(1,0.2);
+       moveSwyftSlides(4);
+       setRotateClaw(0.8,0.4);
+       setClaw(0.5,0.2);
+       setRotateClaw(0.20,0.2);
+       moveSwyftSlides(0);
+       moveSprocket(1);
+
+      //Second Sample
+        setRollClaw(0,0.2);
+        moveByJoystick(0.2,0,1,0,210);
+        moveByJoystick(0.4,0,0,-1,490);
+        moveByJoystick(0.2,-1,0,0,50);
         moveSwyftSlides(3);
-        setClaw(0.55,0.2);
+        setClaw(0,0.3);
+        setRollClaw(1,0.2);
         moveSwyftSlides(0);
-        moveByJoystick(0.4,0,0,1,580);
+        moveByJoystick(0.4,0,0,1,440);
+        moveByJoystick(0.2,1,0,0,40);
+        moveByJoystick(0.3,0,-1,0,225);
         moveSprocket(3);
         moveSwyftSlides(4);
-        setRotateClaw(0.35,0.2);
-        setClaw(1,0.2);
-        setRotateClaw(0,0.2);*/
+
+        setRotateClaw(0.8,0.2);
+        setClaw(0.5,0.2);
+        setRotateClaw(0.18,0.2);
+        setRollClaw(0,0.2);
+        moveSwyftSlides(0);
+        moveSprocket(1);
 
 
+        //Thrid Sample
 
 
 
@@ -328,6 +345,16 @@ public class Autoxolotl extends LinearOpMode
 
     public void setRotateClaw(double rotateClawTarget , double seconds){
         rotateClaw.setPosition(rotateClawTarget);
+        runtime.reset();
+        while (opModeIsActive() && (runtime.seconds() < seconds))
+        {
+            // Nothing?
+        }
+        runtime.reset();
+
+    }
+    public void setRollClaw(double rollClawTarget , double seconds){
+        rollClaw.setPosition(rollClawTarget);
         runtime.reset();
         while (opModeIsActive() && (runtime.seconds() < seconds))
         {

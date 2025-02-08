@@ -20,9 +20,10 @@ public class Autoxolotl1 extends LinearOpMode {
     private int[] wheelTicks = {0, 0, 0, 0}; // FL = 0, FR = 1, BL = 2, BR = 3
     private final ElapsedTime runtime = new ElapsedTime();  // Timer, I just copy pasted, don't ask questions
     private double speedMod;
-    private int[] viperSlideTargets = {0, 1600, 1980, 1950, 2800};
+    private int[] viperSlideTargets = {0, 1600, 100,2060, 2800,2120, 1900};
 
-    private int[] sprocketTargets = {0, 45, 560, 700};
+    private  int[] sprocketTargets  = {0, 70 , 350 , 750, 310,100};
+
 
     private double CLawGrip = 0.45;
 
@@ -179,7 +180,15 @@ public class Autoxolotl1 extends LinearOpMode {
         telemetry.update();
         telemetry.update();
         // Pre Load Sample
-
+    moveByJoystick(0.,0,1,0,700);
+        setRotateClaw(0.35,0.2);
+        moveSprocket(2);
+        moveSwyftSlides(5);
+        //moveSprocket(4);
+        moveSwyftSlides(6);
+        setRotateClaw(0.25,0.2);
+    //moveByJoystick(0.3,-1,0,0,900);
+/*
         setClaw(0.45, 0.4);
         setRotateClaw(0.1, 0.6);
         moveByJoystick(0.6, 0, -1, 0, 520
@@ -227,6 +236,7 @@ public class Autoxolotl1 extends LinearOpMode {
         setRotateClaw(0, 0.4);
         moveSwyftSlides(0);
         moveSprocket(1);
+*/
 
         //Thrid Sample
 
@@ -316,10 +326,21 @@ public class Autoxolotl1 extends LinearOpMode {
 
     }
 
-    public void setRotateClaw(double rotateClawTarget, double seconds) {
+    public void setRotateClaw(double rotateClawTarget , double seconds){
         rotateClaw.setPosition(rotateClawTarget);
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < seconds)) {
+        while (opModeIsActive() && (runtime.seconds() < seconds))
+        {
+            // Nothing?
+        }
+        runtime.reset();
+
+    }
+    public void setRollClaw(double rollClawTarget , double seconds){
+        rollClaw.setPosition(rollClawTarget);
+        runtime.reset();
+        while (opModeIsActive() && (runtime.seconds() < seconds))
+        {
             // Nothing?
         }
         runtime.reset();
