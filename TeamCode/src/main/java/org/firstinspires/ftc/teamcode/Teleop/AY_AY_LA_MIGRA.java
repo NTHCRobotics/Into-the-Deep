@@ -78,6 +78,7 @@ public class AY_AY_LA_MIGRA extends OpMode {
     private boolean clawPressedL = false;
     private boolean clawPressedR = false;
     private double clawWait = 0; //I don't even know at this point.
+    private int SPROCKET_MIN_FROM_GROUND;
 
 
     //private int blueValue = colorSensor.blue();
@@ -586,9 +587,9 @@ public class AY_AY_LA_MIGRA extends OpMode {
             if (!hasDone[id]) {
                 myPrevRuntime[id] = SwyftSlide.getCurrentPosition();
                 hasDone[id] = true;
-                if (Rocket.getCurrentPosition() < 10)
+                if (Rocket.getCurrentPosition() < SPROCKET_MIN_FROM_GROUND)
                 {
-                    Rocket.setTargetPosition(10);
+                    Rocket.setTargetPosition(SPROCKET_MIN_FROM_GROUND);
                 }
                 armLevel = 0;
             }
@@ -650,11 +651,14 @@ public class AY_AY_LA_MIGRA extends OpMode {
             if (!hasDone[id]) {
                 myPrevRuntime[id] = getRuntime();
                 hasDone[id] = true;
-                Rocket.setTargetPosition(13);
-            }
+
+                if (Rocket.getCurrentPosition() < SPROCKET_MIN_FROM_GROUND)
+                {
+                    Rocket.setTargetPosition(SPROCKET_MIN_FROM_GROUND);
+                }            }
 
 
-            if (Rocket.getCurrentPosition() >= 13) {
+            if (Rocket.getCurrentPosition() >= SPROCKET_MIN_FROM_GROUND) {
                 test = 1;
                 hasPressed[id] = false;
                 myPrevRuntime[id] = 0;
@@ -681,14 +685,11 @@ public class AY_AY_LA_MIGRA extends OpMode {
             if (!hasDone[id]) {
                 myPrevRuntime[id] = getRuntime();
                 hasDone[id] = true;
-                if (Rocket.getCurrentPosition() < 10)
-                {
-                    Rocket.setTargetPosition(10);
-                }
+
             }
 
 
-            if (Rocket.getCurrentPosition() >= 10) {
+            if (Rocket.getCurrentPosition() >= SPROCKET_MIN_FROM_GROUND) {
                 test = 1;
                 hasPressed[id] = false;
                 myPrevRuntime[id] = 0;
@@ -793,35 +794,6 @@ public class AY_AY_LA_MIGRA extends OpMode {
 
     }
 
-    public void parallelSubmersible(double seconds, int id) // Uses previous runtime and runtime to make a parallel timer, variables are in array bc we need multiple
-    // ID is incrememntal for arrays, seconds is how much waiting
-    {
-        if (true) // Put the controls that you want to have pressed for timer to start here
-        {
-            hasPressed[id] = true;
-        }
-
-        if (hasPressed[id]) {
-            if (!hasDone[id]) {
-                myPrevRuntime[id] = getRuntime();
-                hasDone[id] = true;
-            }
-
-
-            if (getRuntime() >= seconds + myPrevRuntime[id]) {
-                test = 1;
-                hasPressed[id] = false;
-                myPrevRuntime[id] = 0;
-                hasDone[id] = false;
-
-            }
-
-        }
-
-
-
-    }
-
     public void parallelHang(double seconds, int id) // Uses previous runtime and runtime to make a parallel timer, variables are in array bc we need multiple
     // ID is incrememntal for arrays, seconds is how much waiting
     {
@@ -881,6 +853,43 @@ public class AY_AY_LA_MIGRA extends OpMode {
 
 
     }
+
+
+    public void parallelSubmersible(double seconds, int id) // Uses previous runtime and runtime to make a parallel timer, variables are in array bc we need multiple
+    // ID is incrememntal for arrays, seconds is how much waiting
+    {
+        if (gamepad1.b) // Put the controls that you want to have pressed for timer to start here
+        {
+            hasPressed[id] = true;
+        }
+
+        if (hasPressed[id]) {
+            if (!hasDone[id]) {
+                myPrevRuntime[id] = getRuntime();
+                hasDone[id] = true;
+                RotationalClaw.setPosition(0.5);
+                Rocket.setTargetPosition(70);
+                armLevel = 2;
+            }
+
+
+            if (SwyftSlide.getCurrentPosition() > armLevelPosition[2]) {
+                RotationalClaw.setPosition(0.15);
+                test = 1;
+                hasPressed[id] = false;
+                myPrevRuntime[id] = 0;
+                hasDone[id] = false;
+
+            }
+
+        }
+
+
+
+    }
+
+
+
 
 
 
