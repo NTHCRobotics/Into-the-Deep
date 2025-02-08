@@ -67,6 +67,10 @@ public class Rainforest_Cafe_Actor extends OpMode {
     private int test = 0;
     private final int SWYFT_VELOCITY = 2000;
     private final double SCORING_ROTATION = 0.50;
+    private double clawRuntime = 0.0;
+    private int clawNumber = 0;
+    private boolean clawPressedL = false;
+    private boolean clawPressedR = false;
 
 
     // wifi pass petAxoltol
@@ -333,18 +337,18 @@ public class Rainforest_Cafe_Actor extends OpMode {
             RotationalClaw.setPosition(0.6);
         }
 // Check if the dpad_down button on gamepad2 is pressed
-//        else if (gamepad1.dpad_down) {
-//            // Rest Postion
-//            Rocket.setTargetPosition(0);
-//            Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//            RotationalClaw.setPosition(0.68);
+        else if (gamepad1.dpad_down) {
+            // Rest Postion
+            Rocket.setTargetPosition(0);
+            Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            RotationalClaw.setPosition(0.68);
 
-//        }
-        //else if (gamepad1.dpad_right) {
-        //Rocket.setTargetPosition(210);
-        //Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        //RotationalClaw.setPosition(0.6);
-
+        }
+//        else if (gamepad1.dpad_right) {
+//        Rocket.setTargetPosition(210);
+//        Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        RotationalClaw.setPosition(0.6);
+//
 //        }
 
 
@@ -352,16 +356,16 @@ public class Rainforest_Cafe_Actor extends OpMode {
 
     // Method to control the claw grip mechanism
 
-//    public void ClawGrip() {
-//        // Check if the left bumper on gamepad2 is pressed
-//        if (gamepad2.left_trigger > 0) {
-//            Claw.setPosition(0.5); //open
-//        }
-//        // Score postion
-//        else if (gamepad2.right_trigger > 0) {
-//            Claw.setPosition(0); // close
-//        }
-//    }
+    public void ClawGrip() {
+        // Check if the left bumper on gamepad2 is pressed
+        if (gamepad2.left_trigger > 0) {
+            Claw.setPosition(0.5); //open
+        }
+        // Score postion
+        else if (gamepad2.right_trigger > 0) {
+            Claw.setPosition(0); // close
+        }
+    }
 
     public void ClawPitch() {
 
@@ -392,6 +396,7 @@ public class Rainforest_Cafe_Actor extends OpMode {
        }
 
     }
+
 
 
 

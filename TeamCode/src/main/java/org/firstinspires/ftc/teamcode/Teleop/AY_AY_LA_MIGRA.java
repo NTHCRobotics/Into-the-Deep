@@ -1,3 +1,10 @@
+/*
+Wheels
+    FR: 3 ex
+    BR: 2 ex
+
+ */
+
 package org.firstinspires.ftc.teamcode.Teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -38,7 +45,8 @@ public class AY_AY_LA_MIGRA extends OpMode {
     private Servo HangLeft;
     //Servos
     private Servo RotationalClaw; // Second CLaw
-    private Servo Claw; // Primary Claw
+    private Servo Claw;
+    private Servo rollClaw;// Primary Claw
 
 
     //Sensors
@@ -63,6 +71,15 @@ public class AY_AY_LA_MIGRA extends OpMode {
     private int SprocketLevel;
     private int armLevel;
     private int test = 0;
+
+
+    private double clawRuntime = 0.0;
+    private int clawNumber = 0;
+    private boolean clawPressedL = false;
+    private boolean clawPressedR = false;
+    private double clawWait = 0; //I don't even know at this point.
+
+
     //private int blueValue = colorSensor.blue();
     // private int redValue = colorSensor.red();
     // private int greenValue = colorSensor.green();
@@ -100,6 +117,8 @@ public class AY_AY_LA_MIGRA extends OpMode {
         //------------SERVOS////
         Claw = hardwareMap.get(Servo.class, "claw");
         RotationalClaw = hardwareMap.get(Servo.class, "rotateClaw");
+        rollClaw = hardwareMap.get(Servo.class, "rollClaw");
+
         //  HangRight = hardwareMap.get(Servo.class, "hangRight");
         //HangLeft = hardwareMap.get(Servo.class, "hangLeft");
 
@@ -185,19 +204,28 @@ public class AY_AY_LA_MIGRA extends OpMode {
         //   SecondHang();
         Verticallift();
         // DectectYellow();
-        ClawGrip();
+//        clawGrip();
+       // clawRotation();
+//        clawRoll();
+        claw(0.4, 0.13);
         drive();
         RocketBoom();
         parallelRocket(50, 0);
-        ClawRotation();
+        parallelHang(560,3);
+        parallelScore(700, 1);
+        parallelPickup(100, 2);
+
         //  SampleShoot();
 
 
         // Display telemetry data for debugging and tracking
-        telemetry.addData("Left Trigger Position", gamepad1.left_trigger);
+        telemetry.addData("Right Trigger Position", gamepad1.right_trigger);
 
 
         telemetry.addData("Status", "Run Time: " + runtime.toString());
+        telemetry.addData("Status", "Claw Run Time: " + clawRuntime);
+        telemetry.addData("Claw Stuff", "Num: " + clawNumber + " L: " + clawPressedL + " R: " + clawPressedR);
+
         //Arm Data
         telemetry.addData("velocity", SwyftSlide.getVelocity());
         telemetry.addData("slidePosition", SwyftSlide.getCurrentPosition());
@@ -321,6 +349,119 @@ public class AY_AY_LA_MIGRA extends OpMode {
 
         Rocket.setVelocity(600);
     }
+    public void claw(double cushion, double waitCushion) {  //HORRIBLE code, PLEASE make better. Y'all I tried
+        if (clawWait + waitCushion < getRuntime()) { //This is for... stuff?
+
+
+            if (gamepad1.right_trigger > 0) {
+                if (gamepad1.left_bumper) {
+                    clawRuntime = getRuntime();
+                    if (clawNumber == 1) {
+                        clawPressedL = true;
+                    }
+                    clawNumber = 1;
+                    clawWait = getRuntime();
+
+
+                }
+                if (gamepad1.right_bumper) {
+                    //clawDown
+                    clawRuntime = getRuntime();
+                    if (clawNumber == 2) {
+                        clawPressedR = true;
+                    }
+                    clawNumber = 2;
+                    clawWait = getRuntime();
+
+
+                }
+            } else {
+                if (gamepad1.left_bumper) {
+//                    clawRuntime = getRuntime();
+//                    if (clawNumber == 3) {
+//                        clawPressedL = true;
+//                    }
+//                    clawNumber = 3;
+//                    clawWait = getRuntime();
+//
+                    Claw.setPosition(0); // remove this and add commented lines below for the other controlls
+
+
+                }
+                if (gamepad1.right_bumper) {
+                    //close
+//                    clawRuntime = getRuntime();
+//                    if (clawNumber == 4) {
+//                        clawPressedR = true;
+//                    }
+//                    clawNumber = 4;
+//                    clawWait = getRuntime();
+//
+                    Claw.setPosition(1); // remove this and add commented lines below for the other controlls
+
+
+                }
+            }
+
+
+            if (clawNumber == 1) //yo I don't even know what I'm doing
+            {
+                if (clawRuntime + cushion < getRuntime()) {
+                    RotationalClaw.setPosition(0.8);
+                    clawPressedL = false;
+                    clawNumber = 0;
+                } else if (clawPressedL == true) {
+                    rollClaw.setPosition(0);
+                    clawPressedL = false;
+                    clawNumber = 0;
+
+                }
+            }
+
+            if (clawNumber == 2) //yo I don't even know what I'm doing
+            {
+                if (clawRuntime + cushion < getRuntime()) {
+                    RotationalClaw.setPosition(0.5);
+                    clawPressedR = false;
+                    clawNumber = 0;
+                } else if (clawPressedR == true) {
+                    rollClaw.setPosition(0.33);
+                    clawPressedR = false;
+                    clawNumber = 0;
+
+                }
+            }
+
+//            if (clawNumber == 3) //yo I don't even know what I'm doing
+//            {
+//                if (clawRuntime + cushion < getRuntime()) {
+//                    Claw.setPosition(0.5);
+//                    clawPressedL = false;
+//                    clawNumber = 0;
+//                } else if (clawPressedL == true) {
+//                    rollClaw.setPosition(0);
+//                    clawPressedL = false;
+//                    clawNumber = 0;
+//
+//                }
+//            }
+//
+//            if (clawNumber == 4) //yo I don't even know what I'm doing
+//            {
+//                if (clawRuntime + cushion < getRuntime()) {
+//                    Claw.setPosition(0);
+//                    clawPressedR = false;
+//                    clawNumber = 0;
+//                } else if (clawPressedR == true) {
+//                    rollClaw.setPosition(0.33);
+//                    clawPressedR = false;
+//                    clawNumber = 0;
+//
+//                }
+//            }
+
+        }
+    }
 
 
     public void SecondHang() {
@@ -338,20 +479,36 @@ public class AY_AY_LA_MIGRA extends OpMode {
 
     }
 
-    public void ClawGrip() {
-        // Check if the left bumper on gamepad2 is pressed
-        if (gamepad1.right_trigger == 0) {
+    public void clawGrip() {
+        // Check if the right bumper on gamepad2 is pressed
+        if (gamepad1.right_trigger < 0.4) {
             if (gamepad1.left_bumper) {
                 Claw.setPosition(1);
             }
             // Score postion
             else if (gamepad1.right_bumper) {
-                Claw.setPosition(0.65); // Before: 55
+                Claw.setPosition(0); // Before: 55
             }
+
+            test = 1;
+        }
+
+        else
+        {
+            if(gamepad1.share)
+            {
+                Claw.setPosition(1);
+            }
+            else if (gamepad1.start)
+            {
+                Claw.setPosition(0);
+            }
+
+            test = 0;
         }
     }
 
-    public void ClawRotation() {
+    public void clawRotation() {
         if (gamepad1.right_trigger != 0)
         {
             if (gamepad1.right_bumper) {
@@ -365,6 +522,24 @@ public class AY_AY_LA_MIGRA extends OpMode {
         }
 
     }
+
+    public void clawRoll(){
+
+        if (gamepad1.right_trigger != 0)
+        {
+            if (gamepad1.right_bumper) {
+
+                rollClaw.setPosition(0.5);
+            }
+            // Score postion
+            if (gamepad1.left_bumper) {
+                rollClaw.setPosition(1);
+            }
+        }
+
+
+    }
+
 
     public void baseParallel(double seconds, int id) // Uses previous runtime and runtime to make a parallel timer, variables are in array bc we need multiple
                                                      // ID is incrememntal for arrays, seconds is how much waiting
@@ -418,6 +593,96 @@ public class AY_AY_LA_MIGRA extends OpMode {
 
             }
 
+        }
+    }
+
+    public void parallelScore(int position, int id) // Parallell waiting for sprocket
+    {
+        if (gamepad2.dpad_up) {
+            hasPressed[id] = true;
+            RotationalClaw.setPosition(0);
+        }
+
+
+        if (hasPressed[id]) {
+            if (!hasDone[id]) {
+                myPrevRuntime[id] = Rocket.getCurrentPosition();
+                Rocket.setTargetPosition(700);
+                hasDone[id] = true;
+            }
+
+
+            if (Rocket.getCurrentPosition() >= position) {
+                armLevel = 3;
+                hasPressed[id] = false;
+                myPrevRuntime[id] = 0;
+                hasDone[id] = false;
+
+
+
+            }
+
+
+        }
+
+    }
+
+    public void parallelPickup(int position, int id) { // Parallell waiting for sprocket
+        {
+            if (gamepad2.dpad_right) {
+                hasPressed[id] = true;
+                RotationalClaw.setPosition(0);
+            }
+
+
+            if (hasPressed[id]) {
+                if (!hasDone[id]) {
+                    myPrevRuntime[id] = Rocket.getCurrentPosition();
+                    Rocket.setTargetPosition(100);
+                    hasDone[id] = true;
+                }
+
+
+                if (Rocket.getCurrentPosition() >= position) {
+                    armLevel = 1;
+                    hasPressed[id] = false;
+                    myPrevRuntime[id] = 0;
+                    hasDone[id] = false;
+
+
+                }
+
+
+            }
+        }
+    }
+    public void parallelHang(int position, int id) { // Parallell waiting for sprocket
+        {
+            if (gamepad2.dpad_left) {
+                hasPressed[id] = true;
+                RotationalClaw.setPosition(0.5);
+            }
+
+
+            if (hasPressed[id]) {
+                if (!hasDone[id]) {
+                    myPrevRuntime[id] = Rocket.getCurrentPosition();
+                    Rocket.setTargetPosition(560);
+                    hasDone[id] = true;
+                }
+
+
+                if (Rocket.getCurrentPosition() >= position) {
+                    armLevel = 2;
+                    hasPressed[id] = false;
+                    myPrevRuntime[id] = 0;
+                    hasDone[id] = false;
+
+
+                }
+
+
+            }
         }
     }
 
