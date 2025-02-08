@@ -53,9 +53,9 @@ public class AY_AY_LA_MIGRA extends OpMode {
     private ColorSensor colorSensor; // Color sensor for detecting objects/colors
 
     // I don't know what I'm doing, but these two variables are for parallelCounter
-    private double[] myPrevRuntime = {0, 0, 0, 0};
-    private boolean[] hasDone = {false, false, false, false};
-    private boolean[] hasPressed = {false, false, false, false};
+    private double[] myPrevRuntime = {0, 0, 0, 0, 0, 0, 0};
+    private boolean[] hasDone = {false, false, false, false, false, false, false};
+    private boolean[] hasPressed = {false, false, false, false, false, false, false};
 
 
     // Here is where my dilly dallying ends
@@ -112,6 +112,11 @@ public class AY_AY_LA_MIGRA extends OpMode {
         SwyftSlide = hardwareMap.get(DcMotorEx.class, "SwyftSlide");
         SwyftSlideJr = hardwareMap.get(DcMotorEx.class, "SwyftSlideJr");
         Rocket = hardwareMap.get(DcMotorEx.class, "rocket");
+        Rocket.setVelocity(1200);
+        Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+
+
 
 
         //------------SERVOS////
@@ -204,16 +209,20 @@ public class AY_AY_LA_MIGRA extends OpMode {
         //   SecondHang();
         Verticallift();
         // DectectYellow();
-//        clawGrip();
-       // clawRotation();
-//        clawRoll();
+        clawGrip();
+        clawRotation();
+        clawRoll();
         claw(0.4, 0.13);
         drive();
-//        RocketBoom();
+        RocketBoom();
         parallelDDown(50, 0);
         parallelHang(560,3);
-        parallelScore(700, 1);
-        parallelPickup(100, 2);
+//        parallelScore(700, 1);
+//        parallelPickup(100, 2);
+//        parallelRetract(0, 3);
+//        parallelExtend(0, 4);
+//        parallelSubmersible(0, 5);
+//        parallelSquareButton(0, 6);
 
         //  SampleShoot();
 
@@ -600,7 +609,9 @@ public class AY_AY_LA_MIGRA extends OpMode {
     {
         if (gamepad1.dpad_up) {
             hasPressed[id] = true;
-            RotationalClaw.setPosition(0);
+            RotationalClaw.setPosition(0.15);
+            Rocket.setTargetPosition(700);
+
         }
 
 
@@ -840,34 +851,7 @@ public class AY_AY_LA_MIGRA extends OpMode {
 
     }
 
-    public void parallelRetract(double seconds, int id) // Uses previous runtime and runtime to make a parallel timer, variables are in array bc we need multiple
-    // ID is incrememntal for arrays, seconds is how much waiting
-    {
-        if (true) // Put the controls that you want to have pressed for timer to start here
-        {
-            hasPressed[id] = true;
-        }
 
-        if (hasPressed[id]) {
-            if (!hasDone[id]) {
-                myPrevRuntime[id] = getRuntime();
-                hasDone[id] = true;
-            }
-
-
-            if (getRuntime() >= seconds + myPrevRuntime[id]) {
-                test = 1;
-                hasPressed[id] = false;
-                myPrevRuntime[id] = 0;
-                hasDone[id] = false;
-
-            }
-
-        }
-
-
-
-    }
 
     public void parallelOtherExtend(double seconds, int id) // Uses previous runtime and runtime to make a parallel timer, variables are in array bc we need multiple
     // ID is incrememntal for arrays, seconds is how much waiting
