@@ -65,7 +65,7 @@ public class Rainforest_Cafe_Actor extends OpMode {
     private int SprocketLevel;
     private int armLevel;
     private int test = 0;
-    private final int SWYFT_VELOCITY = 2000;
+    private final int SWYFT_VELOCITY = 10000;
     private final double SCORING_ROTATION = 0.50;
 
 
@@ -180,7 +180,8 @@ public class Rainforest_Cafe_Actor extends OpMode {
         Rocket.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         Rocket.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         Rocket.setDirection(DcMotorSimple.Direction.REVERSE);
-        Rocket.setVelocity(1500);
+       //
+        // Rocket.setVelocity(1500);
         Rocket.setTargetPosition(0);
     }
 
@@ -201,6 +202,7 @@ public class Rainforest_Cafe_Actor extends OpMode {
         parallelHang(560, 3);
         parallelScore(750, 1);
         parallelPickup(100, 2);
+        parallelGroundPickup(75,0);
 
 
         // Display telemetry data for debugging and tracking
@@ -352,16 +354,16 @@ public class Rainforest_Cafe_Actor extends OpMode {
 
     // Method to control the claw grip mechanism
 
-//    public void ClawGrip() {
+   public void ClawGrip() {
 //        // Check if the left bumper on gamepad2 is pressed
-//        if (gamepad2.left_trigger > 0) {
-//            Claw.setPosition(0.5); //open
-//        }
+        if (gamepad2.left_trigger > 0) {
+            Claw.setPosition(0.5); //open
+        }
 //        // Score postion
-//        else if (gamepad2.right_trigger > 0) {
-//            Claw.setPosition(0); // close
-//        }
-//    }
+       else if (gamepad2.right_trigger > 0) {
+            Claw.setPosition(0); // close
+        }
+   }
 
     public void ClawPitch() {
 
@@ -445,6 +447,7 @@ public class Rainforest_Cafe_Actor extends OpMode {
 
     public void parallelRocket(int position, int id) // Parallell waiting for sprocket
     {
+        Rocket.setVelocity(800);
         if (gamepad2.dpad_down) {
             hasPressed[id] = true;
 
@@ -468,7 +471,7 @@ public class Rainforest_Cafe_Actor extends OpMode {
                 hasPressed[id] = false;
                 myPrevRuntime[id] = 0;
                 hasDone[id] = false;
-                RotationalClaw.setPosition(0.15);
+                RotationalClaw.setPosition(0.30);
             }
 
             }
@@ -477,8 +480,9 @@ public class Rainforest_Cafe_Actor extends OpMode {
     }
 
     public void parallelScore(int position, int id) // Parallell waiting for sprocket
-            
+
     {
+        Rocket.setVelocity(1200);
         if (gamepad2.dpad_up) {
             hasPressed[id] = true;
             RotationalClaw.setPosition(SCORING_ROTATION);
@@ -510,6 +514,7 @@ public class Rainforest_Cafe_Actor extends OpMode {
 
     public void parallelPickup(int position, int id) { // Parallell waiting for sprocket
         {
+            Rocket.setVelocity(1200);
             if (gamepad2.dpad_right) {
                 hasPressed[id] = true;
                 RotationalClaw.setPosition(0);
@@ -537,8 +542,39 @@ public class Rainforest_Cafe_Actor extends OpMode {
             }
         }
     }
+    public void parallelGroundPickup(int position, int id2) { // Parallell waiting for sprocket
+        {
+            Rocket.setVelocity(1200);
+            if (gamepad2.right_stick_button) {
+                hasPressed[id2] = true;
+                RotationalClaw.setPosition(0);
+            }
+
+
+            if (hasPressed[id2]) {
+                if (!hasDone[id2]) {
+                    myPrevRuntime[id2] = Rocket.getCurrentPosition();
+                    Rocket.setTargetPosition(75);
+                    hasDone[id2] = true;
+                }
+
+
+                if (Rocket.getCurrentPosition() >= position) {
+                    armLevel = 1;
+                    hasPressed[id2] = false;
+                    myPrevRuntime[id2] = 0;
+                    hasDone[id2] = false;
+
+
+                }
+
+
+            }
+        }
+    }
     public void parallelHang(int position, int id) { // Parallell waiting for sprocket
         {
+            Rocket.setVelocity(1200);
             if (gamepad2.dpad_left) {
                 hasPressed[id] = true;
                 RotationalClaw.setPosition(0.5);
