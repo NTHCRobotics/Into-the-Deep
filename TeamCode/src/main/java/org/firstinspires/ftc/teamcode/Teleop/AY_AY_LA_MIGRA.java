@@ -66,7 +66,7 @@ public class AY_AY_LA_MIGRA extends OpMode {
     final double TRIGGER_THRESHOLD = 0.75;
     private double previousRunTime;
     private double inputDelayInSeconds = .5;
-    private int[] armLevelPosition = {0, 1300, 1900, 2690,};
+    private int[] armLevelPosition = {0, 1300, 1900, 2800,};
     private int[] SprocketLevelPosition = {0, 200, 750, 1100};
     private int SprocketLevel;
     private int armLevel;
@@ -134,7 +134,7 @@ public class AY_AY_LA_MIGRA extends OpMode {
 
         // SwyftSlide Encoder
         SwyftSlide.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        SwyftSlide.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+//        SwyftSlide.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         SwyftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         SwyftSlide.setTargetPositionTolerance(25);
         SwyftSlide.setTargetPosition(0);
@@ -144,13 +144,13 @@ public class AY_AY_LA_MIGRA extends OpMode {
 
 
         SwyftSlideJr.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        SwyftSlideJr.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+//        SwyftSlideJr.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         SwyftSlideJr.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         SwyftSlideJr.setTargetPositionTolerance(25);
         SwyftSlideJr.setTargetPosition(0);
         SwyftSlideJr.setDirection(DcMotorSimple.Direction.REVERSE);
         SwyftSlideJr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        SwyftSlide.setVelocity(2000);
+        SwyftSlideJr.setVelocity(2000);
 
 
 
@@ -209,8 +209,8 @@ public class AY_AY_LA_MIGRA extends OpMode {
 //        clawRoll();
         claw(0.4, 0.13);
         drive();
-        RocketBoom();
-        parallelRocket(50, 0);
+//        RocketBoom();
+        parallelDDown(50, 0);
         parallelHang(560,3);
         parallelScore(700, 1);
         parallelPickup(100, 2);
@@ -280,28 +280,24 @@ public class AY_AY_LA_MIGRA extends OpMode {
     //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     // Method to control the vertical lift mechanism
     public void Verticallift() {
-        if ((gamepad1.y) && (armLevel < armLevelPosition.length - 1) && (getRuntime() - previousRunTime >= inputDelayInSeconds)) {
-            RotationalClaw.setPosition(.68);
-            armLevel = 3;
-
-        } else if ((gamepad1.a) && (armLevel > 0) && (getRuntime() - previousRunTime >= inputDelayInSeconds)) {
-
-            armLevel = 0;
-            RotationalClaw.setPosition(.68);
-
-
-        } else if (gamepad1.b) {
+        if (gamepad1.b) {
             armLevel = 2;
+
             RotationalClaw.setPosition(.68);
         }
+        if (gamepad1.y) {
+            armLevel = 3;
+
+
+        }
+        if (gamepad1.a){
+            armLevel = 0;
+        }
+
+
 
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         //sets to driving level
-        if (gamepad1.x) {
-            armLevel = 1;
-            RotationalClaw.setPosition(.58);
-
-        }
 
 
         if (getRuntime() - previousRunTime >= inputDelayInSeconds + .25) {
@@ -309,9 +305,9 @@ public class AY_AY_LA_MIGRA extends OpMode {
         }
         SwyftSlide.setTargetPosition(armLevelPosition[armLevel]);
         SwyftSlide.setTargetPositionTolerance(armLevelPosition[armLevel]);
+
         SwyftSlideJr.setTargetPosition(armLevelPosition[armLevel]);
         SwyftSlideJr.setTargetPositionTolerance(armLevelPosition[armLevel]);
-
     }
 
     // Method to control the rocket motor mechanism
@@ -384,7 +380,7 @@ public class AY_AY_LA_MIGRA extends OpMode {
 //                    clawNumber = 3;
 //                    clawWait = getRuntime();
 //
-                    Claw.setPosition(0); // remove this and add commented lines below for the other controlls
+                    Claw.setPosition(0.5); // remove this and add commented lines below for the other controlls
 
 
                 }
@@ -397,7 +393,7 @@ public class AY_AY_LA_MIGRA extends OpMode {
 //                    clawNumber = 4;
 //                    clawWait = getRuntime();
 //
-                    Claw.setPosition(1); // remove this and add commented lines below for the other controlls
+                    Claw.setPosition(0); // remove this and add commented lines below for the other controlls
 
 
                 }
@@ -407,7 +403,7 @@ public class AY_AY_LA_MIGRA extends OpMode {
             if (clawNumber == 1) //yo I don't even know what I'm doing
             {
                 if (clawRuntime + cushion < getRuntime()) {
-                    RotationalClaw.setPosition(0.8);
+                    RotationalClaw.setPosition(0.5);
                     clawPressedL = false;
                     clawNumber = 0;
                 } else if (clawPressedL == true) {
@@ -421,11 +417,11 @@ public class AY_AY_LA_MIGRA extends OpMode {
             if (clawNumber == 2) //yo I don't even know what I'm doing
             {
                 if (clawRuntime + cushion < getRuntime()) {
-                    RotationalClaw.setPosition(0.5);
+                    RotationalClaw.setPosition(0.15);
                     clawPressedR = false;
                     clawNumber = 0;
                 } else if (clawPressedR == true) {
-                    rollClaw.setPosition(0.33);
+                    rollClaw.setPosition(1);
                     clawPressedR = false;
                     clawNumber = 0;
 
@@ -570,9 +566,9 @@ public class AY_AY_LA_MIGRA extends OpMode {
 
     }
 
-       public void parallelRocket(int position, int id) // Parallell waiting for sprocket
+       public void parallelDDown(int position, int id) // Parallell waiting for sprocket
     {
-        if (gamepad1.dpad_down) {
+        if (gamepad1.dpad_down || gamepad1.a) {
             hasPressed[id] = true;
         }
 
@@ -581,6 +577,10 @@ public class AY_AY_LA_MIGRA extends OpMode {
             if (!hasDone[id]) {
                 myPrevRuntime[id] = SwyftSlide.getCurrentPosition();
                 hasDone[id] = true;
+                if (Rocket.getCurrentPosition() < 10)
+                {
+                    Rocket.setTargetPosition(10);
+                }
                 armLevel = 0;
             }
 
@@ -598,7 +598,7 @@ public class AY_AY_LA_MIGRA extends OpMode {
 
     public void parallelScore(int position, int id) // Parallell waiting for sprocket
     {
-        if (gamepad2.dpad_up) {
+        if (gamepad1.dpad_up) {
             hasPressed[id] = true;
             RotationalClaw.setPosition(0);
         }
@@ -627,9 +627,76 @@ public class AY_AY_LA_MIGRA extends OpMode {
 
     }
 
+    public void parallelExtend(double seconds, int id) // Uses previous runtime and runtime to make a parallel timer, variables are in array bc we need multiple
+    // ID is incrememntal for arrays, seconds is how much waiting
+    {
+        if (gamepad1.y) // Put the controls that you want to have pressed for timer to start here
+        {
+            hasPressed[id] = true;
+        }
+
+        if (hasPressed[id]) {
+            if (!hasDone[id]) {
+                myPrevRuntime[id] = getRuntime();
+                hasDone[id] = true;
+                Rocket.setTargetPosition(13);
+            }
+
+
+            if (Rocket.getCurrentPosition() >= 13) {
+                test = 1;
+                hasPressed[id] = false;
+                myPrevRuntime[id] = 0;
+                hasDone[id] = false;
+                armLevel = 3;
+
+            }
+
+        }
+
+
+
+    }
+
+    public void parallelSquareButton(double seconds, int id) // Uses previous runtime and runtime to make a parallel timer, variables are in array bc we need multiple
+    // ID is incrememntal for arrays, seconds is how much waiting
+    {
+        if (gamepad1.x) // Put the controls that you want to have pressed for timer to start here
+        {
+            hasPressed[id] = true;
+        }
+
+        if (hasPressed[id]) {
+            if (!hasDone[id]) {
+                myPrevRuntime[id] = getRuntime();
+                hasDone[id] = true;
+                if (Rocket.getCurrentPosition() < 10)
+                {
+                    Rocket.setTargetPosition(10);
+                }
+            }
+
+
+            if (Rocket.getCurrentPosition() >= 10) {
+                test = 1;
+                hasPressed[id] = false;
+                myPrevRuntime[id] = 0;
+                hasDone[id] = false;
+                armLevel = 1;
+
+            }
+
+        }
+
+
+
+    }
+
+
+
     public void parallelPickup(int position, int id) { // Parallell waiting for sprocket
         {
-            if (gamepad2.dpad_right) {
+            if (gamepad1.dpad_right || gamepad1.b) {
                 hasPressed[id] = true;
                 RotationalClaw.setPosition(0);
             }
@@ -638,7 +705,7 @@ public class AY_AY_LA_MIGRA extends OpMode {
             if (hasPressed[id]) {
                 if (!hasDone[id]) {
                     myPrevRuntime[id] = Rocket.getCurrentPosition();
-                    Rocket.setTargetPosition(100);
+                    Rocket.setTargetPosition(70);
                     hasDone[id] = true;
                 }
 
@@ -658,7 +725,7 @@ public class AY_AY_LA_MIGRA extends OpMode {
     }
     public void parallelHang(int position, int id) { // Parallell waiting for sprocket
         {
-            if (gamepad2.dpad_left) {
+            if (gamepad1.dpad_left) {
                 hasPressed[id] = true;
                 RotationalClaw.setPosition(0.5);
             }
@@ -685,5 +752,155 @@ public class AY_AY_LA_MIGRA extends OpMode {
             }
         }
     }
+
+    public void parallelRetract(double seconds, int id) // Uses previous runtime and runtime to make a parallel timer, variables are in array bc we need multiple
+    // ID is incrememntal for arrays, seconds is how much waiting
+    {
+        if (true) // Put the controls that you want to have pressed for timer to start here
+        {
+            hasPressed[id] = true;
+        }
+
+        if (hasPressed[id]) {
+            if (!hasDone[id]) {
+                myPrevRuntime[id] = getRuntime();
+                hasDone[id] = true;
+            }
+
+
+            if (getRuntime() >= seconds + myPrevRuntime[id]) {
+                test = 1;
+                hasPressed[id] = false;
+                myPrevRuntime[id] = 0;
+                hasDone[id] = false;
+
+            }
+
+        }
+
+
+
+    }
+
+    public void parallelSubmersible(double seconds, int id) // Uses previous runtime and runtime to make a parallel timer, variables are in array bc we need multiple
+    // ID is incrememntal for arrays, seconds is how much waiting
+    {
+        if (true) // Put the controls that you want to have pressed for timer to start here
+        {
+            hasPressed[id] = true;
+        }
+
+        if (hasPressed[id]) {
+            if (!hasDone[id]) {
+                myPrevRuntime[id] = getRuntime();
+                hasDone[id] = true;
+            }
+
+
+            if (getRuntime() >= seconds + myPrevRuntime[id]) {
+                test = 1;
+                hasPressed[id] = false;
+                myPrevRuntime[id] = 0;
+                hasDone[id] = false;
+
+            }
+
+        }
+
+
+
+    }
+
+    public void parallelHang(double seconds, int id) // Uses previous runtime and runtime to make a parallel timer, variables are in array bc we need multiple
+    // ID is incrememntal for arrays, seconds is how much waiting
+    {
+        if (true) // Put the controls that you want to have pressed for timer to start here
+        {
+            hasPressed[id] = true;
+        }
+
+        if (hasPressed[id]) {
+            if (!hasDone[id]) {
+                myPrevRuntime[id] = getRuntime();
+                hasDone[id] = true;
+            }
+
+
+            if (getRuntime() >= seconds + myPrevRuntime[id]) {
+                test = 1;
+                hasPressed[id] = false;
+                myPrevRuntime[id] = 0;
+                hasDone[id] = false;
+
+            }
+
+        }
+
+
+
+    }
+
+    public void parallelRetract(double seconds, int id) // Uses previous runtime and runtime to make a parallel timer, variables are in array bc we need multiple
+    // ID is incrememntal for arrays, seconds is how much waiting
+    {
+        if (true) // Put the controls that you want to have pressed for timer to start here
+        {
+            hasPressed[id] = true;
+        }
+
+        if (hasPressed[id]) {
+            if (!hasDone[id]) {
+                myPrevRuntime[id] = getRuntime();
+                hasDone[id] = true;
+            }
+
+
+            if (getRuntime() >= seconds + myPrevRuntime[id]) {
+                test = 1;
+                hasPressed[id] = false;
+                myPrevRuntime[id] = 0;
+                hasDone[id] = false;
+
+            }
+
+        }
+
+
+
+    }
+
+    public void parallelOtherExtend(double seconds, int id) // Uses previous runtime and runtime to make a parallel timer, variables are in array bc we need multiple
+    // ID is incrememntal for arrays, seconds is how much waiting
+    {
+        if (true) // Put the controls that you want to have pressed for timer to start here
+        {
+            hasPressed[id] = true;
+        }
+
+        if (hasPressed[id]) {
+            if (!hasDone[id]) {
+                myPrevRuntime[id] = getRuntime();
+                hasDone[id] = true;
+            }
+
+
+            if (getRuntime() >= seconds + myPrevRuntime[id]) {
+                test = 1;
+                hasPressed[id] = false;
+                myPrevRuntime[id] = 0;
+                hasDone[id] = false;
+
+            }
+
+        }
+
+
+
+    }
+
+
+
+
+
 
 }
