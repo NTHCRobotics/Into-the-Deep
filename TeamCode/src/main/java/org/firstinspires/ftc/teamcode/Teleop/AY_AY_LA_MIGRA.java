@@ -673,10 +673,10 @@ public class AY_AY_LA_MIGRA extends OpMode {
 
     }
 
-    public void parallelSquareButton(double seconds, int id) // Uses previous runtime and runtime to make a parallel timer, variables are in array bc we need multiple
-    // ID is incrememntal for arrays, seconds is how much waiting
+    public void parallelSquareButton(double seconds, int id)
+
     {
-        if (gamepad1.x) // Put the controls that you want to have pressed for timer to start here
+        if (gamepad1.x)
         {
             hasPressed[id] = true;
         }
@@ -855,8 +855,8 @@ public class AY_AY_LA_MIGRA extends OpMode {
     }
 
 
-    public void parallelSubmersible(double seconds, int id) // Uses previous runtime and runtime to make a parallel timer, variables are in array bc we need multiple
-    // ID is incrememntal for arrays, seconds is how much waiting
+    public void parallelSubmersible(double seconds, int id)
+
     {
         if (gamepad1.b) // Put the controls that you want to have pressed for timer to start here
         {

@@ -66,7 +66,7 @@ public class monkey extends OpMode {
     private int armLevel;
     private int test = 0;
     private final int SWYFT_VELOCITY = 2000;
-    private final double SCORING_ROTATION = 0.80;
+    private final double SCORING_ROTATION = 0.655;
 
 
     // wifi pass petAxoltol
@@ -122,7 +122,7 @@ public class monkey extends OpMode {
         SwyftSlide.setTargetPosition(0);
         SwyftSlide.setDirection(DcMotorSimple.Direction.FORWARD);
         SwyftSlide.setVelocity(SWYFT_VELOCITY);
-       SwyftSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        SwyftSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // SwyftSlideJr Encoder
 
@@ -191,7 +191,7 @@ public class monkey extends OpMode {
     @Override
     public void loop() {
         // These methods will continuously run in the teleop loop
-       // precisionControl();
+        // precisionControl();
         Verticallift();
         ClawGrip();
         ClawPitch();
@@ -200,9 +200,10 @@ public class monkey extends OpMode {
         RocketBoom();
         parallelRocket(50, 0);
         parallelHang(560, 3);
-        parallelScore(750, 1);
+        parallelScore(795, 1);
         parallelPickup(100, 2);
-       // parallelGroundPickup(75,0);
+      //  parallelSubmersible(2, 4);
+        // parallelGroundPickup(75,0);
 
 
         // Display telemetry data for debugging and tracking
@@ -278,7 +279,6 @@ public class monkey extends OpMode {
         wheelBR.setPower(BR);
 
 
-
     }
 
 
@@ -295,10 +295,9 @@ public class monkey extends OpMode {
 
 
         }
-        if (gamepad2.a){
+        if (gamepad2.a) {
             armLevel = 0;
         }
-
 
 
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -329,7 +328,7 @@ public class monkey extends OpMode {
             // Hang Postion
             Rocket.setTargetPosition(560);
             Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        } else if (gamepad1.dpad_right ) {
+        } else if (gamepad1.dpad_right) {
             // Pick Up postion
             Rocket.setTargetPosition(55);
             Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -384,24 +383,19 @@ public class monkey extends OpMode {
 
     }
 
-    public void rollClaw(){
-        if(gamepad1.dpad_up){
+    public void rollClaw() {
+        if (gamepad1.dpad_up) {
             rollClaw.setPosition(0); //fliped pitch
-        }else if (gamepad1.dpad_down){
+        } else if (gamepad1.dpad_down) {
             rollClaw.setPosition(1);
-        }
-        else if (gamepad1.dpad_right
-        ){
+        } else if (gamepad1.dpad_right
+        ) {
 
 
             rollClaw.setPosition(0.33);
         }
 
     }
-
-
-
-
 
 
     public void SecondHang() {
@@ -444,7 +438,6 @@ public class monkey extends OpMode {
             }
 
         }
-
 
 
     }
@@ -497,7 +490,7 @@ public class monkey extends OpMode {
         if (hasPressed[id]) {
             if (!hasDone[id]) {
                 myPrevRuntime[id] = Rocket.getCurrentPosition();
-                Rocket.setTargetPosition(750);
+                Rocket.setTargetPosition(795);
                 hasDone[id] = true;
             }
 
@@ -546,6 +539,7 @@ public class monkey extends OpMode {
             }
         }
     }
+
     public void parallelGroundPickup(int position, int id2) { // Parallell waiting for sprocket
         {
             Rocket.setVelocity(1200);
@@ -576,6 +570,7 @@ public class monkey extends OpMode {
             }
         }
     }
+
     public void parallelHang(int position, int id) { // Parallell waiting for sprocket
         {
             Rocket.setVelocity(1200);
@@ -607,6 +602,35 @@ public class monkey extends OpMode {
         }
     }
 
+    public void parallelSubmersible(double seconds, int id) {
+        if (gamepad1.b) // Put the controls that you want to have pressed for timer to start here
+        {
+            hasPressed[id] = true;
+        }
+
+        if (hasPressed[id]) {
+            if (!hasDone[id]) {
+                myPrevRuntime[id] = getRuntime();
+                hasDone[id] = true;
+                RotationalClaw.setPosition(0.5);
+                Rocket.setTargetPosition(70);
+                armLevel = 2;
+            }
+
+
+            if (SwyftSlide.getCurrentPosition() > armLevelPosition[2]) {
+                RotationalClaw.setPosition(0.15);
+                test = 1;
+                hasPressed[id] = false;
+                myPrevRuntime[id] = 0;
+                hasDone[id] = false;
+
+            }
+
+        }
+
+
+    }
 }
 
 

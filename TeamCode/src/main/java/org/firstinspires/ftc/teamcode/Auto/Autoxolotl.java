@@ -23,7 +23,7 @@ public class Autoxolotl extends LinearOpMode
     private double speedMod;
     private int[] viperSlideTargets = {0, 1600, 870,2040, 2800,2120, 1900};
 
-    private  int[] sprocketTargets  = {0, 70 , 450 , 750, 350,100};
+    private  int[] sprocketTargets  = {0, 80 , 450 , 750, 350,100};
 
     private int viperlevel ;
 
@@ -204,19 +204,19 @@ public class Autoxolotl extends LinearOpMode
         setRotateClaw(0.15,0.2);
         moveSprocket(1);
         // First Sample
-        moveByJoystick(0.6,-1,0,0,1900);
+        moveByJoystick(0.6,-1,0,0,2130);
         moveSwyftSlides(2);
-        setRotateClaw(0.10,0.3);
+        setRotateClaw(0.15,0.3);
        setClaw(0,0.4);
        moveByJoystick(0.4,0,0,1,400);
 
-       moveByJoystick(0.4,0,-1,0,550);
+       moveByJoystick(0.4,0,-1,0,580);
        moveByJoystick(0.2,1,0,0,270);
        moveSprocket(3);
-       moveByJoystick(0.3,0,-1,0,180);
+       moveByJoystick(0.3,0,-1,0,260);
        setRollClaw(1,0.2);
        moveSwyftSlides(4);
-       setRotateClaw(0.8,0.4);
+       setRotateClaw(0.65,0.5);
        setClaw(0.5,0.2);
        setRotateClaw(0.20,0.2);
        moveSwyftSlides(0);
