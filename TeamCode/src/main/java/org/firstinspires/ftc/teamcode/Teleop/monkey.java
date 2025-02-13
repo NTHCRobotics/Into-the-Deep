@@ -65,7 +65,7 @@ public class monkey extends OpMode {
     private int SprocketLevel;
     private int armLevel;
     private int test = 0;
-    private final int SWYFT_VELOCITY = 2000;
+    private final int SWYFT_VELOCITY = 10000;
     private final double SCORING_ROTATION = 0.655;
 
 
@@ -115,25 +115,6 @@ public class monkey extends OpMode {
 
         //SwyftSlide Encoder
 
-        SwyftSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        //SwyftSlide.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        SwyftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        //SwyftSlide.setTargetPositionTolerance(0);
-        SwyftSlide.setTargetPosition(0);
-        SwyftSlide.setDirection(DcMotorSimple.Direction.FORWARD);
-        SwyftSlide.setVelocity(SWYFT_VELOCITY);
-        SwyftSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        // SwyftSlideJr Encoder
-
-        SwyftSlideJr.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        // SwyftSlideJr.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        SwyftSlideJr.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        // SwyftSlideJr.setTargetPositionTolerance(0);
-        SwyftSlideJr.setTargetPosition(0);
-        SwyftSlideJr.setDirection(DcMotorSimple.Direction.REVERSE);
-        SwyftSlideJr.setVelocity(SWYFT_VELOCITY);
-        SwyftSlideJr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
       /*  //Sprocket Encoder
@@ -183,6 +164,25 @@ public class monkey extends OpMode {
         //
         // Rocket.setVelocity(1500);
         Rocket.setTargetPosition(0);
+
+        //Swyft Slide
+        SwyftSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        SwyftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        SwyftSlide.setTargetPosition(0);
+        SwyftSlide.setDirection(DcMotorSimple.Direction.FORWARD);
+        SwyftSlide.setVelocity(SWYFT_VELOCITY);
+        SwyftSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        // SwyftSlideJr Encoder
+
+        SwyftSlideJr.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        // SwyftSlideJr.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        SwyftSlideJr.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        // SwyftSlideJr.setTargetPositionTolerance(0);
+        SwyftSlideJr.setTargetPosition(0);
+        SwyftSlideJr.setDirection(DcMotorSimple.Direction.REVERSE);
+        SwyftSlideJr.setVelocity(SWYFT_VELOCITY);
+        SwyftSlideJr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
     /*
