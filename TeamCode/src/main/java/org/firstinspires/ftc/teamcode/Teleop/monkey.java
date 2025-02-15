@@ -47,9 +47,9 @@ public class monkey extends OpMode {
     private ColorSensor colorSensor; // Color sensor for detecting objects/colors
 
     // I don't know what I'm doing, but these two variables are for parallelCounter
-    private double[] myPrevRuntime = {0, 0, 0, 0};
-    private boolean[] hasDone = {false, false, false, false};
-    private boolean[] hasPressed = {false, false, false, false};
+    private double[] myPrevRuntime = new double[10];
+    private boolean[] hasDone = new boolean[10];
+    private boolean[] hasPressed = new boolean[10];
 
 
     // Here is where my dilly dallying ends
@@ -60,12 +60,12 @@ public class monkey extends OpMode {
     final double TRIGGER_THRESHOLD = 0.75;
     private double previousRunTime;
     private double inputDelayInSeconds = .5;
-    private int[] armLevelPosition = {0, 1300, 1900, 2820};
+    private int[] armLevelPosition = {0, 1900, 2400, 2820};
     private int[] SprocketLevelPosition = {0, 200, 750, 1100};
     private int SprocketLevel;
     private int armLevel;
     private int test = 0;
-    private final int SWYFT_VELOCITY = 10000;
+    private final int SWYFT_VELOCITY = 5000;
     private final double SCORING_ROTATION = 0.655;
 
 
@@ -171,6 +171,7 @@ public class monkey extends OpMode {
         SwyftSlide.setTargetPosition(0);
         SwyftSlide.setDirection(DcMotorSimple.Direction.FORWARD);
         SwyftSlide.setVelocity(SWYFT_VELOCITY);
+//        SwyftSlide.setPower(1);
         SwyftSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // SwyftSlideJr Encoder
@@ -182,6 +183,7 @@ public class monkey extends OpMode {
         SwyftSlideJr.setTargetPosition(0);
         SwyftSlideJr.setDirection(DcMotorSimple.Direction.REVERSE);
         SwyftSlideJr.setVelocity(SWYFT_VELOCITY);
+
         SwyftSlideJr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
@@ -197,12 +199,14 @@ public class monkey extends OpMode {
         ClawPitch();
         rollClaw();
         drive();
-        RocketBoom();
-        parallelRocket(50, 0);
+    //
+        //RocketBoom();
+        parallelRest(50, 0);
         parallelHang(560, 3);
-        parallelScore(795, 1);
-        parallelPickup(100, 2);
-      //  parallelSubmersible(2, 4);
+        parallelScore(690, 1);
+        //parallelPickup(100, 2);
+        parallelSubmersible(2, 4);
+        parallelSubmersibleMonkey(2,5);
         // parallelGroundPickup(75,0);
 
 
@@ -315,25 +319,25 @@ public class monkey extends OpMode {
     }
 
     // Method to control the rocket motor mechanism
-    public void RocketBoom() {
-        if (gamepad1.dpad_up) {
-            if (Rocket.getTargetPosition() == 700) {
-                RotationalClaw.setPosition(SCORING_ROTATION);
-            } else {
-                // Scoring Postion
-                // Rocket.setTargetPosition(700);
-                Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            }
-        } else if (gamepad2.dpad_left) {
-            // Hang Postion
-            Rocket.setTargetPosition(560);
-            Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        } else if (gamepad1.dpad_right) {
-            // Pick Up postion
-            Rocket.setTargetPosition(55);
-            Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            RotationalClaw.setPosition(0.6);
-        }
+   /* public void RocketBoom() {*/
+   /*     if (gamepad1.dpad_up) {*/
+   /*         if (Rocket.getTargetPosition() == 700) {*/
+   /*             RotationalClaw.setPosition(SCORING_ROTATION);*/
+   /*         } else {*/
+   /*             // Scoring Postion*/
+   /*             // Rocket.setTargetPosition(700);*/
+   /*             Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);*/
+   /*         }*/
+   /*     } else if (gamepad2.dpad_left) {*/
+   /*         // Hang Postion*/
+   /*         Rocket.setTargetPosition(560);*/
+   /*         Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);*/
+   /*     } else if (gamepad2.dpad_right) {*/
+   /*         // Pick Up postion*/
+   /*         Rocket.setTargetPosition(55);*/
+   /*         Rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);*/
+   /*         RotationalClaw.setPosition(0.6);*/
+   /*     }*/
 // Check if the dpad_down button on gamepad2 is pressed
 //        else if (gamepad1.dpad_down) {
 //            // Rest Postion
@@ -350,14 +354,14 @@ public class monkey extends OpMode {
 //        }
 
 
-    }
+
 
     // Method to control the claw grip mechanism
 
     public void ClawGrip() {
 //        // Check if the left bumper on gamepad2 is pressed
         if (gamepad1.left_trigger > 0) {
-            Claw.setPosition(0.5); //open
+            Claw.setPosition(0.7); //open
         }
 //        // Score postion
         else if (gamepad1.right_trigger > 0) {
@@ -372,20 +376,16 @@ public class monkey extends OpMode {
         }
         // Score postion
         if (gamepad1.right_bumper) {
-            RotationalClaw.setPosition(0.1);
+            RotationalClaw.setPosition(0.17);
         }
-        if (gamepad1.options) {
 
-            RotationalClaw.setPosition(0.15
-            );
-
-        }
 
     }
 
     public void rollClaw() {
         if (gamepad1.dpad_up) {
-            rollClaw.setPosition(0); //fliped pitch
+            rollClaw.setPosition(0); //fliped y axis
+
         } else if (gamepad1.dpad_down) {
             rollClaw.setPosition(1);
         } else if (gamepad1.dpad_right
@@ -442,7 +442,7 @@ public class monkey extends OpMode {
 
     }
 
-    public void parallelRocket(int position, int id) // Parallell waiting for sprocket
+    public void parallelRest(int position, int id) // Parallell waiting for sprocket
     {
         Rocket.setVelocity(800);
         if (gamepad1.a) {
@@ -458,17 +458,22 @@ public class monkey extends OpMode {
                 myPrevRuntime[id] = SwyftSlideJr.getCurrentPosition();
 
                 hasDone[id] = true;
+                  RotationalClaw.setPosition(0.5);
+                  rollClaw.setPosition(1);
+
                 armLevel = 0;
+
             }
 
 
             if (SwyftSlide.getCurrentPosition() <= position && SwyftSlideJr.getCurrentPosition() <= position) {
                 Rocket.setTargetPosition(0);
-
+                rollClaw.setPosition(1);
+                RotationalClaw.setPosition(0.17);
                 hasPressed[id] = false;
                 myPrevRuntime[id] = 0;
                 hasDone[id] = false;
-                RotationalClaw.setPosition(0.30);
+
             }
 
         }
@@ -479,25 +484,26 @@ public class monkey extends OpMode {
     public void parallelScore(int position, int id) // Parallell waiting for sprocket
 
     {
-        Rocket.setVelocity(1200);
+        Rocket.setVelocity(900);
         if (gamepad1.y) {
             hasPressed[id] = true;
-            RotationalClaw.setPosition(SCORING_ROTATION);
-            rollClaw.setPosition(1);
+            RotationalClaw.setPosition(0.5);
+            rollClaw.setPosition(0);
         }
 
 
         if (hasPressed[id]) {
             if (!hasDone[id]) {
                 myPrevRuntime[id] = Rocket.getCurrentPosition();
-                Rocket.setTargetPosition(795);
+                Rocket.setTargetPosition(690);
+                RotationalClaw.setPosition(0.5);
                 hasDone[id] = true;
             }
 
 
             if (Rocket.getCurrentPosition() >= position) {
                 armLevel = 3;
-
+              //  RotationalClaw.setPosition(SCORING_ROTATION);
                 hasPressed[id] = false;
                 myPrevRuntime[id] = 0;
                 hasDone[id] = false;
@@ -509,12 +515,12 @@ public class monkey extends OpMode {
         }
     }
 
-    public void parallelPickup(int position, int id) { // Parallell waiting for sprocket
+/*    public void parallelPickup(int position, int id) { // Parallell waiting for sprocket
         {
             Rocket.setVelocity(1200);
             if (gamepad1.b) {
                 hasPressed[id] = true;
-                RotationalClaw.setPosition(0);
+                RotationalClaw.setPosition(0.5);
             }
 
 
@@ -528,48 +534,24 @@ public class monkey extends OpMode {
 
                 if (Rocket.getCurrentPosition() >= position) {
                     armLevel = 1;
+
+
                     hasPressed[id] = false;
                     myPrevRuntime[id] = 0;
                     hasDone[id] = false;
 
 
                 }
-
-
-            }
-        }
-    }
-
-    public void parallelGroundPickup(int position, int id2) { // Parallell waiting for sprocket
-        {
-            Rocket.setVelocity(1200);
-            if (gamepad1.x) {
-                hasPressed[id2] = true;
-                RotationalClaw.setPosition(0);
-            }
-
-
-            if (hasPressed[id2]) {
-                if (!hasDone[id2]) {
-                    myPrevRuntime[id2] = Rocket.getCurrentPosition();
-                    Rocket.setTargetPosition(75);
-                    hasDone[id2] = true;
-                }
-
-
-                if (Rocket.getCurrentPosition() >= position) {
-                    armLevel = 1;
-                    hasPressed[id2] = false;
-                    myPrevRuntime[id2] = 0;
-                    hasDone[id2] = false;
-
-
+                if(SwyftSlide.getCurrentPosition() <= 1300 &&  Rocket.getCurrentPosition() >= position ){
+                    RotationalClaw.setPosition(0.2);
+                    rollClaw.setPosition(0.33);
                 }
 
 
             }
         }
-    }
+    }*/
+
 
     public void parallelHang(int position, int id) { // Parallell waiting for sprocket
         {
@@ -603,6 +585,37 @@ public class monkey extends OpMode {
     }
 
     public void parallelSubmersible(double seconds, int id) {
+        if (gamepad1.x) // Put the controls that you want to have pressed for timer to start here
+        {
+            hasPressed[id] = true;
+        }
+
+        if (hasPressed[id]) {
+            if (!hasDone[id]) {
+                myPrevRuntime[id] = getRuntime();
+                hasDone[id] = true;
+                RotationalClaw.setPosition(0.5);
+                Rocket.setTargetPosition(20);
+                armLevel = 1;
+            }
+
+
+
+            if (SwyftSlide.getCurrentPosition() > armLevelPosition[1]) {
+                RotationalClaw.setPosition(0.15);
+                test = 1;
+                hasPressed[id] = false;
+                myPrevRuntime[id] = 0;
+                hasDone[id] = false;
+
+            }
+
+
+        }
+
+
+    }
+    public void parallelSubmersibleMonkey(double seconds, int id) {
         if (gamepad1.b) // Put the controls that you want to have pressed for timer to start here
         {
             hasPressed[id] = true;
@@ -613,7 +626,7 @@ public class monkey extends OpMode {
                 myPrevRuntime[id] = getRuntime();
                 hasDone[id] = true;
                 RotationalClaw.setPosition(0.5);
-                Rocket.setTargetPosition(70);
+                Rocket.setTargetPosition(24);
                 armLevel = 2;
             }
 
@@ -626,6 +639,7 @@ public class monkey extends OpMode {
                 hasDone[id] = false;
 
             }
+
 
         }
 

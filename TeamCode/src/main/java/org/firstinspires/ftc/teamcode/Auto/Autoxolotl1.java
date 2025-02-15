@@ -20,14 +20,16 @@ public class Autoxolotl1 extends LinearOpMode {
     private int[] wheelTicks = {0, 0, 0, 0}; // FL = 0, FR = 1, BL = 2, BR = 3
     private final ElapsedTime runtime = new ElapsedTime();  // Timer, I just copy pasted, don't ask questions
     private double speedMod;
-    private int[] viperSlideTargets = {0, 1600, 100,2060, 2800,2120, 1900};
+    private int[] viperSlideTargets = {0, 2630,2380,2000, 2800};
 
-    private  int[] sprocketTargets  = {0, 70 , 350 , 750, 310,100};
+    private  int[] sprocketTargets  = {0, 60 , 450 , 680};
 
 
     private double CLawGrip = 0.45;
 
     private int viperlevel;
+
+    private int power = 10000;
 
 
     //Motors
@@ -72,6 +74,7 @@ public class Autoxolotl1 extends LinearOpMode {
 
 
         //------------SERVOS////
+
         claw = hardwareMap.get(Servo.class, "claw");
         rotateClaw = hardwareMap.get(Servo.class, "rotateClaw");
         rollClaw = hardwareMap.get(Servo.class, "rollClaw");
@@ -109,10 +112,10 @@ public class Autoxolotl1 extends LinearOpMode {
         wheelBR.setDirection(DcMotorSimple.Direction.FORWARD);
 
 
-        wheelFL.setPower(0.6);
-        wheelFR.setPower(0.6);
-        wheelBL.setPower(0.6);
-        wheelBR.setPower(0.6);
+        wheelFL.setVelocity(power);
+        wheelFR.setVelocity(power);
+        wheelBL.setVelocity(power);
+        wheelBR.setVelocity(power);
 
 
         // Lock Wheels
@@ -128,7 +131,7 @@ public class Autoxolotl1 extends LinearOpMode {
         SwyftSlide.setTargetPositionTolerance(50);
         SwyftSlide.setTargetPosition(0);
         SwyftSlide.setDirection(DcMotorSimple.Direction.FORWARD);
-        SwyftSlide.setVelocity(2000);
+        SwyftSlide.setVelocity(7000);
 
         // SwyftSlideJr Encoder
 
@@ -138,8 +141,7 @@ public class Autoxolotl1 extends LinearOpMode {
         SwyftSlideJr.setTargetPositionTolerance(50);
         SwyftSlideJr.setTargetPosition(0);
         SwyftSlideJr.setDirection(DcMotorSimple.Direction.REVERSE);
-        SwyftSlideJr.setVelocity(2000);
-
+        SwyftSlideJr.setVelocity(7000);
 
         // Sprocket Stuff
         rocket.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -147,7 +149,7 @@ public class Autoxolotl1 extends LinearOpMode {
         rocket.setDirection(DcMotorSimple.Direction.REVERSE);
         rocket.setTargetPosition(0);
         rocket.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rocket.setVelocity(1200);
+        rocket.setVelocity(900);
 
 
         // No idea, copy pasted
@@ -176,69 +178,83 @@ public class Autoxolotl1 extends LinearOpMode {
         // left x == 1 is right stafre
         // right x == 1 is clockwise
         // right x == -1 is counter clockwise
+        // left y == = -1 backward
 
         telemetry.update();
         telemetry.update();
         // Pre Load Sample
-    moveByJoystick(0.,0,1,0,700);
-        setRotateClaw(0.35,0.2);
-        moveSprocket(2);
-        moveSwyftSlides(5);
-        //moveSprocket(4);
-        moveSwyftSlides(6);
-        setRotateClaw(0.25,0.2);
-    //moveByJoystick(0.3,-1,0,0,900);
-/*
-        setClaw(0.45, 0.4);
-        setRotateClaw(0.1, 0.6);
-        moveByJoystick(0.6, 0, -1, 0, 520
-        );
-        moveByJoystick(0.5, -1, 0, 0, 540);
-        moveByJoystick(0.5, 0, 0, -1, 450);
-        moveByJoystick(0.3, 0, -1, 0, 225);
+    setClaw(0,0.2);
+    setRotateClaw(0.5,0.2);
+    moveByJoystick(0.4,0,1,0,200);
+    moveByJoystick(0.6,-1,0,0,500);
+    moveByJoystick(0.4,0,0,1,350);
+    moveByJoystick(0.5,0,-1,0,200);
+    moveByJoystick(0.6,-1,0,0,500);
+    moveByJoystick(0.8,0,-1,0,450);
+    moveSprocket(3);
+    setRollClaw(0,0.2);
+    moveSwyftSlides(4);
+    setRotateClaw(0.65,0.3);
+    setClaw(0.7,0.3);
+    setRotateClaw(0.17,0.2);
+    moveSwyftSlides(0);
+    setRollClaw(1,0.2);
+    moveSprocket(1);
+
+    //Sample 1
+        moveByJoystick(0.4,0,0,-1,245);
+        moveSwyftSlides(1);
+       setClaw(0,0.6);
+        moveSwyftSlides(0);
+        setRollClaw(0,0.2);
+        setRotateClaw(0.5,0.2);
+
+        moveByJoystick(0.4,0,0,1,245);
         moveSprocket(3);
         moveSwyftSlides(4);
-        setRotateClaw(0.45, 1);
-        setClaw(1, 0.6);
-        setRotateClaw(0, 0.4);
+        setRotateClaw(0.65,0.3);
+        setClaw(0.7,0.3);
+        setRotateClaw(0.17,0.2);
         moveSwyftSlides(0);
+        setRollClaw(1,0.2);
         moveSprocket(1);
-
-        //First Sample
-
-        moveByJoystick(0.5, 0, 0, -1, 527);
+    //Sample 2
+        moveByJoystick(0.4,0,0,-1,400);
         moveSwyftSlides(2);
-        setClaw(0.45, 0.4);
-        setRotateClaw(0.1, 0.2);
+        setClaw(0,0.6);
         moveSwyftSlides(0);
-
-        moveByJoystick(0.5, 0, 0, 1, 527);
+        setRollClaw(0,0.2);
+        setRotateClaw(0.5,0.2);
+        moveByJoystick(0.4,0,0,1,386);
         moveSprocket(3);
         moveSwyftSlides(4);
-        setRotateClaw(0.45, 0.4);
-        setClaw(1, 0.2);
-        setRotateClaw(0., 0.4);
+        setRotateClaw(0.65,0.3);
+        setClaw(0.7,0.3);
+        setRotateClaw(0.17,0.2);
         moveSwyftSlides(0);
+        setRollClaw(1,0.2);
         moveSprocket(1);
 
-        //Second Sample
-
-        moveByJoystick(0.6, 0, 0, -1, 760);
-
+/*        // Sample 3
+        moveByJoystick(0.3,0,0,-1 , 560);
         moveSwyftSlides(3);
-        setClaw(0.45, 0.3);
+        setClaw(0,0.6);
         moveSwyftSlides(0);
-        moveByJoystick(0.6, 0, 0, 1, 570);
+        setRollClaw(0,0.2);
+        setRotateClaw(0.5,0.2);
+        moveByJoystick(0.4,0,0,1,560);
         moveSprocket(3);
         moveSwyftSlides(4);
-        setRotateClaw(0.45, 0.4);
-        setClaw(1, 0.2);
-        setRotateClaw(0, 0.4);
+        setRotateClaw(0.65,0.3);
+        setClaw(0.7,0.3);
+        setRotateClaw(0.33,0.2);
         moveSwyftSlides(0);
-        moveSprocket(1);
-*/
+        setRollClaw(1,0.2);
+        moveSprocket(1);*/
 
-        //Thrid Sample
+
+
+
 
 
     }
@@ -287,6 +303,7 @@ public class Autoxolotl1 extends LinearOpMode {
         telemetry.addData("FL is at target", wheelFL.getTargetPosition());
         telemetry.addData("FR is at target", wheelFR.getTargetPosition());
         telemetry.addData("BR is at target", wheelBR.getTargetPosition());
+        telemetry.addData("Speed", wheelBL.getVelocity());
         telemetry.update();
 
 
