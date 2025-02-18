@@ -631,7 +631,7 @@ public class monkey extends OpMode {
             }
 
 
-            if (SwyftSlide.getCurrentPosition() > armLevelPosition[2]) {
+            if (SwyftSlide.getCurrentPosition() > armLevelPosition[2] && myPrevRuntime[id] + seconds < getRuntime()) {
                 RotationalClaw.setPosition(0.15);
                 test = 1;
                 hasPressed[id] = false;

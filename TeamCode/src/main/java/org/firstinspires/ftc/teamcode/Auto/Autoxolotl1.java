@@ -22,7 +22,7 @@ public class Autoxolotl1 extends LinearOpMode {
     private double speedMod;
     private int[] viperSlideTargets = {0, 2680,2680,2000, 2800};
 
-    private  int[] sprocketTargets  = {0, 68 ,80, 450 , 840};
+    private  int[] sprocketTargets  = {0, 68 ,80,680};
 
 
     private double CLawGrip = 0.45;
