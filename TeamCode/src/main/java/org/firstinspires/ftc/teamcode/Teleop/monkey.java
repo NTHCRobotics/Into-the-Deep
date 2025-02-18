@@ -595,7 +595,7 @@ public class monkey extends OpMode {
                 myPrevRuntime[id] = getRuntime();
                 hasDone[id] = true;
                 RotationalClaw.setPosition(0.5);
-                Rocket.setTargetPosition(20);
+                Rocket.setTargetPosition(23);
                 armLevel = 1;
             }
 
@@ -626,7 +626,7 @@ public class monkey extends OpMode {
                 myPrevRuntime[id] = getRuntime();
                 hasDone[id] = true;
                 RotationalClaw.setPosition(0.5);
-                Rocket.setTargetPosition(24);
+                Rocket.setTargetPosition(27);
                 armLevel = 2;
             }
 

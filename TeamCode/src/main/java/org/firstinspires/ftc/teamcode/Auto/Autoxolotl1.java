@@ -20,9 +20,9 @@ public class Autoxolotl1 extends LinearOpMode {
     private int[] wheelTicks = {0, 0, 0, 0}; // FL = 0, FR = 1, BL = 2, BR = 3
     private final ElapsedTime runtime = new ElapsedTime();  // Timer, I just copy pasted, don't ask questions
     private double speedMod;
-    private int[] viperSlideTargets = {0, 2630,2380,2000, 2800};
+    private int[] viperSlideTargets = {0, 2680,2680,2000, 2800};
 
-    private  int[] sprocketTargets  = {0, 60 , 450 , 680};
+    private  int[] sprocketTargets  = {0, 68 ,80, 450 , 840};
 
 
     private double CLawGrip = 0.45;
@@ -190,26 +190,26 @@ public class Autoxolotl1 extends LinearOpMode {
     moveByJoystick(0.4,0,0,1,350);
     moveByJoystick(0.5,0,-1,0,200);
     moveByJoystick(0.6,-1,0,0,500);
-    moveByJoystick(0.8,0,-1,0,450);
+    moveByJoystick(0.8,0,-1,0,330);
     moveSprocket(3);
     setRollClaw(0,0.2);
     moveSwyftSlides(4);
     setRotateClaw(0.65,0.3);
     setClaw(0.7,0.3);
-    setRotateClaw(0.17,0.2);
+    setRotateClaw(0.22,0.2);
     moveSwyftSlides(0);
     setRollClaw(1,0.2);
     moveSprocket(1);
 
     //Sample 1
-        moveByJoystick(0.4,0,0,-1,245);
+        moveByJoystick(0.4,0,0,-1,234);
         moveSwyftSlides(1);
        setClaw(0,0.6);
         moveSwyftSlides(0);
         setRollClaw(0,0.2);
-        setRotateClaw(0.5,0.2);
+        setRotateClaw(0.5,0.33);
 
-        moveByJoystick(0.4,0,0,1,245);
+        moveByJoystick(0.4,0,0,1,234);
         moveSprocket(3);
         moveSwyftSlides(4);
         setRotateClaw(0.65,0.3);
@@ -217,16 +217,17 @@ public class Autoxolotl1 extends LinearOpMode {
         setRotateClaw(0.17,0.2);
         moveSwyftSlides(0);
         setRollClaw(1,0.2);
-        moveSprocket(1);
+        moveSprocket(2);
     //Sample 2
-        moveByJoystick(0.4,0,0,-1,400);
+        moveByJoystick(0.4,0,0,-1,397);
         moveSwyftSlides(2);
         setClaw(0,0.6);
         moveSwyftSlides(0);
         setRollClaw(0,0.2);
         setRotateClaw(0.5,0.2);
-        moveByJoystick(0.4,0,0,1,386);
+        moveByJoystick(0.4,0,0,1,397);
         moveSprocket(3);
+        moveByJoystick(0.3,1,0,0,100);
         moveSwyftSlides(4);
         setRotateClaw(0.65,0.3);
         setClaw(0.7,0.3);
