@@ -141,6 +141,8 @@ public class decode extends OpMode {
     public void loop() {
         // These methods will continuously run in the teleop loop
         precisionControl();
+        drive();
+        flywheel();
 //        telemetry.addData("Prev Runtime", myPrevRuntime);
         telemetry.update();
     }
@@ -183,8 +185,16 @@ public class decode extends OpMode {
       }
     }
 
-    public void magazine()
+    public void flywheel()
   {
-  
+    if (gamepad1.left_bumper)
+    {
+      flywheel.setPower(1);
+    }
+      else
+    {
+        flywheel-setPower(0);
+    }
+      
   }
 
